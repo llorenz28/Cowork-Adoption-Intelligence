@@ -1,0 +1,18 @@
+table 'Committed Credits'
+	lineageTag: fe665b4e-84d4-4938-a69a-09f833d269a1
+
+	/// Customer-entered monthly credit commitment. Blank until explicitly selected.
+	measure 'Committed Credits Value' = SELECTEDVALUE('Committed Credits'[Committed Credits])
+		formatString: #,0
+		lineageTag: d71c5ebd-506d-4f09-ad0a-496887242349
+
+	column 'Committed Credits'
+		dataType: int64
+		formatString: #,0
+		lineageTag: 5abe90e2-e87a-4199-b72c-0b9c75b693cc
+		summarizeBy: none
+		sourceColumn: [Value]
+
+	partition 'Committed Credits' = calculated
+		mode: import
+		source = GENERATESERIES(0, 10000000, 50000)

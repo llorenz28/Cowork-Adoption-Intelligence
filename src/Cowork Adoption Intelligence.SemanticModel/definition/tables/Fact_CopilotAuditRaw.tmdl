@@ -1,0 +1,253 @@
+/// Additive fact table with one row per Purview `CopilotInteraction` audit
+/// record. Point `CopilotAuditFolderPath` at a folder of raw export CSVs
+/// (schema: RecordId, CreationDate, RecordType, Operation, UserId, AuditData, ...)
+/// and refresh. Unrecognized/other-shaped CSVs dropped in the same folder are
+/// safely skipped (HasColumns guard), so this never breaks on a stray file.
+table Fact_CopilotAuditRaw
+	lineageTag: c3f1a001-0a11-4a11-9a11-1a11c3f1a001
+
+	/// Total real Copilot interaction events in the current filter context.
+	measure 'Real Interactions' = COUNTROWS(Fact_CopilotAuditRaw)
+		formatString: #,0
+		lineageTag: c3f1a001-0a11-4a11-9a11-1a11a0000001
+
+	/// Distinct real users with at least one interaction in context.
+	measure 'Real Interaction Users' = DISTINCTCOUNT(Fact_CopilotAuditRaw[Audit_UserId_Normalized])
+		formatString: #,0
+		lineageTag: c3f1a001-0a11-4a11-9a11-1a11a0000002
+
+	/// QA guardrail: % of real rows whose UPN did not resolve to Dim_User.
+	/// High values mean the licensed-users export and the audit export
+	/// disagree on user identity (casing, guest accounts, service accounts).
+	measure 'Real Unmatched User %' =
+			DIVIDE(
+			    CALCULATE(COUNTROWS(Fact_CopilotAuditRaw), ISBLANK(Fact_CopilotAuditRaw[UserKey])),
+			    COUNTROWS(Fact_CopilotAuditRaw)
+			)
+		formatString: 0.0%
+		lineageTag: c3f1a001-0a11-4a11-9a11-1a11a0000003
+
+	/// QA guardrail: % of real rows whose AppHost has no row in the
+	/// 'AppHost Category Map' bridge table yet (needs developer mapping).
+	measure 'Real Unmapped AppHost %' =
+			DIVIDE(
+			    COALESCE(
+			        COUNTROWS(
+			            FILTER(
+			                Fact_CopilotAuditRaw,
+			                ISBLANK(RELATED('AppHost Category Map'[Category]))
+			            )
+			        ),
+			        0
+			    ),
+			    COUNTROWS(Fact_CopilotAuditRaw)
+			)
+		formatString: 0.0%
+		lineageTag: c3f1a001-0a11-4a11-9a11-1a11a0000004
+
+	/// Filter-health guard for the tenant/product-controlled AppHost value.
+	/// Surfaces a warning instead of silently returning zero when the emitted
+	/// Cowork host value changes.
+	measure 'Cowork Filter Health' =
+			VAR RawRows = COUNTROWS(ALL(Fact_CopilotAuditRaw))
+			VAR CoworkRows =
+			    CALCULATE(
+			        COUNTROWS(Fact_CopilotAuditRaw),
+			        ALL(Fact_CopilotAuditRaw),
+			        Fact_CopilotAuditRaw[AppHost] = "cowork"
+			    )
+			RETURN
+			    SWITCH(
+			        TRUE(),
+			        RawRows = 0, "No audit data loaded.",
+			        CoworkRows = 0, "WARNING: audit data present but no rows match AppHost = ""cowork"". The AppHost value may have changed — re-inspect a known Cowork user's records before trusting this report.",
+			        "OK — " & FORMAT(CoworkRows, "#,0") & " Cowork records isolated."
+			    )
+		lineageTag: c3f1a001-0a11-4a11-9a11-1a11a0000005
+
+	column RecordId
+		dataType: string
+		isHidden
+		isKey
+		lineageTag: c3f1a001-0a11-4a11-9a11-1a11c3f1a002
+		summarizeBy: none
+		sourceColumn: RecordId
+
+	column CreationDateParsed
+		dataType: string
+		lineageTag: c3f1a001-0a11-4a11-9a11-1a11c3f1a003
+		summarizeBy: none
+		sourceColumn: CreationDateParsed
+
+		annotation SummarizationSetBy = Automatic
+
+	column DateKey
+		dataType: int64
+		isHidden
+		lineageTag: c3f1a001-0a11-4a11-9a11-1a11c3f1a004
+		summarizeBy: none
+		sourceColumn: DateKey
+
+	column Audit_UserId
+		dataType: string
+		lineageTag: c3f1a001-0a11-4a11-9a11-1a11c3f1a005
+		summarizeBy: none
+		sourceColumn: Audit_UserId
+
+	column Audit_UserId_Normalized
+		dataType: string
+		isHidden
+		lineageTag: c3f1a001-0a11-4a11-9a11-1a11c3f1a006
+		summarizeBy: none
+		sourceColumn: Audit_UserId_Normalized
+
+	column UserKey
+		dataType: int64
+		isHidden
+		lineageTag: c3f1a001-0a11-4a11-9a11-1a11c3f1a007
+		summarizeBy: none
+		sourceColumn: UserKey
+
+	/// Source-provided Purview AppHost value.
+	column AppHost
+		dataType: string
+		lineageTag: c3f1a001-0a11-4a11-9a11-1a11c3f1a008
+		summarizeBy: none
+		sourceColumn: AppHost
+
+	/// Stable bucket derived from AppHost by keyword match, since some real
+	/// AppHost values carry a tenant-specific GUID suffix (e.g.
+	/// "SecurityCopilot-73c2949e-...") that would otherwise break an exact-
+	/// match relationship. Joins to 'AppHost Category Map'[AppHost Group].
+	/// Includes a "Cowork" bucket and a fallback for newly emitted hosts.
+	column 'AppHost Group' =
+			VAR h = LOWER(TRIM(Fact_CopilotAuditRaw[AppHost]))
+			RETURN
+			SWITCH(
+			    TRUE(),
+			    h = BLANK(), "(Unknown)",
+			    CONTAINSSTRING(h, "cowork"), "Cowork",
+			    CONTAINSSTRING(h, "teams"), "Microsoft Teams",
+			    CONTAINSSTRING(h, "securitycopilot"), "Security Copilot",
+			    CONTAINSSTRING(h, "autonomous"), "Autonomous Agent",
+			    CONTAINSSTRING(h, "copilot studio") || CONTAINSSTRING(h, "pva-maker"), "Copilot Studio",
+			    CONTAINSSTRING(h, "m365copilot"), "M365 Copilot Chat",
+			    CONTAINSSTRING(h, "admincenter"), "Admin Center",
+			    CONTAINSSTRING(h, "sharepoint"), "SharePoint",
+			    CONTAINSSTRING(h, "outlook"), "Outlook",
+			    CONTAINSSTRING(h, "word"), "Word",
+			    CONTAINSSTRING(h, "powerpoint"), "PowerPoint",
+			    CONTAINSSTRING(h, "power bi") || CONTAINSSTRING(h, "powerbi"), "Power BI",
+			    CONTAINSSTRING(h, "edge"), "Edge",
+			    CONTAINSSTRING(h, "office"), "Office",
+			    "Other / Unclassified"
+			)
+		dataType: string
+		lineageTag: c3f1a001-0a11-4a11-9a11-1a11c3f1a008b
+		summarizeBy: none
+
+	column Workload
+		dataType: string
+		lineageTag: c3f1a001-0a11-4a11-9a11-1a11c3f1a009
+		summarizeBy: none
+		sourceColumn: Workload
+
+	column ClientRegion
+		dataType: string
+		isHidden
+		lineageTag: c3f1a001-0a11-4a11-9a11-1a11c3f1a010
+		summarizeBy: none
+		sourceColumn: ClientRegion
+
+	column AppIdentity
+		dataType: string
+		lineageTag: c3f1a001-0a11-4a11-9a11-1a11c3f1a011
+		summarizeBy: none
+		sourceColumn: AppIdentity
+
+	column ThreadId
+		dataType: string
+		isHidden
+		lineageTag: c3f1a001-0a11-4a11-9a11-1a11c3f1a012
+		summarizeBy: none
+		sourceColumn: ThreadId
+
+	column LicenseType
+		dataType: string
+		lineageTag: c3f1a001-0a11-4a11-9a11-1a11c3f1a013
+		summarizeBy: none
+		sourceColumn: LicenseType
+
+	column Message_Count
+		dataType: int64
+		formatString: #,0
+		lineageTag: c3f1a001-0a11-4a11-9a11-1a11c3f1a014
+		summarizeBy: sum
+		sourceColumn: Message_Count
+
+	column Message_PromptCount
+		dataType: int64
+		formatString: #,0
+		lineageTag: c3f1a001-0a11-4a11-9a11-1a11c3f1a015
+		summarizeBy: sum
+		sourceColumn: Message_PromptCount
+
+	column Plugin_Count
+		dataType: int64
+		formatString: #,0
+		lineageTag: c3f1a001-0a11-4a11-9a11-1a11c3f1a016
+		summarizeBy: sum
+		sourceColumn: Plugin_Count
+
+	column Plugin_FirstId
+		dataType: string
+		isHidden
+		lineageTag: c3f1a001-0a11-4a11-9a11-1a11c3f1a017
+		summarizeBy: none
+		sourceColumn: Plugin_FirstId
+
+	column Plugin_FirstName
+		dataType: string
+		lineageTag: c3f1a001-0a11-4a11-9a11-1a11c3f1a018
+		summarizeBy: none
+		sourceColumn: Plugin_FirstName
+
+	column Resource_Count
+		dataType: int64
+		formatString: #,0
+		lineageTag: c3f1a001-0a11-4a11-9a11-1a11c3f1a019
+		summarizeBy: sum
+		sourceColumn: Resource_Count
+
+	column AccessedResource_FirstSiteUrl
+		dataType: string
+		isHidden
+		lineageTag: c3f1a001-0a11-4a11-9a11-1a11c3f1a020
+		summarizeBy: none
+		sourceColumn: AccessedResource_FirstSiteUrl
+
+	column AccessedResource_FirstAction
+		dataType: string
+		lineageTag: c3f1a001-0a11-4a11-9a11-1a11c3f1a021
+		summarizeBy: none
+		sourceColumn: AccessedResource_FirstAction
+
+	column ModelProviderName
+		dataType: string
+		lineageTag: c3f1a001-0a11-4a11-9a11-1a11c3f1a022
+		summarizeBy: none
+		sourceColumn: ModelProviderName
+
+	partition Fact_CopilotAuditRaw = m
+		mode: import
+		source =
+				Table.SelectColumns(Fact_CopilotAuditRaw_WithLists, {
+					"RecordId", "CreationDateParsed", "DateKey", "Audit_UserId", "Audit_UserId_Normalized", "UserKey",
+					"Workload", "ClientRegion", "AppIdentity", "AppHost", "ThreadId", "LicenseType",
+					"Message_Count", "Message_PromptCount",
+					"Plugin_Count", "Plugin_FirstId", "Plugin_FirstName",
+					"Resource_Count", "AccessedResource_FirstSiteUrl", "AccessedResource_FirstAction",
+					"ModelProviderName"
+				})
+
+	annotation PBI_ResultType = Exception

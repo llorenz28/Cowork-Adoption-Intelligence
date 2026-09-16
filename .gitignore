@@ -1,0 +1,35 @@
+# Power BI local state
+**/.pbi/
+**/localSettings.json
+**/*.abf
+**/*.pbix
+
+# Customer exports and credentials
+customer_data/
+tenant_data/
+exports/
+secrets/
+*.env
+*.token
+*.secret
+*.key
+*.pfx
+*.pem
+
+# Build and QA output
+media/.walkthrough-build/
+media/composed/
+media/*.wav
+media/segments/
+qa/
+tmp/
+__pycache__/
+*.pyc
+
+# Editors and operating systems
+.vs/
+.vscode/
+.idea/
+.DS_Store
+Thumbs.db
+desktop.ini

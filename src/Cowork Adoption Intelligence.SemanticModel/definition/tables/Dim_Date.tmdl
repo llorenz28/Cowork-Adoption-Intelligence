@@ -1,0 +1,92 @@
+table Dim_Date
+	lineageTag: 2e62a8a2-53f0-48aa-bb81-c28100f10a9e
+	dataCategory: Time
+
+	column Date
+		dataType: dateTime
+		isKey
+		formatString: Long Date
+		lineageTag: 291e1f29-b711-47cf-a6a1-7fb5cc63f55a
+		summarizeBy: none
+		sourceColumn: Date
+
+		annotation UnderlyingDateTimeDataType = Date
+
+	column DateKey
+		dataType: int64
+		isHidden
+		lineageTag: 628c1578-ca32-4707-927e-b6d94ddea9c6
+		summarizeBy: none
+		sourceColumn: DateKey
+
+	column Year
+		dataType: int64
+		lineageTag: f92acf36-b4cd-43b0-b929-16d81184596a
+		summarizeBy: none
+		sourceColumn: Year
+
+	column MonthStart
+		dataType: dateTime
+		formatString: Long Date
+		lineageTag: defa48ea-582b-4f39-b5e3-d41b96c5eb60
+		summarizeBy: none
+		sourceColumn: MonthStart
+
+		annotation UnderlyingDateTimeDataType = Date
+
+	column WeekStart
+		dataType: dateTime
+		formatString: MMM d
+		lineageTag: e24d763b-3f64-5469-b256-7c054337fa92
+		summarizeBy: none
+		sourceColumn: WeekStart
+
+		annotation UnderlyingDateTimeDataType = Date
+
+	column MonthName
+		dataType: string
+		lineageTag: 5a95e574-02cd-4783-8040-cb99f9b9414d
+		summarizeBy: none
+		sourceColumn: MonthName
+
+	column MonthKey
+		dataType: int64
+		isHidden
+		lineageTag: b29ba867-d054-4760-af54-bb86c7d5ba0c
+		summarizeBy: none
+		sourceColumn: MonthKey
+
+	column Day
+		dataType: int64
+		lineageTag: 208f8aba-17bf-4c83-8209-e67a52de0386
+		summarizeBy: none
+		sourceColumn: Day
+
+	column DayOfWeek
+		dataType: int64
+		lineageTag: 492dd6f2-9d5c-41a6-bab6-748d37a23ee3
+		summarizeBy: none
+		sourceColumn: DayOfWeek
+
+	partition Dim_Date = m
+		mode: import
+		source =
+				let
+					StartDate = Date.StartOfYear(AsOfDate),
+					EndDate = Date.EndOfMonth(AsOfDate),
+					DayCount = Duration.Days(EndDate - StartDate) + 1,
+					Dates = List.Dates(StartDate, DayCount, #duration(1, 0, 0, 0)),
+					AsTable = Table.FromList(Dates, Splitter.SplitByNothing(), {"Date"}),
+					Typed = Table.TransformColumnTypes(AsTable, {{"Date", type date}}),
+					AddDateKey = Table.AddColumn(Typed, "DateKey", each Date.Year([Date]) * 10000 + Date.Month([Date]) * 100 + Date.Day([Date]), Int64.Type),
+					AddYear = Table.AddColumn(AddDateKey, "Year", each Date.Year([Date]), Int64.Type),
+					AddMonthStart = Table.AddColumn(AddYear, "MonthStart", each Date.StartOfMonth([Date]), type date),
+					AddMonthName = Table.AddColumn(AddMonthStart, "MonthName", each Date.ToText([Date], "MMMM", "en-US"), type text),
+					AddMonthKey = Table.AddColumn(AddMonthName, "MonthKey", each Date.Year([Date]) * 100 + Date.Month([Date]), Int64.Type),
+					AddDay = Table.AddColumn(AddMonthKey, "Day", each Date.Day([Date]), Int64.Type),
+					AddDoW = Table.AddColumn(AddDay, "DayOfWeek", each Date.DayOfWeek([Date], Day.Monday) + 1, Int64.Type),
+					AddWeekStart = Table.AddColumn(AddDoW, "WeekStart", each Date.StartOfWeek([Date], Day.Monday), type date)
+				in
+					AddWeekStart
+
+	annotation PBI_ResultType = Table

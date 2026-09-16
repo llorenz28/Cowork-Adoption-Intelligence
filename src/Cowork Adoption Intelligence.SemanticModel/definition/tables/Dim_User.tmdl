@@ -1,0 +1,336 @@
+table Dim_User
+	lineageTag: c8f37519-b5a3-4523-bbf4-8d22267bb497
+
+	column UserKey
+		dataType: int64
+		isHidden
+		isKey
+		lineageTag: 63331ee0-6751-475e-943a-c0752ee9e81e
+		summarizeBy: none
+		sourceColumn: UserKey
+
+	column UserPrincipalName
+		dataType: string
+		lineageTag: 6f1307cf-7189-4354-94c0-536105654faa
+		summarizeBy: none
+		sourceColumn: UserPrincipalName
+
+	column DisplayName
+		dataType: string
+		lineageTag: 64637719-29bc-467b-bbf4-a1a51f33bc54
+		summarizeBy: none
+		sourceColumn: DisplayName
+
+	column UserID
+		dataType: string
+		isHidden
+		lineageTag: fdaf08a9-7c21-467e-9108-eab03e79ec57
+		summarizeBy: none
+		sourceColumn: UserID
+
+	column CopilotLicense
+		dataType: string
+		lineageTag: 37a24a1e-3c9d-4a44-8295-eb9f5be45319
+		summarizeBy: none
+		sourceColumn: CopilotLicense
+
+	column LicenseSKU
+		dataType: string
+		lineageTag: 35594813-dd9a-46e1-b129-061c81988e9f
+		summarizeBy: none
+		sourceColumn: LicenseSKU
+
+	column 'Lifetime Value $' = CALCULATE([Estimated Value $])
+		dataType: double
+		isHidden
+		formatString: \$#,0
+		lineageTag: a017f734-4645-4191-937e-1efae8b80590
+		summarizeBy: none
+
+	column 'Value Percentile' =
+			VAR n = COUNTROWS(FILTER(ALL(Dim_User), NOT ISBLANK(Dim_User[UserKey]))) /* Exclude Power BI's auto-added blank relationship member. */
+			VAR MinPopulationForPercentile = 20 /* Suppress unstable percentile ranks below 20 users. */
+			VAR r = RANKX(ALL(Dim_User), Dim_User[Lifetime Value $], , DESC)
+			RETURN IF(n < MinPopulationForPercentile, BLANK(), DIVIDE(n - r, n - 1))
+		dataType: double
+		isHidden
+		formatString: 0.0%
+		lineageTag: 438ec33f-5b22-4334-8d13-ead4b08cf6f0
+		summarizeBy: none
+
+	column 'Value Band' =
+			VAR n = COUNTROWS(FILTER(ALL(Dim_User), NOT ISBLANK(Dim_User[UserKey]))) /* Exclude Power BI's auto-added blank relationship member. */
+			VAR MinPopulationForPercentile = 20 /* Suppress unstable percentile ranks below 20 users. */
+			VAR p = Dim_User[Value Percentile]
+			RETURN SWITCH(TRUE(), n < MinPopulationForPercentile, "Insufficient sample (n=" & n & ")", p >= 0.90, "Top 10%", p >= 0.75, "10-25%", p >= 0.50, "25-50%", p >= 0.25, "50-75%", "Bottom 25%")
+		dataType: string
+		lineageTag: 11aeb5be-94ad-43dd-b381-f2c137fdd3b0
+		summarizeBy: none
+		sortByColumn: 'Value Band Order'
+
+	column 'Value Band Order' =
+			VAR n = COUNTROWS(FILTER(ALL(Dim_User), NOT ISBLANK(Dim_User[UserKey]))) /* Exclude Power BI's auto-added blank relationship member. */
+			VAR MinPopulationForPercentile = 20 /* Suppress unstable percentile ranks below 20 users. */
+			VAR p = Dim_User[Value Percentile]
+			RETURN SWITCH(TRUE(), n < MinPopulationForPercentile, 0, p >= 0.90, 1, p >= 0.75, 2, p >= 0.50, 3, p >= 0.25, 4, 5)
+		dataType: int64
+		isHidden
+		lineageTag: 18062c56-bc1c-4e5d-9e36-86f6e6e62832
+		summarizeBy: none
+
+	column 'Credits Lifetime' = CALCULATE([Total Credits Used])
+		dataType: double
+		isHidden
+		formatString: #,0
+		lineageTag: 4b338e4f-3b18-45ea-92a3-4d0897b93fd4
+		summarizeBy: none
+
+	column 'Credit Percentile' =
+			VAR n = COUNTROWS(FILTER(ALL(Dim_User), NOT ISBLANK(Dim_User[UserKey]))) /* Exclude Power BI's auto-added blank relationship member. */
+			VAR MinPopulationForPercentile = 20 /* Suppress unstable percentile ranks below 20 users. */
+			VAR r = RANKX(ALL(Dim_User), Dim_User[Credits Lifetime], , DESC)
+			RETURN IF(n < MinPopulationForPercentile, BLANK(), DIVIDE(n - r, n - 1))
+		dataType: double
+		isHidden
+		formatString: 0.0%
+		lineageTag: 4892a84b-0e22-4701-a467-7fcb558015d7
+		summarizeBy: none
+
+	column 'Credit Band' =
+			VAR n = COUNTROWS(FILTER(ALL(Dim_User), NOT ISBLANK(Dim_User[UserKey]))) /* Exclude Power BI's auto-added blank relationship member. */
+			VAR MinPopulationForPercentile = 20 /* Suppress unstable percentile ranks below 20 users. */
+			VAR p = Dim_User[Credit Percentile]
+			RETURN SWITCH(TRUE(), n < MinPopulationForPercentile, "Insufficient sample (n=" & n & ")", p >= 0.90, "Top 10%", p >= 0.75, "10-25%", p >= 0.50, "25-50%", p >= 0.25, "50-75%", "Bottom 25%")
+		dataType: string
+		lineageTag: 62da7cd2-a47f-4e94-8725-9c5cc2607309
+		summarizeBy: none
+		sortByColumn: 'Credit Band Order'
+
+	column 'Credit Band Order' =
+			VAR n = COUNTROWS(FILTER(ALL(Dim_User), NOT ISBLANK(Dim_User[UserKey]))) /* Exclude Power BI's auto-added blank relationship member. */
+			VAR MinPopulationForPercentile = 20 /* Suppress unstable percentile ranks below 20 users. */
+			VAR p = Dim_User[Credit Percentile]
+			RETURN SWITCH(TRUE(), n < MinPopulationForPercentile, 0, p >= 0.90, 1, p >= 0.75, 2, p >= 0.50, 3, p >= 0.25, 4, 5)
+		dataType: int64
+		isHidden
+		lineageTag: 2503e905-5593-4cb2-a2f3-c87687aeff3b
+		summarizeBy: none
+
+	column 'Value vs Credit' =
+			VAR n = COUNTROWS(FILTER(ALL(Dim_User), NOT ISBLANK(Dim_User[UserKey]))) /* Exclude Power BI's auto-added blank relationship member. */
+			VAR MinPopulationForPercentile = 20 /* Suppress unstable percentile ranks below 20 users. */
+			VAR g = Dim_User[Value Percentile] - Dim_User[Credit Percentile]
+			RETURN SWITCH(TRUE(), n < MinPopulationForPercentile, "Insufficient sample (n=" & n & ")", g >= 0.15, "Value ahead of spend", g <= -0.15, "Spend ahead of value", "Balanced")
+		dataType: string
+		lineageTag: e020b746-49a6-4cc8-9576-03e5d6c5ce5d
+		summarizeBy: none
+		sortByColumn: 'Value vs Credit Order'
+
+	column 'Value vs Credit Order' =
+			VAR n = COUNTROWS(FILTER(ALL(Dim_User), NOT ISBLANK(Dim_User[UserKey]))) /* Exclude Power BI's auto-added blank relationship member. */
+			VAR MinPopulationForPercentile = 20 /* Suppress unstable percentile ranks below 20 users. */
+			VAR g = Dim_User[Value Percentile] - Dim_User[Credit Percentile]
+			RETURN SWITCH(TRUE(), n < MinPopulationForPercentile, 0, g >= 0.15, 1, g <= -0.15, 3, 2)
+		dataType: int64
+		isHidden
+		lineageTag: 2f7b94c2-0436-4c9b-9405-27d60e54812d
+		summarizeBy: none
+
+	column Department = MAXX(RELATEDTABLE(Dim_UserOrg), Dim_UserOrg[Department])
+		dataType: string
+		lineageTag: 6012adef-9c99-4b7a-99e5-8ab8b7b874ac
+		summarizeBy: none
+
+	column CostCenter = MAXX(RELATEDTABLE(Dim_UserOrg), Dim_UserOrg[CostCenter])
+		dataType: string
+		lineageTag: 08eb3a96-a45a-470f-b408-75f8da2e8aa1
+		summarizeBy: none
+
+	column Manager = MAXX(RELATEDTABLE(Dim_UserOrg), Dim_UserOrg[Manager])
+		dataType: string
+		lineageTag: 40bfee14-8736-4368-973d-8b15a9031eb8
+		summarizeBy: none
+
+	column BusinessUnit = MAXX(RELATEDTABLE(Dim_UserOrg), Dim_UserOrg[BusinessUnit])
+		dataType: string
+		lineageTag: fa3d8c37-7785-40a0-a3af-54fa371e9a88
+		summarizeBy: none
+
+	column JobFamily = MAXX(RELATEDTABLE(Dim_UserOrg), Dim_UserOrg[JobFamily])
+		dataType: string
+		lineageTag: 449f7ecf-c209-4b2c-b500-de71975f9363
+		summarizeBy: none
+
+	column JobTitle = MAXX(RELATEDTABLE(Dim_UserOrg), Dim_UserOrg[JobTitle])
+		dataType: string
+		lineageTag: 2c1880c4-fdf6-44cc-9256-ae13685880fc
+		summarizeBy: none
+
+	column City = MAXX(RELATEDTABLE(Dim_UserOrg), Dim_UserOrg[City])
+		dataType: string
+		lineageTag: 56e1a099-cc02-4b48-8f24-1c04105530aa
+		summarizeBy: none
+
+	column Country = MAXX(RELATEDTABLE(Dim_UserOrg), Dim_UserOrg[Country])
+		dataType: string
+		lineageTag: 0df7c040-ef70-4c6d-b19f-497f38bd9838
+		summarizeBy: none
+
+	column Region =
+			VAR c = Dim_User[Country]
+			RETURN IF(ISBLANK(c), BLANK(), SWITCH(TRUE(), c = "US", "AMER", c = "IN", "APAC", c in {"IE", "GB", "DE", "FR"}, "EMEA", "Other"))
+		dataType: string
+		lineageTag: 402ff2f4-5808-4bfe-a136-23c3abbef302
+		summarizeBy: none
+
+	column IdentityDataQuality
+		dataType: string
+		lineageTag: de616c66-e1de-4f81-a39d-c17bc1ef75f7
+		summarizeBy: none
+		sourceColumn: IdentityDataQuality
+
+	column DemographicDataQuality
+		dataType: string
+		lineageTag: 064f60e4-61aa-4cda-83d3-eee476333c0d
+		summarizeBy: none
+		sourceColumn: DemographicDataQuality
+
+	column OrgDataQuality =
+			VAR q = MAXX(RELATEDTABLE(Dim_UserOrg), Dim_UserOrg[DataQuality])
+			RETURN IF(ISBLANK(q), "Not yet connected - no matching row in Dim_UserOrg (connect a real Entra/HR export at OrgCsvPath)", q)
+		dataType: string
+		lineageTag: ffe93323-b21a-4bf7-b5c6-0f8d6626d2bd
+		summarizeBy: none
+
+	/// Absolute per-user cost, parallel to 'Lifetime Value $' and 'Credits Lifetime'.
+	column 'Contracted Cost Lifetime' = CALCULATE([Contracted Cost])
+		dataType: double
+		isHidden
+		formatString: \$#,0
+		lineageTag: affaff0e-fa8c-4c85-8700-c7fef894e236
+		summarizeBy: none
+
+	/// Absolute value-vs-cost comparison that remains usable below the percentile
+	/// population threshold. Applies a +/-15% band to the lifetime value-to-cost ratio.
+	column 'Value vs Cost Band' =
+			VAR _value = Dim_User[Lifetime Value $]
+			VAR _cost = Dim_User[Contracted Cost Lifetime]
+			VAR _ratio = DIVIDE(_value, _cost)
+			RETURN SWITCH(TRUE(), ISBLANK(_ratio), "Insufficient cost data", _ratio >= 1.15, "Value ahead of spend", _ratio <= 0.85, "Spend ahead of value", "Balanced")
+		dataType: string
+		lineageTag: 311f62a2-88d9-447e-8082-c5aa61ba4e4d
+		summarizeBy: none
+		sortByColumn: 'Value vs Cost Band Order'
+
+	column 'Value vs Cost Band Order' =
+			VAR _value = Dim_User[Lifetime Value $]
+			VAR _cost = Dim_User[Contracted Cost Lifetime]
+			VAR _ratio = DIVIDE(_value, _cost)
+			RETURN SWITCH(TRUE(), ISBLANK(_ratio), 0, _ratio >= 1.15, 1, _ratio <= 0.85, 3, 2)
+		dataType: int64
+		isHidden
+		lineageTag: a53e552a-08f8-43d0-93f5-38d8224713ff
+		summarizeBy: none
+
+	hierarchy 'Org Drilldown'
+		lineageTag: 5e1d15b3-72da-4c8a-ac93-ba560a138b4d
+
+		level 'Business Unit'
+			lineageTag: ed1416f2-7dc5-4f1e-b7ff-6170f5ebad39
+			column: BusinessUnit
+
+		level Department
+			lineageTag: fa35a941-46fd-42ba-9fa5-45710572c08d
+			column: Department
+
+		level Manager
+			lineageTag: d6050f72-0d86-4aac-8258-6fff3f5fe839
+			column: Manager
+
+	partition Dim_User = m
+		mode: import
+		source =
+				let
+					// Dynamically detect Cowork-eligible users from the connected Purview export.
+					// Cannot reference
+					// Fact_CopilotAuditRaw (the table) here: that table's own UserKey resolution joins against
+					// Dim_User, so Dim_User referencing it back would create a circular dependency. This performs
+					// an independent, lightweight scan of the same raw CopilotAuditFolderPath CSVs, extracting
+					// only Operation/AppHost/UserId (not the full audit detail) to keep this necessary second pass
+					// as light as possible. Trade-off, disclosed: refresh now reads the raw folder twice (once
+					// here and once in Fact_CopilotAuditRaw.
+					AuditFiles0 = Folder.Files(CopilotAuditFolderPath),
+					AuditCsvOnly = Table.SelectRows(AuditFiles0, each Text.Lower(Text.End([Name], 4)) = ".csv"),
+					ExtractCoworkUpns = (fileContent as binary) as list =>
+						let
+							Attempt = try
+								let
+									Parsed = Csv.Document(fileContent, [Delimiter = ",", Encoding = 65001, QuoteStyle = QuoteStyle.Csv]),
+									Promoted = Table.PromoteHeaders(Parsed, [PromoteAllScalars = true]),
+									HasCols = Table.HasColumns(Promoted, {"Operation", "AuditData", "UserId"}),
+									Base = if not HasCols then {} else
+										let
+											OnlyCopilot = Table.SelectRows(Promoted, each [Operation] = "CopilotInteraction"),
+											AddJson = Table.AddColumn(OnlyCopilot, "_json", each let a = try Json.Document(Text.ToBinary([AuditData])) in if a[HasError] then null else a[Value]),
+											OnlyValidJson = Table.SelectRows(AddJson, each [_json] <> null),
+											AddCed = Table.AddColumn(OnlyValidJson, "_ced", each try [_json][CopilotEventData] otherwise null),
+											AddAppHost = Table.AddColumn(AddCed, "_apphost", each if [_ced] = null then null else (try [_ced][AppHost] otherwise null)),
+											OnlyCowork = Table.SelectRows(AddAppHost, each [_apphost] <> null and Text.Contains(Text.Lower(Text.Trim(Text.From([_apphost]))), "cowork")),
+											Upns = List.Transform(OnlyCowork[UserId], each Text.Lower(Text.Trim(Text.From(_))))
+										in
+											Upns
+								in
+									Base
+						in
+							if Attempt[HasError] then {} else Attempt[Value],
+					AllCoworkUpnLists = List.Transform(AuditCsvOnly[Content], each ExtractCoworkUpns(_)),
+					DynamicCoworkUpns = List.Distinct(List.Combine(AllCoworkUpnLists)),
+					CoworkUpnTable = Table.FromList(DynamicCoworkUpns, Splitter.SplitByNothing(), {"_upnNorm"}),
+
+					Files0 = Folder.Files(IdentityEnrichmentFolderPath),
+
+					// Gracefully degrade when optional identity enrichment files are absent.
+					// Detected Cowork users remain in the model without Entra or organization enrichment.
+					TryLoadReal = try
+						let
+							RealUsersFile = Table.SelectRows(Files0, each [Name] = "cowork_users.csv"){0},
+							RealPromoted = Table.PromoteHeaders(Csv.Document(RealUsersFile[Content], [Delimiter = ",", Encoding = 65001, QuoteStyle = QuoteStyle.Csv]), [PromoteAllScalars = true]),
+							RealSelected = Table.SelectColumns(RealPromoted, {"id", "displayName", "userPrincipalName"}),
+							RealRenamed = Table.RenameColumns(RealSelected, {{"id", "UserID"}, {"displayName", "DisplayName"}, {"userPrincipalName", "UserPrincipalName"}}),
+							RealNormalized0 = Table.AddColumn(RealRenamed, "_upnNorm", each Text.Lower(Text.Trim([UserPrincipalName])), type text)
+						in
+							RealNormalized0
+						otherwise
+							#table({"UserID", "DisplayName", "UserPrincipalName", "_upnNorm"}, {}),
+					RealNormalized = TryLoadReal,
+
+					// LEFT JOIN (enrichment) from the dynamically-detected UPN set into the real Entra export --
+					// a detected Cowork user is NEVER dropped just because they have no matching Entra row (e.g.
+					// the customer did not supply an Entra export, or that specific account is missing from it).
+					MergeIdentity = Table.NestedJoin(CoworkUpnTable, {"_upnNorm"}, RealNormalized, {"_upnNorm"}, "identity", JoinKind.LeftOuter),
+					ExpandIdentity = Table.ExpandTableColumn(MergeIdentity, "identity", {"UserID", "DisplayName", "UserPrincipalName"}, {"UserID", "DisplayName", "UserPrincipalName"}),
+
+					AddIdentityQuality = Table.AddColumn(ExpandIdentity, "IdentityDataQuality", each
+						if [UserPrincipalName] <> null then "Real (confirmed via Entra export)"
+						else "Real Cowork activity (Purview); no matching Entra identity record found", type text),
+					FillUpn = Table.AddColumn(AddIdentityQuality, "UserPrincipalNameFinal", each if [UserPrincipalName] = null then [_upnNorm] else [UserPrincipalName], type text),
+					FillDisplay = Table.AddColumn(FillUpn, "DisplayNameFinal", each if [DisplayName] = null then [_upnNorm] else [DisplayName], type text),
+
+					RealFinal = Table.SelectColumns(FillDisplay, {"UserID", "DisplayNameFinal", "UserPrincipalNameFinal", "IdentityDataQuality"}),
+					RealRenamedFinal = Table.RenameColumns(RealFinal, {{"DisplayNameFinal", "DisplayName"}, {"UserPrincipalNameFinal", "UserPrincipalName"}}),
+
+					Indexed0 = Table.AddIndexColumn(RealRenamedFinal, "_idx", 0, 1, Int64.Type),
+
+					// License assignment is a separate source domain. Until a real license export is
+					// connected, retain an explicit unavailable state rather than positional sample data.
+					AddCopilotLicense = Table.AddColumn(Indexed0, "CopilotLicense", each "Unknown", type text),
+					AddLicenseSKU = Table.AddColumn(AddCopilotLicense, "LicenseSKU", each null, type nullable text),
+					AddDemoDataQuality = Table.AddColumn(AddLicenseSKU, "DemographicDataQuality", each "Unavailable - no production license-assignment source connected", type text),
+
+					Cleaned = Table.RemoveColumns(AddDemoDataQuality, {"_idx", "_upnNorm"}, MissingField.Ignore),
+					Sorted = Table.Sort(Cleaned, {{"UserPrincipalName", Order.Ascending}}),
+					Indexed = Table.AddIndexColumn(Sorted, "UserKey", 1, 1, Int64.Type)
+				in
+					Indexed
+
+	annotation PBI_ResultType = Exception

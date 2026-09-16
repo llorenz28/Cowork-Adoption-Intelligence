@@ -1,0 +1,53 @@
+table Dim_Policy
+	lineageTag: 3b8be93f-7bad-40e2-b827-9d5d03bac89e
+
+	column PolicyKey
+		dataType: int64
+		isHidden
+		isKey
+		lineageTag: 98f81a69-1ca7-425b-9bb2-9c9385701d42
+		summarizeBy: none
+		sourceColumn: PolicyKey
+
+	column PolicyName
+		dataType: string
+		lineageTag: 1c54c251-ac66-42fc-8a5e-c5ce243c5c41
+		summarizeBy: none
+		sourceColumn: PolicyName
+
+	column Allowance
+		dataType: int64
+		lineageTag: 3cb8b809-3ee8-436b-9da4-dccc30a3215b
+		summarizeBy: none
+		sourceColumn: Allowance
+
+	column Scope
+		dataType: string
+		lineageTag: 75010d9e-115f-48d8-bef2-37caca04c88f
+		summarizeBy: none
+		sourceColumn: Scope
+
+	column PolicyRole
+		dataType: string
+		lineageTag: ff0b11ec-c7e7-492c-882d-d126f449acdd
+		summarizeBy: none
+		sourceColumn: PolicyRole
+
+	column AssignedFlag
+		dataType: string
+		lineageTag: 4489b20a-7604-411d-ab32-ac53b6608f56
+		summarizeBy: none
+		sourceColumn: AssignedFlag
+
+	partition Dim_Policy = m
+		mode: import
+		source =
+				let
+					Seed = #table(
+						type table [PolicyKey = Int64.Type, PolicyName = text, Allowance = Int64.Type, Scope = text, PolicyRole = text, AssignedFlag = text],
+						{}
+					)
+				in
+					Seed
+
+	annotation PBI_ResultType = Table

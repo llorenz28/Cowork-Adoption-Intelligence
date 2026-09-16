@@ -1,0 +1,107 @@
+table 'Metric Glossary'
+	lineageTag: 7a6fa9dc-56c6-4955-ba38-99a15e42b939
+
+	column Page
+		dataType: string
+		lineageTag: 371f32a7-311c-42f8-a6ac-55ea911a988d
+		summarizeBy: none
+		sourceColumn: Page
+
+	column Metric
+		dataType: string
+		lineageTag: e390a11d-33d8-45d3-82f5-561723b0b656
+		summarizeBy: none
+		sourceColumn: Metric
+
+	column Description
+		dataType: string
+		lineageTag: 01509042-77cb-4fea-8381-0f86f311b0a9
+		summarizeBy: none
+		sourceColumn: Description
+
+	column DataStatus
+		dataType: string
+		lineageTag: 9b698593-2cc7-41d4-b156-bc7b72c4e343
+		summarizeBy: none
+		sourceColumn: DataStatus
+
+	column PageOrder
+		dataType: int64
+		lineageTag: 68628de8-a773-41e3-ba0b-a4fbd2c9757d
+		summarizeBy: none
+		sourceColumn: PageOrder
+
+	column MetricOrder
+		dataType: int64
+		lineageTag: 26e74550-a41f-451d-9a0a-dece76d1093f
+		summarizeBy: none
+		sourceColumn: MetricOrder
+
+	column PageDescription
+		dataType: string
+		lineageTag: 841c84ef-afbb-42cb-92f5-1e1bbf57f0d9
+		summarizeBy: none
+		sourceColumn: PageDescription
+
+	column SortKey
+		dataType: int64
+		formatString: ;;;
+		lineageTag: 9c6d2b3a-8e14-4f0a-b6c7-2d1e5a7f9c3b
+		summarizeBy: none
+		sourceColumn: SortKey
+
+	partition 'Metric Glossary' = m
+		mode: import
+		source =
+				let
+					Seed = #table(
+						type table [Page = text, Metric = text, Description = text, DataStatus = text, PageOrder = Int64.Type, MetricOrder = Int64.Type, PageDescription = text],
+						{
+							{"Report Basics", "Observed data source", "Cowork activity is measured from customer Purview and Copilot audit-log records filtered to the Cowork workload. No sample activity is substituted.", "Observed", 0, 1, "How to interpret the adoption report and its source coverage."},
+							{"Report Basics", "Data period", "The connected audit-log date range. Weekly visuals align dates to Monday-starting weeks and automatically use the latest week with observed Cowork activity.", "Observed", 0, 2, "How to interpret the adoption report and its source coverage."},
+							{"Report Basics", "Department and country", "Organizational attributes supplied by the customer Entra or HR export. Breakdowns remain blank when that optional source is not connected.", "Optional input", 0, 3, "How to interpret the adoption report and its source coverage."},
+							{"Report Basics", "User Tier filter", "Filters users by the report's existing value-band segmentation. It is distinct from the rolling Cowork usage thresholds on User Maturity.", "Derived", 0, 4, "How to interpret the adoption report and its source coverage."},
+							{"Report Basics", "Data Status", "Observed comes directly from source records; Derived is calculated from observed fields; Reference explains a declared threshold; Optional input requires a separate customer export.", "Reference", 0, 5, "How to interpret the adoption report and its source coverage."},
+							{"Report Basics", "Filters by page", "Every analytical page includes filters either inline or behind More filters. Executive Summary and Weekly Adoption use Calendar date, Department, Country, User Tier, LLM / model, and Copilot License. Start Here is navigation-only; the Metric Guide uses its Section filter.", "Reference", 0, 6, "How to interpret the adoption report and its source coverage."},
+							{"Report Basics", "Calendar date filter", "A true Between date slicer on Dim_Date[Date]. It filters to the selected calendar dates rather than selecting a whole year.", "Observed", 0, 7, "How to interpret the adoption report and its source coverage."},
+							{"Report Basics", "LLM / model filter", "Filters Cowork activity by the observed Purview ModelProviderName. It is source-dependent and can show a not-available value when the tenant export does not include model attribution.", "Optional input", 0, 8, "How to interpret the adoption report and its source coverage."},
+							{"Executive Summary", "Adoption momentum score", "A 0-100 latest-week score: 35% weekly return rate, 25% active-day consistency capped at 3 days, 25% prompt intensity capped at 12 prompts per user, and 15% share of active users on delegation rung 3 or 4.", "Derived", 1, 1, "Latest-week adoption reach, consistency, intensity, and maturity."},
+							{"Executive Summary", "Weekly active users", "Distinct users with at least one observed Cowork activity in the latest active week. In weekly charts and tables, it evaluates separately for each week.", "Observed", 1, 2, "Latest-week adoption reach, consistency, intensity, and maturity."},
+							{"Executive Summary", "Weekly tasks", "Distinct observed Cowork conversation threads in the latest active week.", "Observed", 1, 3, "Latest-week adoption reach, consistency, intensity, and maturity."},
+							{"Executive Summary", "Prompts per active user", "Observed Cowork prompt count divided by weekly active users, evaluated at the latest active week on cards and per week on trends.", "Derived", 1, 4, "Latest-week adoption reach, consistency, intensity, and maturity."},
+							{"Executive Summary", "Active days per user", "Average number of distinct days each active user used Cowork during a week.", "Derived", 1, 5, "Latest-week adoption reach, consistency, intensity, and maturity."},
+							{"Executive Summary", "Weekly return rate", "Share of users active in the prior week who were also active in the current week.", "Derived", 1, 6, "Latest-week adoption reach, consistency, intensity, and maturity."},
+							{"Weekly Adoption & Usage", "Usage overview bookmark", "ESS-inspired view combining weekly Cowork tasks, previous-week task volume, weekly active users, and ranked department and country usage.", "Derived", 2, 1, "Bookmark views for usage concentration and weekly adoption patterns."},
+							{"Weekly Adoption & Usage", "Previous week", "Cowork task volume from the week immediately before each displayed week. It is shown as context, not added to current-week tasks.", "Observed", 2, 2, "Bookmark views for usage concentration and weekly adoption patterns."},
+							{"Weekly Adoption & Usage", "Latest 12 active weeks", "The rolling display window ending on the latest week that contains observed Cowork activity. Older weeks return blank in these visuals; Calendar date, Department, Country, User Tier, LLM / model, and Copilot License are available behind More filters.", "Derived", 2, 3, "Bookmark views for usage concentration and weekly adoption patterns."},
+							{"Weekly Adoption & Usage", "Metric bookmarks", "Usage overview, weekly active users, adoption score, prompts per user, active days, and return rate switch the central view without clearing Calendar date, Department, Country, User Tier, LLM / model, or Copilot License filters.", "Reference", 2, 4, "Bookmark views for usage concentration and weekly adoption patterns."},
+							{"Weekly Adoption & Usage", "Heatmap color", "Color is a relative intensity cue within the current filtered visual. Darker cells mean higher values; always read the number for precision.", "Reference", 2, 5, "Bookmark views for usage concentration and weekly adoption patterns."},
+							{"Actions & Activity", "Actions by Category", "Observed Cowork skill invocations grouped into the report's task categories and action value tiers.", "Observed", 3, 1, "What users ask Cowork to do and how those actions are grouped."},
+							{"Actions & Activity", "Action value tier", "High, Mid, or Low grouping of task categories based on the declared midpoint of the cited time-saved range. It is a category attribute, not a user performance score.", "Reference", 3, 2, "What users ask Cowork to do and how those actions are grouped."},
+							{"Actions & Activity", "Observed activities", "Count of measured Cowork skill or tool invocations. Reference action examples are not counted unless they appear in the audit data.", "Observed", 3, 3, "What users ask Cowork to do and how those actions are grouped."},
+							{"Actions & Activity", "Skill mapping coverage", "Share of observed Cowork skills or tools mapped to a known task category; unmapped items stay visible for taxonomy maintenance.", "Observed", 3, 4, "What users ask Cowork to do and how those actions are grouped."},
+							{"Actions & Activity", "Usage Explorer", "Two-view bookmark sequence for Action explorer and User details. Both preserve the current filter selections.", "Reference", 3, 5, "What users ask Cowork to do and how those actions are grouped."},
+							{"User Maturity", "Delegation ladder index", "Average position of active users across Trying, Using, Delegating, and Automating, scaled to 0-100.", "Derived", 4, 1, "How deeply users delegate work and how consistently they use Cowork."},
+							{"User Maturity", "Multi-skill task %", "Share of observed Cowork threads that invoke more than one skill or tool.", "Observed", 4, 2, "How deeply users delegate work and how consistently they use Cowork."},
+							{"User Maturity", "Average task duration", "Average elapsed minutes from the first to last observed record in a Cowork thread.", "Observed", 4, 3, "How deeply users delegate work and how consistently they use Cowork."},
+							{"User Maturity", "Average skills per task", "Observed skill invocations divided by distinct Cowork threads.", "Derived", 4, 4, "How deeply users delegate work and how consistently they use Cowork."},
+							{"User Maturity", "Cowork usage thresholds", "Rolling 12-week tiers adapted to Cowork prompts: Power users average 20 or more prompts per week and are active in at least 9 weeks; Habitual users average 8 or more prompts per week and are active in at least 9 weeks; Novice users average at least 1 prompt per week; Low users have some use below that level; Inactive users have no prompts.", "Reference", 4, 5, "How deeply users delegate work and how consistently they use Cowork."},
+							{"User Maturity", "Power users %", "Power users divided by everyone classified in the rolling 12-week Cowork usage thresholds. Treat it as an enablement signal, not a performance rating.", "Derived", 4, 6, "How deeply users delegate work and how consistently they use Cowork."},
+							{"User Maturity", "Scheduled share %", "Share of Cowork tasks reported as scheduled rather than user-initiated. It requires the optional Microsoft admin center Cowork usage export.", "Optional input", 4, 7, "How deeply users delegate work and how consistently they use Cowork."},
+							{"Cowork Champions", "Potential champions", "Users who meet the minimum evidence floor and rank within the selected Top 5%, Top 10%, or Top 20% of the eligible population. Date and category filters recalculate evidence; organization filters narrow the displayed list.", "Derived", 5, 1, "Potential enablement champions and coverage gaps by category and department."},
+							{"Cowork Champions", "Eligibility floor", "At least three observed Cowork task threads across at least two active weeks in the current date and category context.", "Reference", 5, 2, "Potential enablement champions and coverage gaps by category and department."},
+							{"Cowork Champions", "Champion evidence score", "A transparent 0-100 score: 40% category-task activity percentile, 35% active-week consistency percentile, and 25% normalized delegation maturity.", "Derived", 5, 3, "Potential enablement champions and coverage gaps by category and department."},
+							{"Cowork Champions", "Activity percentile", "The user's observed Cowork task-thread volume ranked against other eligible users in the current date and category context.", "Derived", 5, 4, "Potential enablement champions and coverage gaps by category and department."},
+							{"Cowork Champions", "Consistency percentile", "The user's distinct active-week count ranked against other eligible users in the current date and category context.", "Derived", 5, 5, "Potential enablement champions and coverage gaps by category and department."},
+							{"Cowork Champions", "Delegation maturity component", "The existing Trying, Using, Delegating, or Automating rung normalized to a 0-100 component of the champion evidence score.", "Derived", 5, 6, "Potential enablement champions and coverage gaps by category and department."},
+							{"Cowork Champions", "Champion Tier", "Selects exactly the top 5%, 10%, or 20% of eligible users after deterministic tie-breaking. The default is Top 10%.", "Reference", 5, 7, "Potential enablement champions and coverage gaps by category and department."},
+							{"Cowork Champions", "Category lens", "A visible multi-select filter over observed task categories. Selecting a category recalculates candidate evidence and department coverage; clearing it returns to all categories.", "Observed", 5, 8, "Potential enablement champions and coverage gaps by category and department."},
+							{"Cowork Champions", "Department coverage", "Departments with at least one potential champion divided by departments with eligible users. This measure requires matching optional organization enrichment.", "Optional input", 5, 9, "Potential enablement champions and coverage gaps by category and department."},
+							{"Cowork Champions", "Interpretation boundary", "Potential champions are engagement signals for enablement planning, not employee-performance ratings. Confirm role fit, willingness, and manager support before outreach.", "Reference", 5, 10, "Potential enablement champions and coverage gaps by category and department."}
+						}
+					),
+					Final = Table.AddColumn(Seed, "SortKey", each [PageOrder] * 100 + [MetricOrder], Int64.Type)
+				in
+					Final
+
+	annotation PBI_ResultType = Table

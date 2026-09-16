@@ -1,0 +1,74 @@
+table Bridge_CoworkPlugin
+	lineageTag: 4aaf5714-adbf-4389-ba3e-0db68f0361aa
+
+	/// Total plugin/skill invocations in the current filter context. This is
+	/// the real, un-truncated volume Fact_CopilotAuditRaw[Plugin_Count] sums
+	/// to per record, but expanded to row grain here instead of counted only.
+	measure 'Skill Invocations' = COUNTROWS(Bridge_CoworkPlugin)
+		formatString: #,0
+		lineageTag: ba92e1c0-b832-481b-bccc-4186eb4a9f80
+
+	measure 'Skill Users' = DISTINCTCOUNT(Bridge_CoworkPlugin[UserKey])
+		formatString: #,0
+		lineageTag: 2b8e6f14-9a3d-4c72-b1e5-7d0a8c6f3e29
+
+	measure 'Avg Distinct Skills per User' = AVERAGEX(VALUES(Dim_User[UserKey]), CALCULATE(DISTINCTCOUNT(Bridge_CoworkPlugin[PluginName])))
+		formatString: #,0.0
+		lineageTag: 3c9f7a25-0b4e-4d83-a6f1-8e5219de6c4a
+
+	column RecordId
+		dataType: string
+		isHidden
+		lineageTag: bb353db2-51f3-45f3-9371-9a6f246a1871
+		summarizeBy: none
+		sourceColumn: RecordId
+
+	column ThreadId
+		dataType: string
+		lineageTag: bb41160b-93fd-4ecf-9acc-9f0516ec9a9e
+		summarizeBy: none
+		sourceColumn: ThreadId
+
+	column DateKey
+		dataType: int64
+		isHidden
+		lineageTag: a27f526e-064d-4242-9be3-5636bb4e5732
+		summarizeBy: none
+		sourceColumn: DateKey
+
+	column UserKey
+		dataType: int64
+		isHidden
+		lineageTag: 1ddf7b28-ae55-45be-826e-f383bca45bce
+		summarizeBy: none
+		sourceColumn: UserKey
+
+	column PluginName
+		dataType: string
+		lineageTag: 6126d027-28cd-4e51-9d28-df86f4da2dc0
+		summarizeBy: none
+		sourceColumn: PluginName
+
+	column PluginId
+		dataType: string
+		isHidden
+		lineageTag: 1c16e732-c3f1-4786-9f11-597d102fc7f7
+		summarizeBy: none
+		sourceColumn: PluginId
+
+	partition Bridge_CoworkPlugin = m
+		mode: import
+		source =
+				let
+					Src      = Fact_CopilotAuditRaw_WithLists,
+					Cowork   = Table.SelectRows(Src, each Text.Lower([AppHost]) = "cowork"),
+					Keep     = Table.SelectColumns(Cowork, {"RecordId","ThreadId","DateKey","UserKey","_plugins"}),
+					HasAny   = Table.SelectRows(Keep, each List.Count([_plugins]) > 0),
+					Expanded = Table.ExpandListColumn(HasAny, "_plugins"),
+					AddName  = Table.AddColumn(Expanded, "PluginName", each try [_plugins][Name] otherwise null, type text),
+					AddId    = Table.AddColumn(AddName,  "PluginId",   each try [_plugins][Id]   otherwise null, type text),
+					Final    = Table.SelectColumns(AddId, {"RecordId","ThreadId","DateKey","UserKey","PluginName","PluginId"})
+				in
+					Final
+
+	annotation PBI_ResultType = Exception

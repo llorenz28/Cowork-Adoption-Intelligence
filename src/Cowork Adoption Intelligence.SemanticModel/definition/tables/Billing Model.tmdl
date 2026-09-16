@@ -1,0 +1,16 @@
+table 'Billing Model'
+	lineageTag: 927c5906-a0d0-4b07-b0c1-07e65368266f
+
+	/// Customer-selected billing model. Blank until explicitly selected.
+	measure 'Billing Mode' = SELECTEDVALUE('Billing Model'[Billing Model])
+		lineageTag: 778c0a0a-32da-47cb-bd57-8f0753d7e8e4
+
+	column 'Billing Model'
+		dataType: string
+		lineageTag: ef803609-7611-4dcd-ac38-68375cc0bdeb
+		summarizeBy: none
+		sourceColumn: [Value]
+
+	partition 'Billing Model' = calculated
+		mode: import
+		source = DATATABLE("Value", STRING, {{"Credit-Priced"}, {"License-Included"}})

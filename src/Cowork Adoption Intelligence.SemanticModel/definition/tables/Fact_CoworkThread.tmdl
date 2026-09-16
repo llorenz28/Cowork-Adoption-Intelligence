@@ -1,0 +1,297 @@
+/// One row per Cowork task (conversation thread), matching the grain used by
+/// the Microsoft admin center Cowork usage export.
+/// This is the reconciliation anchor: thread grain is directly comparable to the admin-center
+/// task count, turning value/ROI measures from a heuristic into something a customer can audit.
+/// Sourced from the shared Fact_CopilotAuditRaw_WithLists parser (same one Bridge_CoworkPlugin/
+/// Bridge_CoworkResource use), filtered to AppHost = "cowork", NOT from the Fact_CoworkDetail
+/// DAX calculated table -- Power Query (M) partitions cannot reference a calculated table, so
+/// this re-applies the identical AppHost filter directly against the M-side raw table instead.
+/// Row-level content is identical either way (Fact_CoworkDetail = FILTER(Fact_CopilotAuditRaw,
+/// AppHost="cowork"), and Fact_CopilotAuditRaw is itself a thin SelectColumns projection of the
+/// same _WithLists expression), so this is a mechanism change only, not a different data set.
+table Fact_CoworkThread
+	lineageTag: 64486635-8864-4b48-945d-401080a4d85b
+
+	/// Distinct observed thread count used for task reconciliation.
+	measure 'Cowork Tasks (Threads)' = COUNTROWS(Fact_CoworkThread)
+		formatString: #,0
+		lineageTag: bccce962-7cbd-41ef-861a-5e8d1cfb3c0c
+
+	measure 'Avg Task Duration (min)' = AVERAGE(Fact_CoworkThread[DurationMin])
+		formatString: #,0.0
+		lineageTag: f689edae-101f-448e-a563-d7657a4181e7
+
+	measure 'Avg Steps per Task' = AVERAGE(Fact_CoworkThread[RecordCount])
+		formatString: #,0.0
+		lineageTag: dbb52ee6-6fc0-48ea-91a1-afec973eb615
+
+	/// Average observed plugin invocations per thread, distinct from raw audit
+	/// records per thread.
+	measure 'Avg Skills per Task' = DIVIDE([Skill Invocations], [Cowork Tasks (Threads)])
+		formatString: #,0.0
+		lineageTag: 59d0da09-6513-45f2-a12a-693766d8cda9
+
+	measure 'Multi-Skill Task %' = DIVIDE(CALCULATE(COUNTROWS(Fact_CoworkThread), Fact_CoworkThread[PluginCount] > 1), COUNTROWS(Fact_CoworkThread))
+		formatString: 0.0%
+		lineageTag: ac8d9a60-f202-4abf-a15c-453fbcf19344
+
+	/// Month-over-month task-volume change anchored to the latest month with
+	/// observed thread activity.
+	measure 'Tasks MoM %' =
+			VAR _lastActiveMonth =
+			    MAXX(
+			        FILTER(ALL(Dim_Date[MonthStart]), CALCULATE([Cowork Tasks (Threads)]) > 0),
+			        Dim_Date[MonthStart]
+			    )
+			VAR _prevMonth = EDATE(_lastActiveMonth, -1)
+			VAR _cur = CALCULATE([Cowork Tasks (Threads)], ALL(Dim_Date), Dim_Date[MonthStart] = _lastActiveMonth)
+			VAR _prev = CALCULATE([Cowork Tasks (Threads)], ALL(Dim_Date), Dim_Date[MonthStart] = _prevMonth)
+			RETURN DIVIDE(_cur - _prev, _prev)
+		formatString: +0.0%;-0.0%;0.0%
+		lineageTag: 8fd08bd2-4e42-476e-bc79-127a13d7885e
+
+	/// Month-over-month duration change anchored to the latest month with
+	/// observed thread activity.
+	measure 'Duration MoM %' =
+			VAR _lastActiveMonth =
+			    MAXX(
+			        FILTER(ALL(Dim_Date[MonthStart]), CALCULATE([Cowork Tasks (Threads)]) > 0),
+			        Dim_Date[MonthStart]
+			    )
+			VAR _prevMonth = EDATE(_lastActiveMonth, -1)
+			VAR _cur = CALCULATE([Avg Task Duration (min)], ALL(Dim_Date), Dim_Date[MonthStart] = _lastActiveMonth)
+			VAR _prev = CALCULATE([Avg Task Duration (min)], ALL(Dim_Date), Dim_Date[MonthStart] = _prevMonth)
+			RETURN DIVIDE(_cur - _prev, _prev)
+		formatString: +0.0%;-0.0%;0.0%
+		lineageTag: 614355a3-24d2-408b-88db-abcb1b214fba
+
+	/// Point change in observed multi-skill task share month over month.
+	measure 'Multi-Skill MoM pts' = [Multi-Skill Task %] - CALCULATE([Multi-Skill Task %], DATEADD(Dim_Date[Date], -1, MONTH))
+		formatString: +0.0%;-0.0%;0.0%
+		lineageTag: c4cb52d1-6097-49f8-bdfe-441f823c19a4
+
+	/// Real total thread time, in hours -- headline "hours handed over to Cowork" distinct from a
+	/// raw task count.
+	measure 'Autonomous Hours' = DIVIDE(SUMX(Fact_CoworkThread, Fact_CoworkThread[DurationMin]), 60)
+		formatString: #,0.0
+		lineageTag: 4816bb10-6179-4ec5-a9b1-d8086ae4cff1
+
+	measure 'Longest Task (min)' = MAXX(Fact_CoworkThread, Fact_CoworkThread[DurationMin])
+		formatString: #,0
+		lineageTag: a8ee8435-236f-4be6-809b-a1208dce6835
+
+	/// Share of real threads running >=10 minutes -- a defined, disclosed proxy for "ran for an
+	/// extended stretch," not a literal unattended/hands-off-supervision signal (Purview logs
+	/// duration, not human attention). Named to match what is actually measured.
+	measure 'Long-Running Task %' =
+			DIVIDE(
+			    CALCULATE(COUNTROWS(Fact_CoworkThread), Fact_CoworkThread[DurationMin] >= 10),
+			    COUNTROWS(Fact_CoworkThread)
+			)
+		formatString: 0.0%
+		lineageTag: e4b63e27-aa03-4345-8e11-4931b465fa70
+
+	measure 'Tasks MoM % Display' = IF(ISBLANK([Tasks MoM %]), "–", IF([Tasks MoM %] > 0, "▲ " & FORMAT([Tasks MoM %], "0.0%"), IF([Tasks MoM %] < 0, "▼ " & FORMAT(ABS([Tasks MoM %]), "0.0%"), "— 0.0%")))
+		lineageTag: 130ae8d6-210e-4106-ba9b-596656c2f763
+
+	measure 'Tasks MoM % Color' = IF(ISBLANK([Tasks MoM %]) || [Tasks MoM %] = 0, "#5C6B7F", IF([Tasks MoM %] > 0, "#107C10", "#A80000"))
+		lineageTag: 39654445-6884-4d03-b4c0-6f7c17c3299f
+
+	measure 'Average Weekly Tasks' = AVERAGEX(VALUES(Dim_Date[WeekStart]), [Cowork Tasks (Threads)])
+		formatString: #,0.0
+		lineageTag: 14f3bd63-e787-594a-b024-fbb38a3f4cba
+
+	measure 'Tasks per Active User per Week' = AVERAGEX(VALUES(Dim_Date[WeekStart]), DIVIDE([Cowork Tasks (Threads)], [Cowork Active Users]))
+		formatString: #,0.0
+		lineageTag: 510139cb-1156-5f6a-9846-4ca90b6fce4f
+
+	measure 'Cowork Weekly Tasks' =
+			VAR _axisWeek = SELECTEDVALUE(Dim_Date[WeekStart])
+			VAR _currentWeek =
+			    IF(
+			        NOT ISBLANK(_axisWeek),
+			        _axisWeek,
+			        MAXX(
+			            FILTER(
+			                ALLSELECTED(Dim_Date[WeekStart]),
+			                CALCULATE([Cowork Active Users]) > 0
+			            ),
+			            Dim_Date[WeekStart]
+			        )
+			    )
+			RETURN
+			    CALCULATE(
+			        DISTINCTCOUNT(Fact_CoworkDetail[ThreadId]),
+			        REMOVEFILTERS(Dim_Date),
+			        Dim_Date[WeekStart] = _currentWeek
+			    )
+		formatString: #,0
+		lineageTag: a4743c03-5476-546a-9ce3-6aff279e9698
+
+	measure 'Cowork Weekly Tasks (Last 12 Weeks)' =
+			VAR _week = SELECTEDVALUE(Dim_Date[WeekStart])
+			VAR _lastWeek =
+			    MAXX(
+			        FILTER(
+			            ALLSELECTED(Dim_Date[WeekStart]),
+			            CALCULATE(
+			                [Cowork Active Users],
+			                REMOVEFILTERS(Dim_User[Department])
+			            ) > 0
+			        ),
+			        Dim_Date[WeekStart]
+			    )
+			RETURN
+			    IF(
+			        NOT ISBLANK(_week) &&
+			        NOT ISBLANK(_lastWeek) &&
+			        _week >= _lastWeek - 77 &&
+			        _week <= _lastWeek,
+			        DISTINCTCOUNT(Fact_CoworkDetail[ThreadId])
+			    )
+		formatString: #,0
+		lineageTag: 6db9dc45-cecf-5640-87c6-e35a4af4cc10
+
+	measure 'Cowork Tasks Previous Week (Last 12 Weeks)' =
+			VAR _week = SELECTEDVALUE(Dim_Date[WeekStart])
+			VAR _lastWeek =
+			    MAXX(
+			        FILTER(
+			            ALLSELECTED(Dim_Date[WeekStart]),
+			            CALCULATE(
+			                [Cowork Active Users],
+			                REMOVEFILTERS(Dim_User[Department])
+			            ) > 0
+			        ),
+			        Dim_Date[WeekStart]
+			    )
+			RETURN
+			    IF(
+			        NOT ISBLANK(_week) &&
+			        NOT ISBLANK(_lastWeek) &&
+			        _week >= _lastWeek - 77 &&
+			        _week <= _lastWeek,
+			        CALCULATE(
+			            DISTINCTCOUNT(Fact_CoworkDetail[ThreadId]),
+			            REMOVEFILTERS(Dim_Date),
+			            Dim_Date[WeekStart] = _week - 7
+			        )
+			    )
+		formatString: #,0
+		lineageTag: 44bbfe66-f17a-5951-a957-8dffef8773df
+
+	column ThreadId
+		dataType: string
+		lineageTag: 70a3a3e3-cc33-4a52-a997-7b32f7887cde
+		summarizeBy: none
+		sourceColumn: ThreadId
+
+	column UserKey
+		dataType: int64
+		isHidden
+		lineageTag: 4e2ad6fa-91cd-4886-8158-da4d935e56bb
+		summarizeBy: none
+		sourceColumn: UserKey
+
+	column DateKey
+		dataType: int64
+		isHidden
+		lineageTag: 2e88b3fa-8bc6-4187-af88-1769e8917b83
+		summarizeBy: none
+		sourceColumn: DateKey
+
+	column StartedAt
+		dataType: dateTime
+		formatString: General Date
+		lineageTag: 818f3856-b0f1-442b-b124-bfb675bad020
+		summarizeBy: none
+		sourceColumn: StartedAt
+
+	column EndedAt
+		dataType: dateTime
+		formatString: General Date
+		lineageTag: e706e7eb-5d15-4c44-b102-0891f801975e
+		summarizeBy: none
+		sourceColumn: EndedAt
+
+	column RecordCount
+		dataType: int64
+		formatString: #,0
+		lineageTag: 76f67b23-5988-454e-9fe9-6cde9075d80f
+		summarizeBy: sum
+		sourceColumn: RecordCount
+
+	column PromptCount
+		dataType: int64
+		formatString: #,0
+		lineageTag: b5995d40-637c-48b2-8591-7da28bcae487
+		summarizeBy: sum
+		sourceColumn: PromptCount
+
+	column ResourceCount
+		dataType: int64
+		formatString: #,0
+		lineageTag: 1a022c8b-e06a-4012-9129-0043462c9b15
+		summarizeBy: sum
+		sourceColumn: ResourceCount
+
+	column PluginCount
+		dataType: int64
+		formatString: #,0
+		lineageTag: e347e0f5-b2fc-40fe-8dea-83a0321801c4
+		summarizeBy: sum
+		sourceColumn: PluginCount
+
+	column DurationMin
+		dataType: double
+		formatString: #,0.0
+		lineageTag: cb637f69-d51f-413a-a3b9-fbba52c04934
+		summarizeBy: average
+		sourceColumn: DurationMin
+
+	column PrimarySkill
+		dataType: string
+		lineageTag: bd2811fe-120a-4dc8-baec-048bea7128e1
+		summarizeBy: none
+		sourceColumn: PrimarySkill
+
+	partition Fact_CoworkThread = m
+		mode: import
+		source =
+				let
+					Src      = Fact_CopilotAuditRaw_WithLists,
+					Cowork   = Table.SelectRows(Src, each Text.Lower([AppHost]) = "cowork"),
+					Grp      = Table.Group(Cowork, {"ThreadId"}, {
+									{"UserKey",       each List.Max([UserKey]),             Int64.Type},
+									{"DateKey",       each List.Min([DateKey]),             Int64.Type},
+									{"StartedAt",     each List.Min([CreationDateParsed]),  type nullable datetime},
+									{"EndedAt",       each List.Max([CreationDateParsed]),  type nullable datetime},
+									{"RecordCount",   each Table.RowCount(_),               Int64.Type},
+									{"PromptCount",   each List.Sum([Message_PromptCount]), Int64.Type},
+									{"ResourceCount", each List.Sum([Resource_Count]),       Int64.Type},
+									{"PluginCount",   each List.Sum([Plugin_Count]),         Int64.Type}
+								}),
+					AddDur   = Table.AddColumn(Grp, "DurationMin",
+									each if [StartedAt] = null or [EndedAt] = null then null
+										else Duration.TotalMinutes([EndedAt] - [StartedAt]), type nullable number),
+
+
+					PerThreadPlugin  = Table.Group(Bridge_CoworkPlugin, {"ThreadId", "PluginName"}, {
+									{"Invocations",   each Table.RowCount(_), Int64.Type},
+									{"FirstRecordId", each List.Min([RecordId]), type text}
+								}),
+					RankedPlugin     = Table.Sort(PerThreadPlugin, {
+									{"ThreadId",      Order.Ascending},
+									{"Invocations",   Order.Descending},
+									{"FirstRecordId", Order.Ascending}
+								}),
+					PrimaryPerThread = Table.Group(RankedPlugin, {"ThreadId"}, {
+									{"PrimarySkill", each List.First([PluginName]), type text}
+								}),
+
+					MergePrimary  = Table.NestedJoin(AddDur, {"ThreadId"}, PrimaryPerThread, {"ThreadId"}, "pp", JoinKind.LeftOuter),
+					ExpandPrimary = Table.ExpandTableColumn(MergePrimary, "pp", {"PrimarySkill"}, {"PrimarySkill"})
+				in
+					ExpandPrimary
+
+	annotation PBI_ResultType = Exception

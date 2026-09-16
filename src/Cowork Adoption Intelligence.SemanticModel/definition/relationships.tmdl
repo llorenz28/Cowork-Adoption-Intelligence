@@ -1,0 +1,95 @@
+relationship Fact_Consumption_UserKey
+	fromColumn: Fact_Consumption.UserKey
+	toColumn: Dim_User.UserKey
+
+relationship Fact_Consumption_ServiceKey
+	fromColumn: Fact_Consumption.ServiceKey
+	toColumn: Dim_Service.ServiceKey
+
+relationship Fact_Consumption_DateKey
+	fromColumn: Fact_Consumption.DateKey
+	toColumn: Dim_Date.DateKey
+
+relationship Fact_Tasks_UserKey
+	fromColumn: Fact_Tasks.UserKey
+	toColumn: Dim_User.UserKey
+
+relationship Fact_Tasks_CategoryKey
+	fromColumn: Fact_Tasks.CategoryKey
+	toColumn: Dim_TaskCategory.CategoryKey
+
+relationship Fact_Tasks_DateKey
+	fromColumn: Fact_Tasks.DateKey
+	toColumn: Dim_Date.DateKey
+
+relationship Fact_CopilotAuditRaw_UserKey
+	fromColumn: Fact_CopilotAuditRaw.UserKey
+	toColumn: Dim_User.UserKey
+
+relationship Fact_CopilotAuditRaw_DateKey
+	fromColumn: Fact_CopilotAuditRaw.DateKey
+	toColumn: Dim_Date.DateKey
+
+relationship Fact_CopilotAuditRaw_AppHostGroup
+	fromColumn: Fact_CopilotAuditRaw.'AppHost Group'
+	toColumn: 'AppHost Category Map'.'AppHost Group'
+
+relationship AppHostCategoryMap_Category
+	fromColumn: 'AppHost Category Map'.Category
+	toColumn: Dim_TaskCategory.Category
+
+relationship Fact_CoworkDetail_UserKey
+	fromColumn: Fact_CoworkDetail.UserKey
+	toColumn: Dim_User.UserKey
+
+relationship Fact_CoworkDetail_DateKey
+	fromColumn: Fact_CoworkDetail.DateKey
+	toColumn: Dim_Date.DateKey
+
+relationship Bridge_CoworkPlugin_UserKey
+	fromColumn: Bridge_CoworkPlugin.UserKey
+	toColumn: Dim_User.UserKey
+
+relationship Bridge_CoworkPlugin_DateKey
+	fromColumn: Bridge_CoworkPlugin.DateKey
+	toColumn: Dim_Date.DateKey
+
+relationship Bridge_CoworkResource_UserKey
+	fromColumn: Bridge_CoworkResource.UserKey
+	toColumn: Dim_User.UserKey
+
+relationship Bridge_CoworkResource_DateKey
+	fromColumn: Bridge_CoworkResource.DateKey
+	toColumn: Dim_Date.DateKey
+
+relationship Fact_CoworkThread_UserKey
+	fromColumn: Fact_CoworkThread.UserKey
+	toColumn: Dim_User.UserKey
+
+relationship Fact_CoworkThread_DateKey
+	fromColumn: Fact_CoworkThread.DateKey
+	toColumn: Dim_Date.DateKey
+
+relationship Fact_CoworkThread_PrimarySkill
+	fromColumn: Fact_CoworkThread.PrimarySkill
+	toColumn: Dim_CoworkSkill.PluginName
+
+relationship Bridge_CoworkPlugin_PluginName
+	fromColumn: Bridge_CoworkPlugin.PluginName
+	toColumn: Dim_CoworkSkill.PluginName
+
+relationship Dim_CoworkSkill_CategoryKey
+	fromColumn: Dim_CoworkSkill.CategoryKey
+	toColumn: Dim_TaskCategory.CategoryKey
+
+relationship Fact_CoworkUsage_UserKey
+	fromColumn: Fact_CoworkUsage.UserKey
+	toColumn: Dim_User.UserKey
+
+relationship Dim_UserOrg_UserKey
+	fromColumn: Dim_UserOrg.UserKey
+	toColumn: Dim_User.UserKey
+
+relationship Fact_Tasks_Model
+	fromColumn: Fact_Tasks.Model
+	toColumn: Dim_ModelProvider.Model

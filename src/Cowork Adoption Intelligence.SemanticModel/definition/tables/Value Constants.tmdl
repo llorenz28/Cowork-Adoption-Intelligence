@@ -1,0 +1,52 @@
+table 'Value Constants'
+	lineageTag: bf0c5554-3f9b-4a63-9814-faf82b1904d3
+
+	column ConstantName
+		dataType: string
+		lineageTag: 8290c1e0-47ef-4fa5-8423-3309a4757359
+		summarizeBy: none
+		sourceColumn: ConstantName
+
+	column Value
+		dataType: double
+		lineageTag: 9dbbba85-9a4e-4ed6-9fb4-81c884935472
+		summarizeBy: none
+		sourceColumn: Value
+
+	column Unit
+		dataType: string
+		lineageTag: 1b0d9c90-0068-4328-875b-05cfdd288f75
+		summarizeBy: none
+		sourceColumn: Unit
+
+	column Description
+		dataType: string
+		lineageTag: 196bccf3-b221-4425-9319-c396c82c01ba
+		summarizeBy: none
+		sourceColumn: Description
+
+	column Source
+		dataType: string
+		lineageTag: 51a12510-b1be-408d-a9ac-464c2a5fd533
+		summarizeBy: none
+		sourceColumn: Source
+
+	partition 'Value Constants' = m
+		mode: import
+		source =
+				let
+					Seed = #table(
+						type table [ConstantName = text, Value = Double.Type, Unit = text, Description = text, Source = text],
+						{
+							{"Reinvestment rate", 0.25, "fraction", "Share of freed time reinvested into productive work (conservative)", "Forrester TEI 2024"},
+							{"Productive capacity hours per week", 40, "hours", "Baseline productive hours per FTE per week", "Standard work week"},
+							{"Penalty factor", 0.5, "fraction", "Conservatism haircut applied to gross estimated value", "Internal guardrail"},
+							{"Default loaded labor rate", 72, "USD per hour", "Fallback fully-loaded hourly cost when the what-if slicer is unset", "Cowork default"},
+							{"Default rate per credit", 0.01, "USD per credit", "Fallback price per Copilot credit when the what-if slicer is unset", "Cowork default"},
+							{"Working weeks per year", 46, "weeks", "Productive weeks per year after leave and holidays", "Standard assumption"}
+						}
+					)
+				in
+					Seed
+
+	annotation PBI_ResultType = Exception

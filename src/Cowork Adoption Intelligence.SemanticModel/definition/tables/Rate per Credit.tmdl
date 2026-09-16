@@ -1,0 +1,18 @@
+table 'Rate per Credit'
+	lineageTag: 2cef27c3-98b3-45cc-9188-41f3c24bdf17
+
+	/// Customer-entered contracted or pay-as-you-go rate. Blank until explicitly selected.
+	measure 'Rate per Credit Value' = SELECTEDVALUE('Rate per Credit'[Rate per Credit])
+		formatString: $ #,0.000
+		lineageTag: 16d876dc-6710-4789-8cb5-773d35cb2bd1
+
+	column 'Rate per Credit'
+		dataType: decimal
+		formatString: $ #,0.000
+		lineageTag: 3b522568-d035-4eaf-aac2-e2bde6c1d67f
+		summarizeBy: none
+		sourceColumn: [Value]
+
+	partition 'Rate per Credit' = calculated
+		mode: import
+		source = GENERATESERIES(0.001, 0.05, 0.0005)

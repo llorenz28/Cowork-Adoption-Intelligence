@@ -1,0 +1,103 @@
+table 'Human Time Estimates'
+	lineageTag: 9f1cc8d7-c113-4c82-9a9e-5edf42dee914
+
+	column Behavior
+		dataType: string
+		lineageTag: 251b04fb-0a19-4458-94c6-60b0414bfe06
+		summarizeBy: none
+		sourceColumn: Behavior
+
+	column HumanBaselineMin
+		dataType: int64
+		lineageTag: a98bfd01-4e0c-4d9f-9976-99dc569b8594
+		summarizeBy: none
+		sourceColumn: HumanBaselineMin
+
+	column Confidence
+		dataType: string
+		lineageTag: 979898b7-cbb5-4656-bb90-75c1a3497f6d
+		summarizeBy: none
+		sourceColumn: Confidence
+
+	column ValueOutcome
+		dataType: string
+		lineageTag: dbc1edfa-d985-4553-ba0c-b6032e0c1725
+		summarizeBy: none
+		sourceColumn: ValueOutcome
+
+	column PrimarySource
+		dataType: string
+		lineageTag: 35c56138-074a-4987-8fc2-f3d54f86e9e6
+		summarizeBy: none
+		sourceColumn: PrimarySource
+
+	column SourceURL
+		dataType: string
+		lineageTag: a2886e41-6122-443a-82dd-b37403ae0876
+		dataCategory: WebUrl
+		summarizeBy: none
+		sourceColumn: SourceURL
+
+	column Category
+		dataType: string
+		lineageTag: 010840d0-e50e-46fc-ab63-4712dacf3bb3
+		summarizeBy: none
+		sourceColumn: Category
+
+	partition 'Human Time Estimates' = m
+		mode: import
+		source =
+				let
+					Seed = #table(
+						type table [Behavior = text, HumanBaselineMin = Int64.Type, Confidence = text, ValueOutcome = text, PrimarySource = text, SourceURL = text, Category = text],
+						{
+							{"Summarize a long document", 24, "High", "Time saved", "Microsoft IDEAS 2026", "https://www.microsoft.com/en-us/research/", "Document & content creation"},
+							{"Draft a first-pass report", 42, "Medium", "Time saved", "UK GDS 2025", "https://www.gov.uk/government/organisations/government-digital-service", "Document & content creation"},
+							{"Research a topic and synthesize sources", 67, "Medium", "Time saved", "Stanford-World Bank 2025", "https://www.worldbank.org/", "Analysis & Research"},
+							{"Analyze data and extract insights", 67, "Medium", "Decision quality", "McKinsey 2023", "https://www.mckinsey.com/", "Analysis & Research"},
+							{"Triage and reply to an email", 7, "High", "Time saved", "Dillon et al. NBER w33795 2025", "https://www.nber.org/papers/w33795", "Email workflows"},
+							{"Catch up on a missed meeting", 31, "High", "Time saved", "Microsoft WTI 2023", "https://www.microsoft.com/en-us/worklab/work-trend-index", "Meeting workflows"},
+							{"Draft a chat or Teams update", 4, "Medium", "Time saved", "Microsoft WTI 2024", "https://www.microsoft.com/en-us/worklab/work-trend-index", "Communication workflows"},
+							{"Build or automate a workflow step", 25, "Medium", "Capacity reinvested", "Forrester TEI Power Automate 2024", "https://www.forrester.com/", "Specialized workflows"},
+							{"Write or debug a code snippet", 56, "Medium", "Time saved", "Cui CACM 2024; Peng et al. 2023", "https://cacm.acm.org/", "Write or debug code"},
+							{"Ask a quick how-to question", 5, "Low", "Time saved", "Brynjolfsson QJE 2025 / NBER w31161", "https://www.nber.org/papers/w31161", "General assistance / Other"},
+							{"Draft an email reply", 8, "High", "Time saved", "Dillon et al. NBER w33795 2025", "https://www.nber.org/papers/w33795", "Email workflows"},
+							{"Summarize an email thread", 5, "Medium", "Time saved", "Dillon et al. NBER w33795 2025", "https://www.nber.org/papers/w33795", "Email workflows"},
+							{"Summarize a Teams chat or channel", 4, "Medium", "Time saved", "Microsoft WTI 2024", "https://www.microsoft.com/en-us/worklab/work-trend-index", "Communication workflows"},
+							{"Prepare for an upcoming meeting", 15, "High", "Time saved", "Microsoft WTI 2023", "https://www.microsoft.com/en-us/worklab/work-trend-index", "Meeting workflows"},
+							{"Extract action items from a meeting", 12, "Medium", "Time saved", "Microsoft WTI 2023", "https://www.microsoft.com/en-us/worklab/work-trend-index", "Meeting workflows"},
+							{"Summarize a recorded meeting or video", 30, "Medium", "Time saved", "Microsoft WTI 2024", "https://www.microsoft.com/en-us/worklab/work-trend-index", "Meeting workflows"},
+							{"Rewrite or improve existing text", 15, "Medium", "Time saved", "Microsoft IDEAS 2026", "https://www.microsoft.com/en-us/research/", "Document & content creation"},
+							{"Create a slide deck", 90, "Medium", "Time saved", "UK GDS 2025", "https://www.gov.uk/government/organisations/government-digital-service", "Document & content creation"},
+							{"Summarize a presentation", 12, "Medium", "Time saved", "Microsoft IDEAS 2026", "https://www.microsoft.com/en-us/research/", "Document & content creation"},
+							{"Take and organize notes", 20, "Medium", "Time saved", "Microsoft IDEAS 2026", "https://www.microsoft.com/en-us/research/", "Document & content creation"},
+							{"Generate an image or visual", 60, "Medium", "Capacity reinvested", "Microsoft IDEAS 2026", "https://www.microsoft.com/en-us/research/", "Document & content creation"},
+							{"Translate content", 10, "Medium", "Time saved", "Microsoft WTI 2024", "https://www.microsoft.com/en-us/worklab/work-trend-index", "Document & content creation"},
+							{"Search the web for information", 22, "High", "Time saved", "McKinsey 2023", "https://www.mckinsey.com/", "Analysis & Research"},
+							{"Search internal documents and sites", 18, "High", "Time saved", "McKinsey 2023", "https://www.mckinsey.com/", "Analysis & Research"},
+							{"Analyze a PDF or contract", 35, "Medium", "Decision quality", "McKinsey 2023", "https://www.mckinsey.com/", "Analysis & Research"},
+							{"Find a document or file", 15, "Medium", "Time saved", "McKinsey 2023", "https://www.mckinsey.com/", "Analysis & Research"},
+							{"Look up a person or expert", 10, "Medium", "Time saved", "McKinsey 2023", "https://www.mckinsey.com/", "Analysis & Research"},
+							{"Query a dataset or report", 30, "High", "Decision quality", "Forrester TEI 2022", "https://www.forrester.com/", "Analysis & Research"},
+							{"Review or validate a spreadsheet", 25, "Medium", "Decision quality", "Forrester TEI 2022", "https://www.forrester.com/", "Analysis & Research"},
+							{"Get Excel formula or analysis help", 30, "Medium", "Time saved", "Forrester TEI 2022", "https://www.forrester.com/", "Analysis & Research"},
+							{"Explain or review existing code", 30, "High", "Time saved", "Cui CACM 2024; Peng et al. 2023", "https://cacm.acm.org/", "Write or debug code"},
+							{"Trigger a Power Automate flow", 15, "High", "Capacity reinvested", "Forrester TEI Power Automate 2024", "https://www.forrester.com/", "Specialized workflows"},
+							{"Manage tasks or project plan", 20, "Medium", "Capacity reinvested", "Forrester TEI Power Automate 2024", "https://www.forrester.com/", "Specialized workflows"},
+							{"Collaborate in real time on a board", 30, "Medium", "Capacity reinvested", "Microsoft WTI 2024", "https://www.microsoft.com/en-us/worklab/work-trend-index", "Specialized workflows"},
+							{"Build a form or survey", 25, "Medium", "Capacity reinvested", "Forrester TEI Power Automate 2024", "https://www.forrester.com/", "Specialized workflows"},
+							{"Use a sales or customer agent", 35, "Medium", "Capacity reinvested", "Forrester TEI Power Automate 2024", "https://www.forrester.com/", "Specialized workflows"},
+							{"Use an HR or people agent", 35, "Medium", "Capacity reinvested", "Forrester TEI Power Automate 2024", "https://www.forrester.com/", "Specialized workflows"},
+							{"Use an IT or service-desk agent", 20, "High", "Capacity reinvested", "Forrester TEI Power Automate 2024", "https://www.forrester.com/", "Specialized workflows"},
+							{"Use a compliance or policy agent", 25, "Medium", "Decision quality", "Forrester TEI Power Automate 2024", "https://www.forrester.com/", "Specialized workflows"},
+							{"Use a coaching or learning agent", 45, "Medium", "Capacity reinvested", "Forrester TEI Power Automate 2024", "https://www.forrester.com/", "Specialized workflows"},
+							{"Brainstorm ideas", 20, "Medium", "Time saved", "Brynjolfsson QJE 2025 / NBER w31161", "https://www.nber.org/papers/w31161", "General assistance / Other"},
+							{"Get a quick summary or explanation", 10, "Medium", "Time saved", "Brynjolfsson QJE 2025 / NBER w31161", "https://www.nber.org/papers/w31161", "General assistance / Other"},
+							{"Draft general-purpose content", 15, "Medium", "Time saved", "Brynjolfsson QJE 2025 / NBER w31161", "https://www.nber.org/papers/w31161", "General assistance / Other"},
+							{"Use a data or reporting agent", 35, "High", "Decision quality", "Forrester TEI 2022", "https://www.forrester.com/", "Analysis & Research"}
+						}
+					)
+				in
+					Seed
+
+	annotation PBI_ResultType = Table

@@ -1,0 +1,36 @@
+{
+  "$schema": "https://developer.microsoft.com/json-schemas/fabric/item/report/definition/visualContainer/2.12.0/schema.json",
+  "name": "sh_card5_desc",
+  "position": {
+    "x": 460,
+    "y": 472,
+    "z": 20000,
+    "height": 132,
+    "width": 364,
+    "tabOrder": 12000
+  },
+  "visual": {
+    "visualType": "textbox",
+    "objects": {
+      "general": [
+        {
+          "properties": {
+            "paragraphs": [
+              {
+                "textRuns": [
+                  {
+                    "value": "Review active users, skills, categories, and the business context around observed activity.",
+                    "textStyle": {
+                      "fontSize": "10pt",
+                      "color": "#1B1F27"
+                    }
+                  }
+                ]
+              }
+            ]
+          }
+        }
+      ]
+    }
+  }
+}

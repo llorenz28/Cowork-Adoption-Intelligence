@@ -1,0 +1,36 @@
+{
+  "$schema": "https://developer.microsoft.com/json-schemas/fabric/item/report/definition/visualContainer/2.12.0/schema.json",
+  "name": "sh_card3_desc",
+  "position": {
+    "x": 880,
+    "y": 180,
+    "z": 12000,
+    "height": 132,
+    "width": 364,
+    "tabOrder": 7000
+  },
+  "visual": {
+    "visualType": "textbox",
+    "objects": {
+      "general": [
+        {
+          "properties": {
+            "paragraphs": [
+              {
+                "textRuns": [
+                  {
+                    "value": "Track progression from trial to habitual use, then identify potential champions who can help peers repeat successful workflows.",
+                    "textStyle": {
+                      "fontSize": "10pt",
+                      "color": "#1B1F27"
+                    }
+                  }
+                ]
+              }
+            ]
+          }
+        }
+      ]
+    }
+  }
+}

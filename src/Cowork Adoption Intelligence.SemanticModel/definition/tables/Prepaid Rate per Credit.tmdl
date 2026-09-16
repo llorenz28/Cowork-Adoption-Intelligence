@@ -1,0 +1,18 @@
+table 'Prepaid Rate per Credit'
+	lineageTag: 9e37556d-1efd-4382-ab30-1769a2c31f86
+
+	/// Customer-entered discounted committed/prepaid rate. Blank until explicitly selected.
+	measure 'Prepaid Rate per Credit Value' = SELECTEDVALUE('Prepaid Rate per Credit'[Prepaid Rate per Credit])
+		formatString: $ #,0.000
+		lineageTag: 01169e21-3be8-408a-a10b-7ecbe3ae0654
+
+	column 'Prepaid Rate per Credit'
+		dataType: decimal
+		formatString: $ #,0.000
+		lineageTag: bffd09bb-7a08-4612-aa79-ef4a45db5098
+		summarizeBy: none
+		sourceColumn: [Value]
+
+	partition 'Prepaid Rate per Credit' = calculated
+		mode: import
+		source = GENERATESERIES(0.001, 0.05, 0.0005)

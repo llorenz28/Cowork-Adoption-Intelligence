@@ -1,0 +1,62 @@
+/// REAL, additive dimension -- one row per distinct Model value OBSERVED in Fact_Tasks[Model]
+/// (sourced from Purview's real ModelTransparencyDetails[0].ModelProviderName field). Not an
+/// invented taxonomy -- named "Dim_ModelProvider" rather than "Dim_Model" to avoid colliding
+/// with the unrelated 'Allocation Model' BU-showback what-if table elsewhere in this model.
+/// GATED: model attribution is source-dependent and may be absent from Cowork audit records.
+/// When absent, this table shows one "(Model data not available)" row rather than inventing
+/// a model name. It is wired end-to-end (this table, the
+/// Fact_Tasks[Model] relationship, and the 'Est. * (by Model)' measures in _Measures), so a real
+/// per-model cost/efficiency comparison activates automatically, with zero further model
+/// changes, the moment a tenant/product configuration starts populating this field.
+table Dim_ModelProvider
+	lineageTag: 2587bfc5-bc61-46aa-8a0b-c301daccb378
+
+	/// Distinct Model values observed (including the placeholder row when no real model
+	/// attribution exists yet).
+	measure 'Models Observed' = COUNTROWS(Dim_ModelProvider)
+		formatString: #,0
+		lineageTag: 8b624160-6be0-4b23-a1aa-69b677c5451e
+
+	/// TRUE only once at least one real (non-placeholder) model name has been observed --
+	/// i.e. Purview has started populating Model Transparency Details for the selected data.
+	measure 'Model Attribution Available' = CALCULATE(COUNTROWS(Dim_ModelProvider), Dim_ModelProvider[HasModelData] = TRUE) > 0
+		lineageTag: 91e1735f-d606-4298-9914-5262765d0c36
+
+	/// Plain-language disclosure of whether a real per-model cost/efficiency breakdown is
+	/// possible yet -- bind this wherever the by-Model visuals are shown so the gate is never
+	/// silent.
+	measure 'Model Attribution Status' =
+			IF(
+			    [Model Attribution Available],
+			    "Real: " & FORMAT([Models Observed], "#,0") & " model(s) observed in your Purview data.",
+			    "Not yet available: your tenant's Purview export has not populated per-task model attribution yet. This breakdown activates automatically the moment that data starts flowing -- no further changes needed here."
+			)
+		lineageTag: 3d7595c7-44cd-4d2e-9b45-f53445e4c730
+
+	/// Real observed value (or the "(Model data not available)" placeholder) -- this is both the
+	/// natural key and the user-facing label; no separate surrogate key is needed.
+	column Model
+		dataType: string
+		lineageTag: 7370416e-85ad-4b9e-82cc-595e06c76e07
+		summarizeBy: none
+		sourceColumn: Model
+
+	/// FALSE for the placeholder row, TRUE for any real observed model name.
+	column HasModelData
+		dataType: boolean
+		isHidden
+		lineageTag: 9233736b-5c38-412b-9676-aab5d7ee9399
+		summarizeBy: none
+		sourceColumn: HasModelData
+
+	partition Dim_ModelProvider = m
+		mode: import
+		source =
+				let
+					Src = Fact_Tasks,
+					Distinct = Table.Distinct(Table.SelectColumns(Src, {"Model"})),
+					AddFlag = Table.AddColumn(Distinct, "HasModelData", each [Model] <> "(Model data not available)", type logical)
+				in
+					AddFlag
+
+	annotation PBI_ResultType = Exception

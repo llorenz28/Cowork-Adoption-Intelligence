@@ -1,0 +1,20 @@
+table 'Allocation Model'
+	lineageTag: d8a384f8-6fec-4a34-9518-72c1083162c9
+
+	/// Customer-selected allocation strategy. Blank until explicitly selected.
+	measure 'Selected Allocation Model' = SELECTEDVALUE('Allocation Model'[Model])
+		lineageTag: 59a98191-f769-4aac-8f7a-9adb99cd7fe4
+
+	column Model
+		lineageTag: 905a06c0-95e5-4e7b-8d2e-f5be7a14be1f
+		isNameInferred
+		sourceColumn: [Model]
+
+	column Sort
+		lineageTag: 6ed5b897-ec89-43cd-b025-a43039c6aec0
+		isNameInferred
+		sourceColumn: [Sort]
+
+	partition 'Allocation Model' = calculated
+		mode: import
+		source = DATATABLE("Model", STRING, "Sort", INTEGER, {{"Prorated based on credits used", 1}, {"Prorated based on employee count", 2}, {"Limited to budgeted allowances", 3}})

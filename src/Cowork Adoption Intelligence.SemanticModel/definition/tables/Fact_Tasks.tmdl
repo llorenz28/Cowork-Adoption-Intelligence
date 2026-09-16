@@ -1,0 +1,86 @@
+table Fact_Tasks
+	lineageTag: ef4b14b7-2139-42d0-a6c4-0db2d3213f82
+
+	column UserKey
+		dataType: int64
+		isHidden
+		lineageTag: 556b2853-b909-41f6-a3c9-0cee0c750206
+		summarizeBy: none
+		sourceColumn: UserKey
+
+	column CategoryKey
+		dataType: int64
+		isHidden
+		lineageTag: 0c86a7c2-c466-4d7d-acb4-a4de4d0094a6
+		summarizeBy: none
+		sourceColumn: CategoryKey
+
+		annotation SummarizationSetBy = Automatic
+
+	column DateKey
+		dataType: int64
+		isHidden
+		lineageTag: 7fd7eb04-4292-4732-a34f-d086ce0cbfc2
+		summarizeBy: none
+		sourceColumn: DateKey
+
+		annotation SummarizationSetBy = Automatic
+
+	column Tasks
+		dataType: int64
+		formatString: #,0
+		lineageTag: 453b1cb4-9634-4d79-b981-13d17bba377c
+		summarizeBy: sum
+		sourceColumn: Tasks
+
+	/// Real Purview signal (Fact_CopilotAuditRaw[ModelProviderName], sourced from
+	/// CopilotEventData.ModelTransparencyDetails[0].ModelProviderName) -- not fabricated.
+	/// A Cowork-specific gap, not tenant-wide: empty on all 21 real Cowork audit rows (confirmed
+	/// via a full scan of the raw export), even though the same export populates this field on
+	/// 487 of 977 rows for other surfaces (Office, Edge, SharePoint, Teams, and others) -- and
+	/// Microsoft's own ValueLens reference template independently reports never observing a
+	/// literal "cowork" AppHost value either. So today every row here reads the placeholder
+	/// "(Model data not available)" rather than a real model name. Wired end-to-end (this
+	/// column, Dim_ModelProvider, and the 'Est. * (by Model)' measures) so a per-model
+	/// cost/efficiency breakdown activates automatically, with zero further model changes,
+	/// the moment a tenant/product configuration starts populating this field.
+	column Model
+		dataType: string
+		isHidden
+		lineageTag: 9d75e073-b801-4d6c-a15c-8bd4927739f8
+		summarizeBy: none
+		sourceColumn: Model
+
+	partition Fact_Tasks = m
+		mode: import
+		source =
+				let
+
+					CoworkRows = Table.SelectRows(Fact_CopilotAuditRaw, each Text.Lower(Text.From([AppHost])) = "cowork"),
+					// Fact_CopilotAuditRaw stores no-plugin rows as null; the Category Map keys the
+					// no-plugin case on "" -- normalize so category resolution matches pre-Slice-11 exactly.
+					NormalizePlugin = Table.TransformColumns(CoworkRows, {"Plugin_FirstName", each if _ = null then "" else _, type text}),
+					// Model attribution (gated): real Purview field, empty for Cowork specifically today
+					// (a Cowork-specific gap, not tenant-wide -- see the Model column's own doc comment
+					// above for full context). Never fabricates a model name.
+					AddModel = Table.AddColumn(NormalizePlugin, "Model", each if [ModelProviderName] = null or [ModelProviderName] = "" then "(Model data not available)" else [ModelProviderName], type text),
+
+					MergeCategory = Table.NestedJoin(AddModel, {"Plugin_FirstName"}, #"Cowork Skill Category Map", {"Plugin_FirstName"}, "cm", JoinKind.LeftOuter),
+					ExpandCategory = Table.ExpandTableColumn(MergeCategory, "cm", {"Category"}, {"Category"}),
+					AddCategoryFinal = Table.AddColumn(ExpandCategory, "CategoryFinal", each if [Category] = null then "Unmapped" else [Category], type text),
+
+					MergeCatKey = Table.NestedJoin(AddCategoryFinal, {"CategoryFinal"}, Dim_TaskCategory, {"Category"}, "dtc", JoinKind.LeftOuter),
+					ExpandCatKey = Table.ExpandTableColumn(MergeCatKey, "dtc", {"CategoryKey"}, {"CategoryKey"}),
+
+					FillUnmappedKey = Table.TransformColumns(ExpandCatKey, {{"CategoryKey", each if _ = null then 8 else _, Int64.Type}}),
+
+					AddTasks = Table.AddColumn(FillUnmappedKey, "Tasks", each 1, Int64.Type),
+
+
+					Grouped = Table.Group(AddTasks, {"UserKey", "CategoryKey", "DateKey", "Model"}, {
+						{"Tasks", each List.Sum([Tasks]), Int64.Type}
+					})
+				in
+					Grouped
+
+	annotation PBI_ResultType = Exception

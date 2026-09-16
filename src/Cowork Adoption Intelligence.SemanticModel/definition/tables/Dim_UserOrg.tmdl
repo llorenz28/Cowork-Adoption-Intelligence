@@ -1,0 +1,142 @@
+table Dim_UserOrg
+	lineageTag: 13a4a1b0-9006-46ce-8221-7a75c4223aa4
+
+	measure 'Cowork Users With Org Data' = COUNTROWS(Dim_UserOrg)
+		formatString: #,0
+		lineageTag: c2a5e7af-e760-4be2-80ff-7b88dbe58bad
+
+	column UserPrincipalName
+		dataType: string
+		lineageTag: a179564b-f6e0-47fb-aca2-b0d3391a198c
+		summarizeBy: none
+		sourceColumn: UserPrincipalName
+
+	column UserKey
+		dataType: int64
+		isHidden
+		lineageTag: 15373a1b-93f8-475f-ac93-769f7512c621
+		summarizeBy: none
+		sourceColumn: UserKey
+
+	column DisplayName
+		dataType: string
+		lineageTag: 669885ac-ce7b-4f78-9459-1f0c9be09276
+		summarizeBy: none
+		sourceColumn: DisplayName
+
+	column Department
+		dataType: string
+		lineageTag: b9af2376-f603-41ac-8cb1-f25afcef3dc7
+		summarizeBy: none
+		sourceColumn: Department
+
+	column JobTitle
+		dataType: string
+		lineageTag: 02ebb8be-5794-4bc8-83b3-10bb09cced7d
+		summarizeBy: none
+		sourceColumn: JobTitle
+
+	column JobFamily
+		dataType: string
+		lineageTag: da604778-4e19-44b2-a9d5-a90732157aa4
+		summarizeBy: none
+		sourceColumn: JobFamily
+
+	column City
+		dataType: string
+		lineageTag: 6d993612-af8b-4a44-bf80-8a6aa87d2dee
+		summarizeBy: none
+		sourceColumn: City
+
+	column Country
+		dataType: string
+		lineageTag: 98bbcfa2-2684-41cd-b226-4227c026a0d2
+		summarizeBy: none
+		sourceColumn: Country
+
+	column CostCenter
+		dataType: string
+		lineageTag: 810b87dc-5e24-43f5-a241-32a7605031c8
+		summarizeBy: none
+		sourceColumn: CostCenter
+
+	column Manager
+		dataType: string
+		lineageTag: a9ff9549-cfea-44c4-8e6e-9870c5180259
+		summarizeBy: none
+		sourceColumn: Manager
+
+	column BusinessUnit
+		dataType: string
+		lineageTag: b9ee3c8d-286a-4277-9852-6644f235267f
+		summarizeBy: none
+		sourceColumn: BusinessUnit
+
+	/// Per-row disclosure, mirrors Fact_CoworkUsage[DataQuality].
+	column DataQuality
+		dataType: string
+		lineageTag: bca98ef4-584d-4e12-be43-6f93bf0d9977
+		summarizeBy: none
+		sourceColumn: DataQuality
+
+	partition Dim_UserOrg = m
+		mode: import
+		source =
+				let
+					RequiredCols = {"userPrincipalName", "displayName", "department", "jobTitle", "jobFamily", "city", "country", "costCenter", "manager", "businessUnit"},
+
+					// Degrades to null (never a hard error) if OrgCsvPath is unset, the
+					// file is missing/unreadable, or its header doesn't match the 10
+					// required columns -- mirrors the established fnLoadCsv /
+					// Fact_CoworkUsage try/otherwise null idiom.
+					TryLoad =
+						try
+							let
+								Src = Csv.Document(File.Contents(OrgCsvPath), [Delimiter = ",", Encoding = 65001, QuoteStyle = QuoteStyle.Csv]),
+								Promoted = Table.PromoteHeaders(Src, [PromoteAllScalars = true]),
+								Actual = Table.ColumnNames(Promoted),
+								Missing = List.Difference(RequiredCols, Actual),
+								Checked = if List.Count(Missing) > 0 then error ("Dim_UserOrg: missing required column(s): " & Text.Combine(Missing, ", ")) else Promoted,
+								Deduped = Table.Distinct(Checked, {"userPrincipalName"})
+							in
+								Deduped
+						otherwise
+							null,
+
+					EmptySchema = #table(
+							type table [
+								UserPrincipalName = text, UserKey = nullable Int64.Type, DisplayName = text,
+								Department = text, JobTitle = text, JobFamily = text, City = text,
+								Country = text, CostCenter = text, Manager = text, BusinessUnit = text,
+								DataQuality = text
+							],
+							{}
+						),
+
+					Result =
+						if TryLoad = null then
+							EmptySchema
+						else
+							let
+								// INNER JOIN, not left-outer: only rows whose userPrincipalName
+								// matches a real Cowork user survive. A tenant-wide export with
+								// mostly-irrelevant rows, or a wholly unrelated CSV (e.g. sample
+								// data with no real overlap), both correctly collapse to 0 rows
+								// here rather than falsely reading as "connected".
+								RealUsers = Table.SelectColumns(Dim_User, {"UserKey", "UserPrincipalName"}),
+								Renamed = Table.RenameColumns(TryLoad, {
+										{"userPrincipalName", "UserPrincipalName"}, {"displayName", "DisplayName"},
+										{"department", "Department"}, {"jobTitle", "JobTitle"}, {"jobFamily", "JobFamily"},
+										{"city", "City"}, {"country", "Country"}, {"costCenter", "CostCenter"},
+										{"manager", "Manager"}, {"businessUnit", "BusinessUnit"}
+									}),
+								Merge = Table.NestedJoin(Renamed, {"UserPrincipalName"}, RealUsers, {"UserPrincipalName"}, "u", JoinKind.Inner),
+								Expand = Table.ExpandTableColumn(Merge, "u", {"UserKey"}, {"UserKey"}),
+								AddQuality = Table.AddColumn(Expand, "DataQuality", each "Real - loaded from OrgCsvPath, matched to a real Cowork user", type text),
+								Final = Table.SelectColumns(AddQuality, {"UserPrincipalName", "UserKey", "DisplayName", "Department", "JobTitle", "JobFamily", "City", "Country", "CostCenter", "Manager", "BusinessUnit", "DataQuality"})
+							in
+								Final
+				in
+					Result
+
+	annotation PBI_ResultType = Table

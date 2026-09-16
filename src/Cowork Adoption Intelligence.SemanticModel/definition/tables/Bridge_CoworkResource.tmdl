@@ -1,0 +1,102 @@
+table Bridge_CoworkResource
+	lineageTag: 622ea027-058c-4544-a0a3-901629139cb4
+
+	/// Distinct Cowork-authored artifacts (files under /Documents/Cowork/) in
+	/// the current filter context. Real, measured count of what Cowork produced.
+	measure 'Artifacts Created' = CALCULATE(DISTINCTCOUNT(Bridge_CoworkResource[SiteUrl]), Bridge_CoworkResource[IsCoworkArtifact] = TRUE)
+		formatString: #,0
+		lineageTag: 2c4ad785-d5ab-4c72-a293-1b4e390a3e16
+
+	column RecordId
+		dataType: string
+		isHidden
+		lineageTag: d9353688-bc92-4c6c-b1e4-099f3cbbcbf5
+		summarizeBy: none
+		sourceColumn: RecordId
+
+	column ThreadId
+		dataType: string
+		lineageTag: 6e07a8d8-f8b6-4195-a0c2-5529ea35b02f
+		summarizeBy: none
+		sourceColumn: ThreadId
+
+	column DateKey
+		dataType: int64
+		isHidden
+		lineageTag: 7ae27de4-d923-42c9-b4dd-467e01b5ba3e
+		summarizeBy: none
+		sourceColumn: DateKey
+
+	column UserKey
+		dataType: int64
+		isHidden
+		lineageTag: 8374cbdc-7c0e-41c8-8611-e33267b7d90c
+		summarizeBy: none
+		sourceColumn: UserKey
+
+	column SiteUrl
+		dataType: string
+		lineageTag: 6dafd04e-3609-42ba-a592-5fcdd417ed98
+		summarizeBy: none
+		sourceColumn: SiteUrl
+
+	column ResType
+		dataType: string
+		lineageTag: 68f590a2-5a78-4ef7-bebb-fbbf540d9733
+		summarizeBy: none
+		sourceColumn: ResType
+
+	column ResAction
+		dataType: string
+		lineageTag: 17819c0b-3106-4ef3-9ef5-b8a9db1cb86b
+		summarizeBy: none
+		sourceColumn: ResAction
+
+	column SensitivityLabelId
+		dataType: string
+		lineageTag: f5fe4c37-8549-4789-a858-23e4a2cd52c3
+		summarizeBy: none
+		sourceColumn: SensitivityLabelId
+
+	/// TRUE only for resources under /Documents/Cowork/ — Cowork's own OneDrive
+	/// write tree. This is what makes "Artifacts Created" a real measured count
+	/// rather than a guess: any resource path outside that tree was accessed,
+	/// not authored, by Cowork (e.g. an existing file it read or referenced).
+	column IsCoworkArtifact
+		dataType: boolean
+		lineageTag: 24c9f3fb-e938-4067-aa9b-744ce671e846
+		summarizeBy: none
+		sourceColumn: IsCoworkArtifact
+
+	column ArtifactExt
+		dataType: string
+		lineageTag: cf9c4b91-cf00-40a6-84de-45a5afc028f1
+		summarizeBy: none
+		sourceColumn: ArtifactExt
+
+	partition Bridge_CoworkResource = m
+		mode: import
+		source =
+				let
+					Src      = Fact_CopilotAuditRaw_WithLists,
+					Cowork   = Table.SelectRows(Src, each Text.Lower([AppHost]) = "cowork"),
+					Keep     = Table.SelectColumns(Cowork, {"RecordId","ThreadId","DateKey","UserKey","_resources"}),
+					HasAny   = Table.SelectRows(Keep, each List.Count([_resources]) > 0),
+					Expanded = Table.ExpandListColumn(HasAny, "_resources"),
+					AddUrl   = Table.AddColumn(Expanded, "SiteUrl", each try [_resources][SiteUrl] otherwise null, type text),
+					AddType  = Table.AddColumn(AddUrl,   "ResType", each try [_resources][Type]    otherwise null, type text),
+					AddAct   = Table.AddColumn(AddType,  "ResAction", each try [_resources][Action] otherwise null, type text),
+					AddLabel = Table.AddColumn(AddAct,   "SensitivityLabelId", each try [_resources][SensitivityLabelId] otherwise null, type text),
+					AddOwn   = Table.AddColumn(AddLabel, "IsCoworkArtifact",
+					               each [SiteUrl] <> null and Text.Contains(Text.Lower([SiteUrl]), "/documents/cowork/"), type logical),
+					AddExt   = Table.AddColumn(AddOwn, "ArtifactExt",
+					               each if [SiteUrl] = null then null
+					                    else let p = Text.AfterDelimiter([SiteUrl], ".", {0, RelativePosition.FromEnd})
+					                         in if Text.Length(p) <= 5 then Text.Lower(p) else null, type text),
+					Final    = Table.SelectColumns(AddExt,
+					               {"RecordId","ThreadId","DateKey","UserKey","SiteUrl","ResType","ResAction",
+					                "SensitivityLabelId","IsCoworkArtifact","ArtifactExt"})
+				in
+					Final
+
+	annotation PBI_ResultType = Exception

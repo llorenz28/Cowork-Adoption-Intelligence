@@ -1,0 +1,40 @@
+table AsOf
+	lineageTag: 22937859-9c49-40e1-861d-c447a83cf153
+
+	column AsOfDate
+		dataType: dateTime
+		formatString: Long Date
+		lineageTag: 2b48b3e4-c156-426e-a010-fff159438078
+		summarizeBy: none
+		sourceColumn: AsOfDate
+
+		annotation UnderlyingDateTimeDataType = Date
+
+	column DayOfMonth
+		dataType: int64
+		isHidden
+		lineageTag: cdc47f59-48ff-42cc-b637-eba7489d8362
+		summarizeBy: none
+		sourceColumn: DayOfMonth
+
+	column DaysInMonth
+		dataType: int64
+		isHidden
+		lineageTag: 67fedae9-05c3-4a25-ba75-b787f041490e
+		summarizeBy: none
+		sourceColumn: DaysInMonth
+
+	partition AsOf = m
+		mode: import
+		source =
+				let
+					Seed = #table(
+						type table [AsOfDate = date, DayOfMonth = Int64.Type, DaysInMonth = Int64.Type],
+						{
+							{AsOfDate, Date.Day(AsOfDate), Date.DaysInMonth(AsOfDate)}
+						}
+					)
+				in
+					Seed
+
+	annotation PBI_ResultType = Table

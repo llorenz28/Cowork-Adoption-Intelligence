@@ -1,0 +1,18 @@
+table 'Success Quality %'
+	lineageTag: 7b9c0001-9c26-4b09-9f09-0001b9000001
+
+	/// Customer-entered success/quality factor. Defaults to the neutral 100% baseline until explicitly changed.
+	measure 'Success Quality Value' = SELECTEDVALUE('Success Quality %'[Success Quality %], 1)
+		formatString: 0%
+		lineageTag: 7b9c0002-9c26-4b09-9f09-0002b9000002
+
+	column 'Success Quality %'
+		dataType: double
+		formatString: 0%
+		lineageTag: 7b9c0003-9c26-4b09-9f09-0003b9000003
+		summarizeBy: none
+		sourceColumn: [Value]
+
+	partition 'Success Quality %' = calculated
+		mode: import
+		source = GENERATESERIES(0, 1, 0.05)

@@ -1,0 +1,15 @@
+{
+  "$schema": "https://developer.microsoft.com/json-schemas/fabric/item/report/definition/pagesMetadata/1.1.0/schema.json",
+  "pageOrder": [
+    "00_start_here",
+    "06_adoption_over_time",
+    "c2e315038d903964e507",
+    "92d_action_maturity",
+    "92e_cowork_champions",
+    "02_exec_altb",
+    "92_activity_value",
+    "92_actions_hub",
+    "100_glossary"
+  ],
+  "activePageName": "c2e315038d903964e507"
+}

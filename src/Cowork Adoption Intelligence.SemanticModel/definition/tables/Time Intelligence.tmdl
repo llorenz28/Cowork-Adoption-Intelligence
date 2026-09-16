@@ -1,0 +1,28 @@
+table 'Time Intelligence'
+	lineageTag: bee382c7-ee79-4a09-8ad9-4904b8adad8a
+
+	calculationGroup
+
+		calculationItem Current = SELECTEDMEASURE()
+
+		calculationItem 'MoM Δ' = SELECTEDMEASURE() - CALCULATE(SELECTEDMEASURE(), DATEADD(Dim_Date[Date], -1, MONTH))
+
+		calculationItem 'MoM %' = DIVIDE(SELECTEDMEASURE() - CALCULATE(SELECTEDMEASURE(), DATEADD(Dim_Date[Date], -1, MONTH)), CALCULATE(SELECTEDMEASURE(), DATEADD(Dim_Date[Date], -1, MONTH)))
+
+			formatStringDefinition = "0.0%"
+
+		calculationItem YTD = CALCULATE(SELECTEDMEASURE(), DATESYTD(Dim_Date[Date]))
+
+	column 'Time Calculation'
+		dataType: string
+		lineageTag: f328045d-1653-4cb8-bf53-75b0d656d825
+		summarizeBy: none
+		sourceColumn: Name
+		sortByColumn: Ordinal
+
+	column Ordinal
+		dataType: int64
+		isHidden
+		lineageTag: 1c3e8c63-1c0f-4885-97d8-469ae1540c3f
+		summarizeBy: sum
+		sourceColumn: Ordinal

@@ -1,0 +1,36 @@
+{
+  "$schema": "https://developer.microsoft.com/json-schemas/fabric/item/report/definition/visualContainer/2.12.0/schema.json",
+  "name": "weekly_users_description",
+  "position": {
+    "x": 32,
+    "y": 558,
+    "z": 40000,
+    "height": 120,
+    "width": 168,
+    "tabOrder": 40000
+  },
+  "visual": {
+    "visualType": "textbox",
+    "objects": {
+      "general": [
+        {
+          "properties": {
+            "paragraphs": [
+              {
+                "textRuns": [
+                  {
+                    "value": "Weekly flow: new, retained, and resurrected users appear above zero; churn appears below zero.",
+                    "textStyle": {
+                      "fontSize": "10pt",
+                      "color": "#1B1F27"
+                    }
+                  }
+                ]
+              }
+            ]
+          }
+        }
+      ]
+    }
+  }
+}

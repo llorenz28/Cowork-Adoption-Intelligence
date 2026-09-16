@@ -1,0 +1,18 @@
+table 'Prepaid Credits Procured'
+	lineageTag: f12b4034-3a92-43d9-8a6d-c7b386aae596
+
+	/// Customer-entered size of the shared prepaid credit pool. Blank until explicitly selected.
+	measure 'Prepaid Credits Procured Value' = SELECTEDVALUE('Prepaid Credits Procured'[Prepaid Credits Procured])
+		formatString: #,0
+		lineageTag: 50b897c6-6459-4029-9c81-686f711bd26c
+
+	column 'Prepaid Credits Procured'
+		dataType: int64
+		formatString: #,0
+		lineageTag: 9c980979-cb4b-4602-adf0-1caa34f280a6
+		summarizeBy: none
+		sourceColumn: [Value]
+
+	partition 'Prepaid Credits Procured' = calculated
+		mode: import
+		source = GENERATESERIES(0, 10000000, 50000)

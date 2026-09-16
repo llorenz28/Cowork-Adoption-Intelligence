@@ -1,0 +1,11 @@
+# Deterministic synthetic sample data
+seed=20260907
+generated_as_of=2026-09-06T18:00:00+00:00
+identity_rule=all user email addresses end with @example.com
+
+119baec5236dec451856a70d59d7be3562f7b4d871fc2d91acf3ffa71c5bcd45  cowork_users.csv
+615f812234f5204007925fff2c49bc2605c3d945db6594cb457296ddf74a3576  CoworkConsumptionDetails.csv
+1f996b8845aa8f1bb4758777fab37ca5ac765f7b4f5ef4e532c884bbb7768215  CoworkUserDetails.csv
+41375a31af4cdfcb7fd8068f49c8b1a298d63805b35d16615da87277bb49c5fe  CoworkUserOrgDetails.csv
+095facafe1a589adeeed2472ce30463b03de2e5ad7c552fe148a081893ea707f  purview_audit/CoworkAudit-Synthetic-Part01.csv
+2988edfc969d205c24b50b2cd3057f2b5fa45c507da9ef8b76e2decdf35e16c1  purview_audit/CoworkAudit-Synthetic-Part02.csv

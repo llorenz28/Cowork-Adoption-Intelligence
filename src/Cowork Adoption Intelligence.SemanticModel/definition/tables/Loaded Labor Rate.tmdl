@@ -1,0 +1,18 @@
+table 'Loaded Labor Rate'
+	lineageTag: 5293c893-0ded-4179-ad7c-95e580d2be53
+
+	/// Customer-entered fully loaded labor rate per hour. Blank until explicitly selected.
+	measure 'Loaded Rate Value' = SELECTEDVALUE('Loaded Labor Rate'[Loaded Labor Rate])
+		formatString: $ #,0
+		lineageTag: 4d46008d-ca7e-4459-bfb2-d522cd6f0619
+
+	column 'Loaded Labor Rate'
+		dataType: int64
+		formatString: $ #,0
+		lineageTag: 9bbfe3ab-24a8-4cb2-b8ca-abb5c2b28b9f
+		summarizeBy: none
+		sourceColumn: [Value]
+
+	partition 'Loaded Labor Rate' = calculated
+		mode: import
+		source = GENERATESERIES(10, 300, 1)

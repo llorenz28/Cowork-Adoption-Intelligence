@@ -1,0 +1,37 @@
+{
+  "$schema": "https://developer.microsoft.com/json-schemas/fabric/item/report/definition/visualContainer/2.12.0/schema.json",
+  "name": "46dc75581ba80d7dc91c",
+  "position": {
+    "x": 32,
+    "y": 558,
+    "z": 39000,
+    "height": 120,
+    "width": 168,
+    "tabOrder": 39000
+  },
+  "visual": {
+    "visualType": "textbox",
+    "objects": {
+      "general": [
+        {
+          "properties": {
+            "paragraphs": [
+              {
+                "textRuns": [
+                  {
+                    "value": "This habit view shows the share of prior-week users who used Cowork again.",
+                    "textStyle": {
+                      "fontSize": "10pt",
+                      "color": "#1B1F27"
+                    }
+                  }
+                ]
+              }
+            ]
+          }
+        }
+      ]
+    }
+  },
+  "isHidden": true
+}

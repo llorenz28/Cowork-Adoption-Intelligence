@@ -1,0 +1,39 @@
+/// Disconnected selector that controls how much of the eligible population is shown as potential champions.
+table 'Champion Tier'
+	lineageTag: bbf97e16-1283-4f70-aaa9-6f86aab6f799
+
+	column 'Champion Tier'
+		dataType: string
+		lineageTag: 752b8df6-27fe-4720-a3f7-9f2bd21d7d4e
+		summarizeBy: none
+		sourceColumn: Champion Tier
+		sortByColumn: 'Sort Order'
+
+	column 'Top Percent'
+		dataType: int64
+		isHidden
+		lineageTag: 9ac19ba9-df12-43ab-b8b2-42852daca055
+		summarizeBy: none
+		sourceColumn: Top Percent
+
+	column 'Sort Order'
+		dataType: int64
+		isHidden
+		lineageTag: d65067da-ef8a-4164-953f-9f5cfd0f6af1
+		summarizeBy: none
+		sourceColumn: Sort Order
+
+	partition 'Champion Tier' = m
+		mode: import
+		source =
+				#table(
+					type table [Champion Tier = text, Top Percent = Int64.Type, Sort Order = Int64.Type],
+					{
+						{"Top 10%", 10, 1},
+						{"Top 5%", 5, 2},
+						{"Top 20%", 20, 3}
+					}
+				)
+
+	annotation PBI_ResultType = Table
+

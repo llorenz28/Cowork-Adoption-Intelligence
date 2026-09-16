@@ -1,0 +1,76 @@
+{
+  "report": "Cowork Adoption Intelligence",
+  "version": "2.0.1-testing",
+  "verifiedAt": "2026-09-14T17:45:46.268-05:00",
+  "packageVerifiedAt": "2026-09-15T19:46:27.588-05:00",
+  "result": "pass",
+  "checks": {
+    "pbir": {
+      "errors": 0,
+      "warnings": 3,
+      "warningScope": "remote JSON schemas unreachable; local structural validation completed"
+    },
+    "report": {
+      "pages": 9,
+      "visuals": 266,
+      "bookmarks": 41,
+      "bookmarkActions": 50,
+      "unresolvedBookmarkActions": 0,
+      "canvasInteractionQa": "pass",
+      "sampleRefresh": "pass",
+      "champions": {
+        "defaultTop10Candidates": 8,
+        "top5Candidates": 4,
+        "top20Candidates": 15,
+        "analysisAndResearchCandidates": 5,
+        "salesTop5Candidates": 1,
+        "filterDrawer": "pass",
+        "startHereNavigation": "pass",
+        "glossaryUpdated": true,
+        "spacing": {
+          "categoryRows": 1,
+          "categoryTiles": 7,
+          "candidateRowsVisible": 8,
+          "alignedAnalysisPanels": true,
+          "selectionBasisCallout": true,
+          "clippedTextOrRows": false
+        }
+      }
+    },
+    "parameters": {
+      "requiredPrompts": 1,
+      "promptNames": [
+        "DataFolderPath"
+      ]
+    },
+    "pbit": {
+      "filename": "Cowork Adoption Intelligence v2 Testing.pbit",
+      "bytes": 659272,
+      "sha256": "68520b63083b4004daa29c25d2d4a4cbb4138e4c56c51f69f8514962a1178146",
+      "importedDataModel": false,
+      "securityBindings": false,
+      "securityBindingsContentTypeOverride": false,
+      "sensitivityState": "public-labeled-and-unprotected",
+      "sensitivityLabelDisplayName": "Public",
+      "sensitivityLabelId": "87867195-f2b8-4ac2-b0b6-6bb73cb33afc",
+      "embeddedLabelPropertyName": "Not Restricted"
+    },
+    "sampleData": {
+      "files": 8,
+      "bytes": 2821733,
+      "manifestSha256": "74b57b6c80b8c57d3c5b0abb2d77120ccb7facaaa163530c029406ce1ce7abb6",
+      "zipBytes": 219543,
+      "zipSha256": "51a8454a94ba5c23245ae4df0d3b963465a5cb654422b4d18e6e84317503c16c",
+      "nonExampleIdentities": 0,
+      "nonExampleUrls": 0
+    },
+    "source": {
+      "localStateFiles": 0,
+      "userProfilePathMatches": 0,
+      "datedDevelopmentNameMatches": 0
+    },
+    "documentation": {
+      "missingRelativeLinks": 0
+    }
+  }
+}

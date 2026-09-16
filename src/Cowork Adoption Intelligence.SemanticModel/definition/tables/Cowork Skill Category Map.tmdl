@@ -1,0 +1,68 @@
+table 'Cowork Skill Category Map'
+	lineageTag: 45576dec-b0cd-4480-860d-94154eb6eaf5
+
+	column Plugin_FirstName
+		dataType: string
+		lineageTag: 0b24fb03-8ecc-4e6f-b506-2c889fae400e
+		sourceColumn: Plugin_FirstName
+
+	column Category
+		dataType: string
+		lineageTag: d16b1d9d-c88a-4277-bc66-ff877dfc734c
+		sourceColumn: Category
+
+	column MappingConfidence
+		dataType: string
+		lineageTag: 48228063-9e9c-4f4c-b875-ab55cbc2f6a8
+		sourceColumn: MappingConfidence
+
+	/// Curated, human-readable label for each real observed plugin name (Cowork v3 remediation:
+	/// "make skill names user-friendly"). Dim_CoworkSkill's SkillDisplayName prefers this value,
+	/// falling back to the raw PluginName for any future plugin not yet curated here -- same
+	/// honest null-safe fallback convention already used for Category/CategoryKey, so an
+	/// uncurated name is visible (as its raw form) instead of blank.
+	column FriendlyName
+		dataType: string
+		lineageTag: 98250375-f002-455a-84f9-89b64df5c525
+		sourceColumn: FriendlyName
+
+	partition 'Cowork Skill Category Map' = m
+		mode: import
+		source =
+				let
+					Seed = #table(
+						type table [Plugin_FirstName = text, Category = text, MappingConfidence = text, FriendlyName = text],
+						{
+							{"", "General assistance / Other", "Inferred", "Unspecified Skill"},
+							{"TaskUpdate", "Specialized workflows", "Inferred", "Task Management"},
+							{"Read", "Analysis & Research", "Inferred", "Read File Content"},
+							{"BuiltIn", "General assistance / Other", "Inferred", "Built-in Capability"},
+							{"mcp__m365_search__SearchM365", "Analysis & Research", "Inferred", "Microsoft 365 Search"},
+							{"Glob", "Specialized workflows", "Inferred", "File Search"},
+							{"mcp__host__DeleteScheduledPrompt", "Specialized workflows", "Inferred", "Scheduled Prompt Cleanup"},
+							{"report_intent", "General assistance / Other", "Inferred", "Understand User Request"},
+							// Explicit mapping for the observed read_agent plugin name.
+							{"read_agent", "General assistance / Other", "Inferred", "Read Sub-Agent Result"},
+
+							// Documented Cowork built-in skills. MappingConfidence distinguishes these
+							// rows from inferred mappings. Categories without a documented skill remain
+							// reachable only when the connected source emits a corresponding plugin.
+							{"Word", "Document & content creation", "Documented", "Word"},
+							{"PowerPoint", "Document & content creation", "Documented", "PowerPoint"},
+							{"PDF", "Document & content creation", "Documented", "PDF"},
+							{"Adaptive Cards", "Document & content creation", "Documented", "Adaptive Cards"},
+							{"Excel", "Analysis & Research", "Documented", "Excel"},
+							{"Enterprise Search", "Analysis & Research", "Documented", "Enterprise Search"},
+							{"Deep Research", "Analysis & Research", "Documented", "Deep Research"},
+							{"Email", "Email workflows", "Documented", "Email"},
+							{"Communications", "Communication workflows", "Documented", "Communications"},
+							{"Scheduling", "Meeting workflows", "Documented", "Scheduling"},
+							{"Calendar Management", "Meeting workflows", "Documented", "Calendar Management"},
+							{"Meetings", "Meeting workflows", "Documented", "Meetings"},
+							{"Daily Briefing", "Meeting workflows", "Documented", "Daily Briefing"}
+						}
+					)
+				in
+					Seed
+
+	annotation PBI_ResultType = Table

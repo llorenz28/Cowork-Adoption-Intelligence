@@ -1,0 +1,18 @@
+table 'Reinvestment Slider %'
+	lineageTag: 7bac0001-ac26-4b0a-9f0a-0001ba00000a
+
+	/// Customer-entered reinvestment rate. Defaults to the neutral 100% baseline until explicitly changed.
+	measure 'Reinvestment Slider Value' = SELECTEDVALUE('Reinvestment Slider %'[Reinvestment Slider %], 1)
+		formatString: 0%
+		lineageTag: 7bac0002-ac26-4b0a-9f0a-0002ba00000b
+
+	column 'Reinvestment Slider %'
+		dataType: double
+		formatString: 0%
+		lineageTag: 7bac0003-ac26-4b0a-9f0a-0003ba00000c
+		summarizeBy: none
+		sourceColumn: [Value]
+
+	partition 'Reinvestment Slider %' = calculated
+		mode: import
+		source = GENERATESERIES(0, 1, 0.05)

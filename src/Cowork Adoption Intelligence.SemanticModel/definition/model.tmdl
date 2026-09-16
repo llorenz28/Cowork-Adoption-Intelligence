@@ -1,0 +1,54 @@
+model Model
+	culture: en-US
+	defaultPowerBIDataSourceVersion: powerBI_V3
+	discourageImplicitMeasures
+	sourceQueryCulture: en-US
+	dataAccessOptions
+		fastCombine
+		legacyRedirects
+		returnErrorValuesAsNull
+
+annotation PBI_QueryOrder = ["DataFolderPath","fnFindCsvPath","fnLoadCsv","DataSourceMode","CreditCsvPath","AsOfDate","CurrencyCode","DefaultRatePerCredit","CopilotAuditFolderPath","CoworkUsageCsvPath","OrgCsvPath","IdentityEnrichmentFolderPath","Dim_Date","Dim_User","Dim_Service","Dim_Policy","Dim_TaskCategory","Fact_Consumption","Fact_Tasks","AsOf","Human Time Estimates","Value Constants","Metric Glossary","AppHost Category Map","Fact_CopilotAuditRaw","Fact_CopilotAuditRaw_WithLists","Cowork Skill Category Map","Bridge_CoworkPlugin","Bridge_CoworkResource","Dim_CoworkSkill","Fact_CoworkThread","Fact_CoworkUsage","Dim_UserOrg","Dim_ModelProvider","Champion Tier"]
+
+annotation __PBI_TimeIntelligenceEnabled = 0
+
+annotation PBI_ProTooling = ["TMDL-Extension","DevMode"]
+
+ref table AsOf
+ref table Dim_Date
+ref table Dim_Policy
+ref table Dim_Service
+ref table Dim_TaskCategory
+ref table Dim_User
+ref table Fact_Consumption
+ref table Fact_Tasks
+ref table 'Loaded Labor Rate'
+ref table 'Rate per Credit'
+ref table 'Time Intelligence'
+ref table _Measures
+ref table 'Human Time Estimates'
+ref table 'Value Constants'
+ref table 'Metric Glossary'
+ref table 'Success Quality %'
+ref table 'Reinvestment Slider %'
+ref table 'Billing Model'
+ref table 'AppHost Category Map'
+ref table Fact_CopilotAuditRaw
+ref table Fact_CoworkDetail
+ref table 'Cowork Skill Category Map'
+ref table 'Prepaid Rate per Credit'
+ref table 'Committed Credits'
+ref table 'Prepaid Credits Procured'
+ref table 'Allocation Model'
+ref table 'Skill Adjustment %'
+ref table Bridge_CoworkPlugin
+ref table Bridge_CoworkResource
+ref table Dim_CoworkSkill
+ref table Fact_CoworkThread
+ref table Fact_CoworkUsage
+ref table Dim_UserOrg
+ref table 'Estimate Basis'
+ref table Dim_ModelProvider
+ref table 'Champion Tier'
+
+ref cultureInfo en-US

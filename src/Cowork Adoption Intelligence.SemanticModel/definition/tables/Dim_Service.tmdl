@@ -1,0 +1,55 @@
+table Dim_Service
+	lineageTag: c77a9af1-cad6-4a6a-82b0-c5197d2dbd9c
+
+	column ServiceKey
+		dataType: int64
+		isHidden
+		isKey
+		lineageTag: 577de298-09b5-42e7-9119-60a2107f7062
+		summarizeBy: none
+		sourceColumn: ServiceKey
+
+	column ServiceName
+		dataType: string
+		lineageTag: a8398065-bc4f-46b2-a205-8933eb261354
+		summarizeBy: none
+		sourceColumn: ServiceName
+
+	column ServiceCategory
+		dataType: string
+		lineageTag: 22b89efd-ea02-4af7-835a-f477a63ec009
+		summarizeBy: none
+		sourceColumn: ServiceCategory
+
+	column ServiceSubcategory
+		dataType: string
+		lineageTag: af69b3e7-9945-47fd-883b-45ad60f7e587
+		summarizeBy: none
+		sourceColumn: ServiceSubcategory
+
+	column Provider
+		dataType: string
+		lineageTag: 12db6bc1-8c31-4604-8964-6e5bf77ec19d
+		summarizeBy: none
+		sourceColumn: Provider
+
+	column Model
+		dataType: string
+		lineageTag: b019d7af-e277-4f2b-9b8d-f0812f24bd92
+		summarizeBy: none
+		sourceColumn: Model
+
+	partition Dim_Service = m
+		mode: import
+		source =
+				let
+					Seed = #table(
+						type table [ServiceKey = Int64.Type, ServiceName = text, ServiceCategory = text, ServiceSubcategory = text, Provider = text, Model = text],
+						{
+							{1, "Copilot Cowork", "AI and Machine Learning", "Generative AI", "Microsoft", "Auto"}
+						}
+					)
+				in
+					Seed
+
+	annotation PBI_ResultType = Table

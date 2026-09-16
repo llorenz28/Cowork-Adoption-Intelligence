@@ -1,0 +1,104 @@
+table Dim_TaskCategory
+	lineageTag: af8a2010-d663-4c4d-bff7-2b8dc8e8125a
+
+	column CategoryKey
+		dataType: int64
+		isHidden
+		isKey
+		lineageTag: 63b01e18-b43f-435b-99d7-43b29c01d119
+		summarizeBy: none
+		sourceColumn: CategoryKey
+
+	column Category
+		dataType: string
+		lineageTag: 95d6b896-aa50-4021-a7bf-1a17b1391fe6
+		summarizeBy: none
+		sourceColumn: Category
+
+	/// Compact category label used by the Cowork Champions tile slicer.
+	column 'Champion Category' =
+			SWITCH(
+				Dim_TaskCategory[Category],
+				"Communication workflows", "Communication",
+				"Document & content creation", "Document & content",
+				"General assistance / Other", "General assistance",
+				"Meeting workflows", "Meetings",
+				"Specialized workflows", "Specialized",
+				Dim_TaskCategory[Category]
+			)
+		dataType: string
+		summarizeBy: none
+		sortByColumn: CategoryKey
+
+	column LowMin
+		dataType: int64
+		lineageTag: 40017c92-25db-43ad-baf5-1540b5f47bed
+		summarizeBy: none
+		sourceColumn: LowMin
+
+	column MidMin
+		dataType: int64
+		lineageTag: 72e52fe8-b7c7-4e70-b7d4-44679fa3d387
+		summarizeBy: none
+		sourceColumn: MidMin
+
+	column HighMin
+		dataType: int64
+		lineageTag: 1908f641-f63a-488b-a48f-3d17d66e617d
+		summarizeBy: none
+		sourceColumn: HighMin
+
+	column PrimarySource
+		dataType: string
+		lineageTag: acc4073e-1dad-4996-8a26-48606c76be64
+		summarizeBy: none
+		sourceColumn: PrimarySource
+
+	/// Value tier of the category: High (>=30 mid-band minutes), Mid (10-29), Low (<10). Same thresholds Dim_Behavior[Value Tier] already used, applied here to this table's own real, cited-research MidMin instead of the retired Dim_Behavior/Human Time Estimates grain -- real substitute for Slice-2-quarantined Dim_Behavior[Value Tier] dependents (High-Value Action Share %, etc).
+	column 'Value Tier' = SWITCH(TRUE(), Dim_TaskCategory[MidMin] >= 30, "High", Dim_TaskCategory[MidMin] >= 10, "Mid", "Low")
+		dataType: string
+		lineageTag: e3882803-362e-4bf8-86b5-df90c85c1e23
+		summarizeBy: none
+
+	/// Illustrative discussion-guide text (not a measured KPI): what this category of work typically means in plain language. Pairs with the category's real Total Tasks / Estimated Value $ on the Task Categories and Business Outcomes pages.
+	column Definition
+		dataType: string
+		lineageTag: 3f6a1c2d-8e45-4b7a-9c1d-6a2f7e9b4c81
+		summarizeBy: none
+		sourceColumn: Definition
+
+	/// Illustrative discussion-guide text (not a measured KPI): the kind of business result this category typically supports.
+	column BusinessOutcome
+		dataType: string
+		lineageTag: 5b7d3e4f-9a56-4c8b-ad2e-7b3f8a1c5d92
+		summarizeBy: none
+		sourceColumn: BusinessOutcome
+
+	/// Illustrative discussion-guide text (not a measured KPI): a starter question for reviewing this category with your team.
+	column DiscussionPrompt
+		dataType: string
+		lineageTag: 7c9e5f61-ab78-4e9d-bf3a-9c5d1e7f6b03
+		summarizeBy: none
+		sourceColumn: DiscussionPrompt
+
+	partition Dim_TaskCategory = m
+		mode: import
+		source =
+				let
+					Seed = #table(
+						type table [CategoryKey = Int64.Type, Category = text, LowMin = Int64.Type, MidMin = Int64.Type, HighMin = Int64.Type, PrimarySource = text, Definition = text, BusinessOutcome = text, DiscussionPrompt = text],
+						{
+							{1, "Analysis & Research", 30, 67, 92, "Stanford-World Bank 2025; McKinsey 2023", "Using Cowork to synthesize, compare, or investigate information across documents, data, or the web before a decision is made.", "Faster, better-informed decisions and less analyst time spent on recurring research.", "Which recurring research tasks take the most analyst time today, and could Cowork take a first pass?"},
+							{2, "Document & content creation", 12, 24, 42, "Microsoft IDEAS 2026 (Verma/Suri/Counts); UK GDS 2025", "Drafting, editing, or formatting documents, presentations, or written content with Cowork's help.", "Faster first drafts and more consistent content quality, freeing authors to focus on review.", "Which document types take longest to draft from scratch today, and who owns that work?"},
+							{3, "Email workflows", 3, 7, 12, "Dillon et al. NBER w33795 2025; Noy & Zhang 2023", "Drafting, summarizing, or triaging email correspondence with Cowork's assistance.", "Faster inbox turnaround and more consistent, on-brand written responses.", "Are there high-volume, repetitive email types where automation could help most?"},
+							{4, "Meeting workflows", 12, 31, 45, "Microsoft WTI 2023 Study #2; Cambon et al. 2023", "Preparing for, summarizing, or following up on meetings -- agendas, notes, action items -- using Cowork.", "Fewer missed action items and less manual note-taking, improving follow-through.", "How much time does your team spend writing meeting notes and chasing action items today?"},
+							{5, "Communication workflows", 2, 4, 11, "Microsoft WTI 2024; Noy & Zhang 2023", "Drafting broader written communications -- updates, announcements, messages -- beyond one-on-one email.", "More consistent messaging and faster turnaround on team or stakeholder communications.", "Which recurring communications could start from a Cowork-drafted template?"},
+							{6, "Specialized workflows", 10, 25, 40, "Forrester TEI Power Automate 2024; UK GDS 2025", "Task-specific or tool-driven work -- scheduling, file search, structured updates -- handled through Cowork's skills.", "Less manual tool-switching and fewer dropped handoffs between systems and people.", "Which multi-step, tool-heavy processes are teams still doing by hand across separate systems?"},
+							{7, "Write or debug code", 30, 56, 96, "Cui CACM 2024; Peng et al. 2023; Stanford-WB 2025", "Writing, reviewing, or troubleshooting code and scripts with Cowork's assistance.", "Faster development cycles and less time spent on routine debugging or boilerplate.", "Where do developers lose the most time to repetitive coding or debugging tasks?"},
+							{8, "General assistance / Other", 2, 5, 8, "Brynjolfsson QJE 2025 / NBER w31161; WTI 2024", "General-purpose requests that don't fit a specific category above -- everyday questions and ad hoc help.", "Broader day-to-day productivity gains that are harder to attribute to one workflow.", "Is this usage concentrated in a few power users, or spread broadly -- and what does that suggest for training?"}
+						}
+					)
+				in
+					Seed
+
+	annotation PBI_ResultType = Table

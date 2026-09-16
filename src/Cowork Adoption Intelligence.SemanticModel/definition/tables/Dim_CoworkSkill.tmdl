@@ -1,0 +1,98 @@
+table Dim_CoworkSkill
+	lineageTag: 846598ff-b38c-470d-8141-0fb81e26f2d9
+
+	measure 'Cowork Skills Observed' = COUNTROWS(Dim_CoworkSkill)
+		formatString: #,0
+		lineageTag: 34a0d93a-d788-4f85-b276-aab5a41ade05
+
+	measure 'Cowork Skills Mapped' = CALCULATE(COUNTROWS(Dim_CoworkSkill), Dim_CoworkSkill[IsMapped] = TRUE)
+		formatString: #,0
+		lineageTag: 640f79a7-6158-4d65-a543-21142d11c5ae
+
+	column PluginName
+		dataType: string
+		lineageTag: 55622cee-a9f4-4da3-be1e-2f941cb3a815
+		summarizeBy: none
+		sourceColumn: PluginName
+
+	/// Cowork v3 remediation (Sept 2026): now prefers the curated FriendlyName from 'Cowork
+	/// Skill Category Map' (e.g. "mcp__m365_search__SearchM365" -> "Microsoft 365 Search") so
+	/// end users see plain-English skill labels instead of raw internal plugin/tool identifiers.
+	/// Honestly falls back to the raw PluginName for any future plugin not yet curated there --
+	/// same convention as the Category/CategoryKey fallback below, so an uncurated skill is still
+	/// visible (in its raw form) instead of going blank.
+	column SkillDisplayName
+		dataType: string
+		lineageTag: 5430ce85-be8c-4f5a-8698-c4f34da725af
+		summarizeBy: none
+		sourceColumn: SkillDisplayName
+
+	column Category
+		dataType: string
+		lineageTag: 9d9bbb1f-9f83-478d-9ea0-5fbbff3ba27b
+		summarizeBy: none
+		sourceColumn: Category
+
+	column CategoryKey
+		dataType: int64
+		isHidden
+		lineageTag: 84701cc7-0053-4d4c-a911-cd3a9a1732f6
+		summarizeBy: none
+		sourceColumn: CategoryKey
+
+	column IsMapped
+		dataType: boolean
+		lineageTag: edd5b2f0-e73f-4f7a-946f-b525d8988393
+		summarizeBy: none
+		sourceColumn: IsMapped
+
+	column LowMin
+		dataType: int64
+		isHidden
+		lineageTag: 8a289490-90fb-415a-af2e-5f63cc138e19
+		summarizeBy: none
+		sourceColumn: LowMin
+
+	column MidMin
+		dataType: int64
+		lineageTag: f2659e4c-174b-4404-9e19-c8297101a947
+		summarizeBy: none
+		sourceColumn: MidMin
+
+	column HighMin
+		dataType: int64
+		isHidden
+		lineageTag: 68fcffd1-16ea-4e14-bd04-39558c743006
+		summarizeBy: none
+		sourceColumn: HighMin
+
+	column 'Value Tier' = SWITCH(TRUE(), Dim_CoworkSkill[MidMin] >= 30, "High", Dim_CoworkSkill[MidMin] >= 10, "Mid", "Low")
+		dataType: string
+		lineageTag: 1a7cf5d6-3e42-4b7a-8e0f-6c9d2b4a1e5f
+		summarizeBy: none
+
+	partition Dim_CoworkSkill = m
+		mode: import
+		source =
+				let
+					Src         = Bridge_CoworkPlugin,
+					Distinct    = Table.Distinct(Table.SelectColumns(Src, {"PluginName"})),
+					Normalize   = Table.TransformColumns(Distinct, {"PluginName", each if _ = null then "" else _, type text}),
+					MergeMap    = Table.NestedJoin(Normalize, {"PluginName"}, #"Cowork Skill Category Map", {"Plugin_FirstName"}, "cm", JoinKind.LeftOuter),
+					ExpandMap   = Table.ExpandTableColumn(MergeMap, "cm", {"Category", "FriendlyName"}, {"MappedCategory", "MappedFriendlyName"}),
+					AddIsMapped = Table.AddColumn(ExpandMap, "IsMapped", each [MappedCategory] <> null, type logical),
+					AddCategory = Table.AddColumn(AddIsMapped, "Category", each if [MappedCategory] = null then "Unmapped" else [MappedCategory], type text),
+					MergeCatKey = Table.NestedJoin(AddCategory, {"Category"}, Dim_TaskCategory, {"Category"}, "dtc1", JoinKind.LeftOuter),
+					ExpandCatKey = Table.ExpandTableColumn(MergeCatKey, "dtc1", {"CategoryKey"}, {"CategoryKey"}),
+
+					FillUnmappedKey = Table.TransformColumns(ExpandCatKey, {"CategoryKey", each if _ = null then 8 else _, Int64.Type}),
+					// Second join by the FINAL (post-fallback) CategoryKey so LowMin/MidMin/HighMin
+					// are always sourced live from Dim_TaskCategory, never hardcoded/duplicated here.
+					MergeMinutes = Table.NestedJoin(FillUnmappedKey, {"CategoryKey"}, Dim_TaskCategory, {"CategoryKey"}, "dtc2", JoinKind.LeftOuter),
+					ExpandMinutes = Table.ExpandTableColumn(MergeMinutes, "dtc2", {"LowMin", "MidMin", "HighMin"}, {"LowMin", "MidMin", "HighMin"}),
+					AddDisplay  = Table.AddColumn(ExpandMinutes, "SkillDisplayName", each if [MappedFriendlyName] <> null and [MappedFriendlyName] <> "" then [MappedFriendlyName] else [PluginName], type text),
+					Final       = Table.SelectColumns(AddDisplay, {"PluginName", "SkillDisplayName", "Category", "CategoryKey", "IsMapped", "LowMin", "MidMin", "HighMin"})
+				in
+					Final
+
+	annotation PBI_ResultType = Exception

@@ -1,0 +1,63 @@
+/// Maps the stable 'AppHost Group' bucket to the Cowork category taxonomy.
+/// Category assignments are starting points and should be reviewed against
+/// the connected tenant's emitted hosts and reporting scope.
+/// Any AppHost Group not listed here rolls up to "Other / Unclassified" and
+/// is surfaced by Fact_CopilotAuditRaw[Real Unmapped AppHost %].
+table 'AppHost Category Map'
+	lineageTag: d4a2b002-1b22-4b22-9b22-2b22d4a2b002
+
+	column 'AppHost Group'
+		dataType: string
+		isKey
+		lineageTag: d4a2b002-1b22-4b22-9b22-2b22d4a2b003
+		summarizeBy: none
+		sourceColumn: AppHost Group
+
+	column Category
+		dataType: string
+		lineageTag: d4a2b002-1b22-4b22-9b22-2b22d4a2b004
+		summarizeBy: none
+		sourceColumn: Category
+
+	column 'Observed in Sample'
+		dataType: string
+		lineageTag: d4a2b002-1b22-4b22-9b22-2b22d4a2b005
+		summarizeBy: none
+		sourceColumn: Observed in Sample
+
+	column Notes
+		dataType: string
+		lineageTag: d4a2b002-1b22-4b22-9b22-2b22d4a2b006
+		summarizeBy: none
+		sourceColumn: Notes
+
+	partition 'AppHost Category Map' = m
+		mode: import
+		source =
+				let
+					Seed = #table(
+						type table [
+							#"AppHost Group" = text, Category = text, #"Observed in Sample" = text, Notes = text
+						],
+						{
+							{"Microsoft Teams", "Communication workflows", "Source-dependent", "Review AppIdentity when Teams also carries agent or Copilot Studio activity."},
+							{"Security Copilot", "Specialized workflows", "Source-dependent", "Confirm whether this separate product belongs in the intended Cowork scope."},
+							{"Autonomous Agent", "Specialized workflows", "Source-dependent", "Review whether agent-initiated activity needs a separate reporting flag."},
+							{"Office", "Document & content creation", "Source-dependent", "Use AppIdentity when available to distinguish Office applications."},
+							{"Copilot Studio", "Specialized workflows", "Source-dependent", "Review maker or evaluation activity separately from end-user activity."},
+							{"M365 Copilot Chat", "General assistance / Other", "Source-dependent", "Review whether Copilot Chat belongs in the intended Cowork scope."},
+							{"Admin Center", "General assistance / Other", "Source-dependent", "Review administrative activity separately from end-user productivity."},
+							{"Edge", "Analysis & Research", "Source-dependent", "Browser-side activity can include web search and page analysis."},
+							{"Power BI", "Analysis & Research", "Source-dependent", "Normalize emitted casing before applying this mapping."},
+							{"Word", "Document & content creation", "Source-dependent", ""},
+							{"Outlook", "Email workflows", "Source-dependent", "Normalize Outlook host variants before applying this mapping."},
+							{"SharePoint", "Analysis & Research", "Source-dependent", ""},
+							{"PowerPoint", "Document & content creation", "Source-dependent", ""},
+							{"Cowork", "Specialized workflows", "Expected", "Primary report scope; validate the current emitted AppHost value before production use."},
+							{"Other / Unclassified", "General assistance / Other", "n/a", "Fallback bucket; review unmapped-host percentage and extend this table as new values appear."}
+						}
+					)
+				in
+					Seed
+
+	annotation PBI_ResultType = Table

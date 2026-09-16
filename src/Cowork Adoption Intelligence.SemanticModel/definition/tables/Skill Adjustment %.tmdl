@@ -1,0 +1,17 @@
+table 'Skill Adjustment %'
+	lineageTag: de805666-561e-4ed5-9466-5e9570c44bd9
+
+	measure 'Skill Adjustment % Value' = SELECTEDVALUE('Skill Adjustment %'[Skill Adjustment %], 1)
+		formatString: 0%
+		lineageTag: fead07cb-b330-4de7-88fd-d71ebb9ae2a9
+
+	column 'Skill Adjustment %'
+		dataType: double
+		formatString: 0%
+		lineageTag: 6941b480-5b3f-44f0-ad91-808876f434b4
+		summarizeBy: none
+		sourceColumn: [Value]
+
+	partition 'Skill Adjustment %' = calculated
+		mode: import
+		source = GENERATESERIES(0, 2, 0.05)

@@ -1,0 +1,193 @@
+table Fact_CoworkUsage
+	lineageTag: eb4eb6e1-c5e3-4819-ab46-c404f0c0bb06
+
+	measure 'Reported Tasks' = SUM(Fact_CoworkUsage[TotalTasks])
+		formatString: #,0
+		lineageTag: 39ca5535-1fbc-40ff-940b-6b52df3e85ed
+
+	measure 'Reported Scheduled' = SUM(Fact_CoworkUsage[ScheduledTasks])
+		formatString: #,0
+		lineageTag: 8f2a61ff-e799-4b3f-9bab-68b575fa5094
+
+	measure 'Reported User-Initiated' = SUM(Fact_CoworkUsage[UserInitiatedTasks])
+		formatString: #,0
+		lineageTag: 9086aa32-4a3b-4fb7-8460-3191ef06c1a5
+
+	measure 'Scheduled Share %' = DIVIDE([Reported Scheduled], [Reported Tasks])
+		formatString: 0.0%
+		lineageTag: 37c45f69-44b7-4cf3-80bd-445f8ca885fc
+
+	/// Reconciles Purview-derived thread count against a separately sourced admin-center Cowork usage export. Blank while Fact_CoworkUsage is using its Purview-derived fallback because that is not an independent comparison.
+	measure 'Audit Coverage %' =
+			VAR _hasIndependentUsageExport =
+				COUNTROWS(
+					FILTER(
+						ALL(Fact_CoworkUsage),
+						CONTAINSSTRING(Fact_CoworkUsage[DataQuality], "loaded from CoworkUsageCsvPath")
+					)
+				) > 0
+			RETURN
+				IF(_hasIndependentUsageExport, DIVIDE([Cowork Tasks (Threads)], [Reported Tasks]), BLANK())
+		formatString: 0.0%
+		lineageTag: 1e03d9c6-afca-4624-8d6a-369c86844f23
+
+	measure 'Skill Mapping Coverage %' = DIVIDE(CALCULATE([Skill Invocations], Dim_CoworkSkill[IsMapped] = TRUE), [Skill Invocations])
+		formatString: 0.0%
+		lineageTag: 5cd43138-844b-4f16-b957-04304bfb261c
+
+	column UserPrincipalName
+		dataType: string
+		lineageTag: 19869983-5b19-49d5-aea3-9ce8d8694968
+		summarizeBy: none
+		sourceColumn: UserPrincipalName
+
+	column DisplayName
+		dataType: string
+		lineageTag: 42817c78-d688-4951-b578-ee574e8b8c6d
+		summarizeBy: none
+		sourceColumn: DisplayName
+
+	column UserKey
+		dataType: int64
+		isHidden
+		lineageTag: b9941af9-ea9a-4405-8d75-7feb6ea2ea08
+		summarizeBy: none
+		sourceColumn: UserKey
+
+	column TotalTasks
+		dataType: int64
+		formatString: #,0
+		lineageTag: 94473167-3004-445a-9833-e8f078179518
+		summarizeBy: sum
+		sourceColumn: TotalTasks
+
+	column ScheduledTasks
+		dataType: int64
+		formatString: #,0
+		lineageTag: dd2653d8-54db-4df7-807f-64c1bac9c065
+		summarizeBy: sum
+		sourceColumn: ScheduledTasks
+
+	column UserInitiatedTasks
+		dataType: int64
+		formatString: #,0
+		lineageTag: 45ab13f0-5b5e-44a8-bb86-317dad64109d
+		summarizeBy: sum
+		sourceColumn: UserInitiatedTasks
+
+	column ActiveDays
+		dataType: int64
+		formatString: #,0
+		lineageTag: ac92d1b6-f5e2-4348-9ba8-0b5af99e5ad8
+		summarizeBy: sum
+		sourceColumn: ActiveDays
+
+	column LastActivityDate
+		dataType: dateTime
+		formatString: General Date
+		lineageTag: 005c6fb4-1ccd-404e-b1ed-c16ac84cdd53
+		summarizeBy: none
+		sourceColumn: LastActivityDate
+
+	/// Per-row, not whole-table, so a future export with a mix of matched and unmatched
+	/// UserPrincipalName values is disclosed accurately rather than uniformly.
+	column DataQuality
+		dataType: string
+		lineageTag: 360aca24-13e6-4c5d-98ff-13c1722627b7
+		summarizeBy: none
+		sourceColumn: DataQuality
+
+	partition Fact_CoworkUsage = m
+		mode: import
+		source =
+				let
+					RequiredCols = {"UserPrincipalName", "DisplayName", "TotalTasks", "ScheduledTasks", "UserInitiatedTasks", "ActiveDays", "LastActivityDate"},
+
+					// Degrades to null (never a hard error) if CoworkUsageCsvPath is unset, the
+					// file is missing/unreadable, its header doesn't match the 7 required
+					// columns (after tolerant rename, see NormalizeName below), or a column
+					// fails to convert to its expected type -- mirrors the established
+					// fnLoadCsv / Fact_Consumption[GetReal] try/otherwise idiom.
+					TryLoad =
+						try
+							let
+								Src = Csv.Document(File.Contents(CoworkUsageCsvPath), [Delimiter = ",", Encoding = 65001, QuoteStyle = QuoteStyle.Csv]),
+								Promoted = Table.PromoteHeaders(Src, [PromoteAllScalars = true]),
+
+								NormalizeName = (n as text) as text => Text.Lower(Text.Select(n, {"a".."z", "A".."Z", "0".."9"})),
+								Actual = Table.ColumnNames(Promoted),
+								ActualNormMap = List.Transform(Actual, each [Raw = _, Norm = NormalizeName(_)]),
+								RenameList = List.RemoveNulls(List.Transform(RequiredCols, (Target) =>
+										let
+											TargetNorm = NormalizeName(Target),
+											Match = List.First(List.Select(ActualNormMap, each [Norm] = TargetNorm), null)
+										in
+											if Match = null then null else {Match[Raw], Target}
+									)),
+								Renamed = Table.RenameColumns(Promoted, RenameList, MissingField.Ignore),
+								ActualAfterRename = Table.ColumnNames(Renamed),
+								Missing = List.Difference(RequiredCols, ActualAfterRename),
+								Checked = if List.Count(Missing) > 0 then error ("Fact_CoworkUsage: missing required column(s): " & Text.Combine(Missing, ", ")) else Renamed,
+								Typed = Table.TransformColumnTypes(Checked, {{"TotalTasks", Int64.Type}, {"ScheduledTasks", Int64.Type}, {"UserInitiatedTasks", Int64.Type}, {"ActiveDays", Int64.Type}, {"LastActivityDate", type datetime}})
+							in
+								Typed
+						otherwise
+							null,
+
+					EmptySchema = #table(
+							type table [
+								UserPrincipalName = text, DisplayName = text, UserKey = nullable Int64.Type,
+								TotalTasks = Int64.Type, ScheduledTasks = nullable Int64.Type, UserInitiatedTasks = nullable Int64.Type,
+								ActiveDays = Int64.Type, LastActivityDate = nullable datetime, DataQuality = text
+							],
+							{}
+						),
+
+
+					DeriveFromAuditLog =
+						let
+							Cowork = Table.SelectRows(Fact_CopilotAuditRaw_WithLists, each Text.Lower([AppHost]) = "cowork"),
+							Grouped = Table.Group(Cowork, {"UserKey"}, {
+									{"TotalTasks", each List.Count(List.Distinct([ThreadId])), Int64.Type},
+									{"ActiveDays", each List.Count(List.Distinct([DateKey])), Int64.Type},
+									{"LastActivityDate", each List.Max([CreationDateParsed]), type nullable datetime}
+								}),
+							AddScheduledNull = Table.AddColumn(Grouped, "ScheduledTasks", each null, type nullable Int64.Type),
+							AddInitiatedNull = Table.AddColumn(AddScheduledNull, "UserInitiatedTasks", each null, type nullable Int64.Type),
+							RealUsers2 = Table.SelectColumns(Dim_User, {"UserKey", "UserPrincipalName", "DisplayName"}),
+							MergeNames = Table.NestedJoin(AddInitiatedNull, {"UserKey"}, RealUsers2, {"UserKey"}, "u", JoinKind.Inner),
+							ExpandNames = Table.ExpandTableColumn(MergeNames, "u", {"UserPrincipalName", "DisplayName"}, {"UserPrincipalName", "DisplayName"}),
+							AddQuality = Table.AddColumn(ExpandNames, "DataQuality",
+									each "Real - derived from the Purview audit log (Fact_CopilotAuditRaw); admin center usage export not connected or has zero rows -- Scheduled/User-Initiated split unavailable from this source",
+									type text),
+							Final = Table.SelectColumns(AddQuality, {"UserPrincipalName", "DisplayName", "UserKey", "TotalTasks", "ScheduledTasks", "UserInitiatedTasks", "ActiveDays", "LastActivityDate", "DataQuality"})
+						in
+							Final,
+
+					Result =
+						if TryLoad = null or Table.IsEmpty(TryLoad) then
+							// Covers both the unset/missing/bad-header case (TryLoad = null) and
+							// a valid header-only export --
+							// try/otherwise so an unexpected issue in the derivation itself still
+							// degrades to EmptySchema rather than hard-erroring the partition.
+							try DeriveFromAuditLog otherwise EmptySchema
+						else
+							let
+								// A syntactically valid file with a matching header AND at least
+								// one real data row -- the admin center export, which remains
+								// authoritative when populated since it is the only source for
+								// the Scheduled-vs-User-Initiated split.
+								RealUsers = Table.SelectColumns(Dim_User, {"UserKey", "UserPrincipalName"}),
+								Merge = Table.NestedJoin(TryLoad, {"UserPrincipalName"}, RealUsers, {"UserPrincipalName"}, "u", JoinKind.LeftOuter),
+								Expand = Table.ExpandTableColumn(Merge, "u", {"UserKey"}, {"UserKey"}),
+								AddQuality = Table.AddColumn(Expand, "DataQuality",
+										each if [UserKey] <> null then "Real - loaded from CoworkUsageCsvPath, matched to a real Cowork user"
+											else "Real - loaded from CoworkUsageCsvPath, but UserPrincipalName did not match any known Cowork user",
+										type text),
+								Final = Table.SelectColumns(AddQuality, {"UserPrincipalName", "DisplayName", "UserKey", "TotalTasks", "ScheduledTasks", "UserInitiatedTasks", "ActiveDays", "LastActivityDate", "DataQuality"})
+							in
+								Final
+				in
+					Result
+
+	annotation PBI_ResultType = Table

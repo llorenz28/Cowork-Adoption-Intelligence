@@ -1,0 +1,95 @@
+{
+  "$schema": "https://developer.microsoft.com/json-schemas/fabric/item/report/definition/bookmark/2.1.0/schema.json",
+  "displayName": "Filters Open (Executive Summary)",
+  "name": "877a16d67727a491e0f8",
+  "options": {
+    "applyOnlyToTargetVisuals": true,
+    "targetVisualNames": [
+      "panel_open_06adoption",
+      "panel_close_06adoption",
+      "panel_bg_06adoption",
+      "filter_header_06adoption",
+      "date_slicer_06adoption",
+      "dept_slicer_06adoption",
+      "user_tier_slicer_06adoption",
+      "license_slicer_06adoption",
+      "budget_slicer_06adoption",
+      "rate_slicer_06adoption"
+    ],
+    "suppressActiveSection": true,
+    "suppressData": true
+  },
+  "explorationState": {
+    "version": "1.0",
+    "activeSection": "06_adoption_over_time",
+    "sections": {
+      "06_adoption_over_time": {
+        "visualContainers": {
+          "panel_open_06adoption": {
+            "singleVisual": {
+              "visualType": "actionButton",
+              "objects": {},
+              "display": {
+                "mode": "hidden"
+              }
+            }
+          },
+          "panel_close_06adoption": {
+            "singleVisual": {
+              "visualType": "actionButton",
+              "objects": {}
+            }
+          },
+          "panel_bg_06adoption": {
+            "singleVisual": {
+              "visualType": "actionButton",
+              "objects": {}
+            }
+          },
+          "filter_header_06adoption": {
+            "singleVisual": {
+              "visualType": "textbox",
+              "objects": {}
+            }
+          },
+          "date_slicer_06adoption": {
+            "singleVisual": {
+              "visualType": "slicer",
+              "objects": {}
+            }
+          },
+          "dept_slicer_06adoption": {
+            "singleVisual": {
+              "visualType": "slicer",
+              "objects": {}
+            }
+          },
+          "license_slicer_06adoption": {
+            "singleVisual": {
+              "visualType": "slicer",
+              "objects": {}
+            }
+          },
+          "budget_slicer_06adoption": {
+            "singleVisual": {
+              "visualType": "slicer",
+              "objects": {}
+            }
+          },
+          "rate_slicer_06adoption": {
+            "singleVisual": {
+              "visualType": "slicer",
+              "objects": {}
+            }
+          },
+          "user_tier_slicer_06adoption": {
+            "singleVisual": {
+              "visualType": "slicer",
+              "objects": {}
+            }
+          }
+        }
+      }
+    }
+  }
+}

@@ -1,0 +1,37 @@
+{
+  "$schema": "https://developer.microsoft.com/json-schemas/fabric/item/report/definition/visualContainer/2.12.0/schema.json",
+  "name": "91267fc40cfe875e72ce",
+  "position": {
+    "x": 292,
+    "y": 600,
+    "z": 23000,
+    "height": 76,
+    "width": 972,
+    "tabOrder": 9000
+  },
+  "visual": {
+    "visualType": "textbox",
+    "objects": {
+      "general": [
+        {
+          "properties": {
+            "paragraphs": [
+              {
+                "textRuns": [
+                  {
+                    "value": "Cowork thresholds (rolling 12 weeks): Power users = 20+ prompts/week and active in 9 of 12 weeks; Habitual = 8+ prompts/week and active in 9 of 12; Novice = 1+ prompt/week; Low = some use below 1 prompt/week; Inactive = no prompts.",
+                    "textStyle": {
+                      "fontSize": "10pt",
+                      "color": "#1B1F27"
+                    }
+                  }
+                ]
+              }
+            ]
+          }
+        }
+      ]
+    }
+  },
+  "isHidden": true
+}

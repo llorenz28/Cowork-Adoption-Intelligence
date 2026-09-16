@@ -1,0 +1,183 @@
+table Fact_Consumption
+	lineageTag: bc7516dd-965c-4f29-9274-6e76e2f4c980
+
+	column UserKey
+		dataType: int64
+		isHidden
+		lineageTag: fdc754d8-aaf4-4194-8bc2-6ee17b4b6571
+		summarizeBy: none
+		sourceColumn: UserKey
+
+	column ServiceKey
+		dataType: int64
+		isHidden
+		lineageTag: abc6c083-4690-4987-ad63-965a806217b9
+		summarizeBy: none
+		sourceColumn: ServiceKey
+
+	column DateKey
+		dataType: int64
+		isHidden
+		lineageTag: 43107ff7-4f03-47bd-a42d-fbc3d49b5a03
+		summarizeBy: none
+		sourceColumn: DateKey
+
+	column CreditsUsed
+		dataType: int64
+		formatString: #,0
+		lineageTag: f4a2e7da-813f-48f5-92fd-aa7b2fd1b148
+		summarizeBy: sum
+		sourceColumn: CreditsUsed
+
+	column CreditLimit
+		dataType: int64
+		formatString: #,0
+		lineageTag: 1285c3f7-d930-4637-a26a-687c43ac6be8
+		summarizeBy: sum
+		sourceColumn: CreditLimit
+
+	column SessionCount
+		dataType: int64
+		formatString: #,0
+		lineageTag: fcecc72c-76fe-4397-a1ec-66898eb90713
+		summarizeBy: sum
+		sourceColumn: SessionCount
+
+	column LastActivityDate
+		dataType: dateTime
+		formatString: General Date
+		lineageTag: 55dd6a69-3d71-46b5-884a-a6e9b3eabb46
+		summarizeBy: none
+		sourceColumn: LastActivityDate
+
+	column DaysSinceActivity
+		dataType: int64
+		lineageTag: 47400e88-a534-4229-a8e0-e76ce719151a
+		summarizeBy: none
+		sourceColumn: DaysSinceActivity
+
+	column RecencyBucket
+		dataType: string
+		lineageTag: 6344de60-2e1c-4928-be4b-e8739b182d09
+		summarizeBy: none
+		sourceColumn: RecencyBucket
+		sortByColumn: RecencyBucketSort
+
+	column BudgetSegment
+		dataType: string
+		lineageTag: a2d42e71-c132-4cc6-a69c-59d15a076564
+		summarizeBy: none
+		sourceColumn: BudgetSegment
+
+	column CohortRank
+		dataType: int64
+		isHidden
+		lineageTag: 329c631d-1f6a-43e5-a3d0-427ab55d5556
+		summarizeBy: none
+		sourceColumn: CohortRank
+
+	column CohortBand
+		dataType: string
+		lineageTag: 1d5c3ade-82c7-41ea-831e-5ba9d2406cb5
+		summarizeBy: none
+		sourceColumn: CohortBand
+
+	column RecencyBucketSort
+		dataType: int64
+		isHidden
+		lineageTag: a2ce31d2-7085-474f-ab5b-4fe862001f61
+		summarizeBy: none
+		sourceColumn: RecencyBucketSort
+
+	column ConsumptionDataQuality
+		dataType: string
+		lineageTag: aec5d03b-1f01-466f-86ea-0b8c4c0049e2
+		summarizeBy: none
+		sourceColumn: ConsumptionDataQuality
+
+	partition Fact_Consumption = m
+		mode: import
+		source =
+				let
+					/* Production-only consumption branch. It validates the nine-column Microsoft admin
+					   center "Consumption - Users" export and joins it to the detected Cowork population
+					   by UPN. Missing, invalid, or unmatched exports become explicitly unavailable. */
+					GetConsumption = () =>
+						let
+							RealUsers = Table.SelectColumns(Dim_User, {"UserKey", "UserPrincipalName"}),
+							TryLoad = try fnLoadCsv(CreditCsvPath) otherwise null,
+							Result = if TryLoad = null then
+									Table.AddColumn(Table.AddColumn(Table.AddColumn(Table.AddColumn(RealUsers, "CreditLimit", each null, type nullable number), "CreditsUsed", each null, type nullable number), "SessionCount", each null, type nullable number), "ConsumptionDataQuality", each "Unavailable - CreditCsvPath is unset, missing, or does not match the required MAC export schema", type text)
+								else
+									let
+										RealTyped = Table.TransformColumnTypes(TryLoad, {{"Monthly credit limit", Int64.Type}, {"Monthly credits used", Int64.Type}, {"Session Count", Int64.Type}}),
+										MergeReal = Table.NestedJoin(RealUsers, {"UserPrincipalName"}, RealTyped, {"User Principal Name"}, "cred", JoinKind.LeftOuter),
+										ExpandReal = Table.ExpandTableColumn(MergeReal, "cred", {"Monthly credit limit", "Monthly credits used", "Session Count"}, {"CreditLimit", "CreditsUsed", "SessionCount"}),
+										MatchedRows = Table.RowCount(Table.SelectRows(ExpandReal, each [CreditLimit] <> null)),
+										QualityText = if MatchedRows > 0 then "Real - loaded from CreditCsvPath (customer-provided MAC 'Consumption - Users' export)" else "Unavailable - CreditCsvPath loaded but no rows matched your real Cowork users' UserPrincipalName",
+										AddQuality = Table.AddColumn(ExpandReal, "ConsumptionDataQuality", each QualityText, type text)
+									in
+										AddQuality
+						in
+							Result,
+					AddConsumptionQuality = GetConsumption(),
+
+
+					CoworkRowsForActivity = Table.SelectRows(Fact_CopilotAuditRaw, each Text.Lower(Text.From([AppHost])) = "cowork"),
+					RealLastActivity = Table.Group(CoworkRowsForActivity, {"Audit_UserId_Normalized"}, {{"LastActivityDate", each List.Max([CreationDateParsed]), type nullable datetime}}),
+					ObservedAsOfDate = if Table.IsEmpty(RealLastActivity) then null else Date.From(List.Max(List.RemoveNulls(RealLastActivity[LastActivityDate]))),
+
+					MergeActivity = Table.NestedJoin(AddConsumptionQuality, {"UserPrincipalName"}, RealLastActivity, {"Audit_UserId_Normalized"}, "act", JoinKind.LeftOuter),
+					ExpandActivity = Table.ExpandTableColumn(MergeActivity, "act", {"LastActivityDate"}, {"LastActivityDate"}),
+
+					AddService = Table.AddColumn(ExpandActivity, "ServiceKey", each 1, Int64.Type),
+					AddDateKey = Table.AddColumn(AddService, "DateKey", each if [LastActivityDate] = null then null else Number.FromText(Date.ToText(Date.From([LastActivityDate]), "yyyyMMdd")), Int64.Type),
+					AddDays = Table.AddColumn(AddDateKey, "DaysSinceActivity", each if [LastActivityDate] = null or ObservedAsOfDate = null then null else Duration.Days(ObservedAsOfDate - Date.From([LastActivityDate])), Int64.Type),
+					AddRecency = Table.AddColumn(AddDays, "RecencyBucket", each
+						let d = [DaysSinceActivity]
+						in
+							if d = null then "Unknown"
+							else if d <= 7 then "0-7 days"
+							else if d <= 30 then "8-30 days"
+							else if d <= 60 then "31-60 days"
+							else "60+ days", type text),
+					AddBudget = Table.AddColumn(AddRecency, "BudgetSegment", each
+						let
+							lim = [CreditLimit], u = [CreditsUsed],
+							util = if lim = null or lim = 0 then null else u / lim
+						in
+							if lim = null or u = null then null
+							else if lim = 0 then "Unassigned"
+							else if util > 1 then "Over allowance"
+							else if util >= 0.85 then "Near limit"
+							else if util >= 0.25 then "Healthy 25-85%"
+							else "Under 25%", type text),
+					SortDesc = Table.Sort(AddBudget, {{"CreditsUsed", Order.Descending}}),
+					Ranked = Table.AddIndexColumn(SortDesc, "CohortRank", 1, 1, Int64.Type),
+					RowCount = Table.RowCount(Ranked),
+					HasConsumption = List.NonNullCount(Ranked[CreditsUsed]) > 0,
+					MinPopulationForPercentile = 20 ,
+					AddBand = Table.AddColumn(Ranked, "CohortBand", each
+						if not HasConsumption then "Unavailable - connect customer consumption export"
+						else if RowCount < MinPopulationForPercentile then "Insufficient sample (n=" & Text.From(RowCount) & ")"
+						else
+							let pct = ([CohortRank] - 1) / RowCount
+							in
+								if pct < 0.10 then "90%+"
+								else if pct < 0.25 then "75-90%"
+								else if pct < 0.50 then "50-75%"
+								else if pct < 0.75 then "25-50%"
+								else "0-25%", type text),
+					AddRecencySort = Table.AddColumn(AddBand, "RecencyBucketSort", each
+						let b = [RecencyBucket]
+						in
+							if b = "0-7 days" then 1
+							else if b = "8-30 days" then 2
+							else if b = "31-60 days" then 3
+							else if b = "60+ days" then 4
+							else 5, Int64.Type),
+					Final = Table.SelectColumns(AddRecencySort, {"UserKey", "ServiceKey", "DateKey", "CreditsUsed", "CreditLimit", "SessionCount", "LastActivityDate", "DaysSinceActivity", "RecencyBucket", "RecencyBucketSort", "BudgetSegment", "CohortRank", "CohortBand", "ConsumptionDataQuality"})
+				in
+					Final
+
+	annotation PBI_ResultType = Exception
