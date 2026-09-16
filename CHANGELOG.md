@@ -10,6 +10,8 @@
 - Preserved the Public sensitivity label, one-folder setup, and all champion
   calculations and interactions.
 - Adopted the MIT License for the public Microsoft release.
+- Added a page-by-page interpretation guide with evidence labels, safe wording,
+  decision boundaries, and recommended follow-up checks.
 
 ## 2.0.0-testing - 2026-09-14
 

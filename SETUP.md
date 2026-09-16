@@ -271,7 +271,9 @@ not choose the newest file.
 | Metric guide | Definitions and interpretation boundaries are visible |
 
 Compare report totals with the source export for the same period. Investigate
-large gaps before publishing.
+large gaps before publishing. Read the
+[interpretation guide](INTERPRETATION_GUIDE.md) before presenting findings or
+using champion and modeled-value signals.
 
 ### Step 8: publish safely
 
@@ -308,4 +310,3 @@ Publishing does not make `C:\CoworkAdoptionData` cloud-accessible.
 - Never store credentials, access tokens, or browser session data in scripts or
   Power BI parameter defaults.
 - Apply your organization's retention and deletion requirements.
-

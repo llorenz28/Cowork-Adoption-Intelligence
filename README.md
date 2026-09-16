@@ -37,7 +37,8 @@ champion signals.
 The sample path takes about 10 minutes and requires no tenant role. Follow the
 [step-by-step setup guide](SETUP.md#path-a-try-the-report-with-fabricated-data)
 for screenshots, validation checks, production data collection, and
-troubleshooting.
+troubleshooting. Use the
+[interpretation guide](INTERPRETATION_GUIDE.md) before presenting results.
 
 > **Not ready to collect production data?** Start with the sample. It is
 > deterministic, fabricated, and uses only `@example.com` identities and
@@ -121,6 +122,7 @@ before requesting permissions.
 | Power BI template | [`Cowork Adoption Intelligence v2 Testing.pbit`](Cowork%20Adoption%20Intelligence%20v2%20Testing.pbit) |
 | Fabricated sample package | [`release/Cowork-Adoption-Intelligence-Sample-Data.zip`](release/Cowork-Adoption-Intelligence-Sample-Data.zip) |
 | Step-by-step setup | [`SETUP.md`](SETUP.md) |
+| Interpretation guide | [`INTERPRETATION_GUIDE.md`](INTERPRETATION_GUIDE.md) |
 | Editable PBIP source | [`src/Cowork Adoption Intelligence.pbip`](src/Cowork%20Adoption%20Intelligence.pbip) |
 | Unpacked sample and generator | [`sample_data/`](sample_data/) · [`build_sample_data.py`](build_sample_data.py) |
 | Security guidance | [`SECURITY.md`](SECURITY.md) · [`docs/SECURITY_ROLES.md`](docs/SECURITY_ROLES.md) |
@@ -158,6 +160,9 @@ unapproved location.
 Read [SECURITY.md](SECURITY.md) before using production data.
 
 ## Interpretation boundaries
+
+Read the [interpretation guide](INTERPRETATION_GUIDE.md) for page-by-page
+definitions, safe wording, and recommended follow-up checks.
 
 - Purview coverage depends on licensing, retention, permissions, and emitted
   fields.

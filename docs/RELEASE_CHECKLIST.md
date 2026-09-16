@@ -34,5 +34,7 @@
 - [x] Existing repository state has a dated rollback reference.
 - [x] Existing canonical Adoption template has a dated backup.
 - [x] Documentation describes the one-folder setup and classification behavior.
+- [x] Interpretation guidance covers all nine pages and separates observed,
+  derived, optional, reference, and modeled evidence.
 - [x] Unrelated working-tree changes are excluded from the release.
 - [x] Final outbound publication approval is received.
