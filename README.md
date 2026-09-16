@@ -182,3 +182,13 @@ For problems with the template or documentation, open a
 without attaching tenant exports, credentials, customer identifiers, or
 identifiable screenshots.
 
+## License
+
+This project is licensed under the [MIT License](LICENSE).
+
+## Trademarks
+
+This project may contain Microsoft trademarks or logos. Use of Microsoft
+trademarks or logos must follow
+[Microsoft's Trademark and Brand Guidelines](https://www.microsoft.com/legal/intellectualproperty/trademarks).
+Modified versions must not cause confusion or imply Microsoft sponsorship.

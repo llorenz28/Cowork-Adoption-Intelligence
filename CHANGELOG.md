@@ -9,6 +9,7 @@
 - Added concise category labels and a filter-aware selection-basis callout.
 - Preserved the Public sensitivity label, one-folder setup, and all champion
   calculations and interactions.
+- Adopted the MIT License for the public Microsoft release.
 
 ## 2.0.0-testing - 2026-09-14
 
@@ -30,4 +31,3 @@
 - Added one-folder discovery for supported Purview, usage, organization,
   consumption, and identity CSV exports.
 - Added deterministic fabricated sample data and setup guidance.
-
