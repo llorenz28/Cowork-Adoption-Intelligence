@@ -9,6 +9,11 @@
 [![Template data](https://img.shields.io/badge/template-data--free-008272)](SECURITY.md)
 [![Sample data](https://img.shields.io/badge/sample-fabricated-0078D4)](sample_data/)
 
+> [!IMPORTANT]
+> **Template status: Testing.** This report template is under active validation
+> and may change before a production-ready release. Validate its outputs and
+> metric definitions before using findings for production decisions.
+
 Cowork Adoption Intelligence is a data-free Power BI template for Microsoft 365
 Copilot Cowork program owners, adoption leads, and enablement teams. It turns
 approved Microsoft Purview audit exports into a nine-page adoption report with
