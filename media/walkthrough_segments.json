@@ -1,0 +1,114 @@
+[
+  {
+    "id": "introduction",
+    "kind": "dark",
+    "image": "media/composed/01-introduction.png",
+    "eyebrow": "COWORK ADOPTION INTELLIGENCE | POWER BI",
+    "kicker": "ONE REPORT FOR THE ADOPTION STORY",
+    "title": "Cowork Adoption Intelligence",
+    "subtitle": "Reach, consistency, workflow maturity, champions, and transparent value - connected in one report.",
+    "text": "Meet Cowork Adoption Intelligence: a testing, data-free Power BI template that turns approved Cowork audit exports into a clear adoption story. See reach, return, delegated work, workflow maturity, potential champions, and modeled value. Here is a quick tour of the decisions it supports."
+  },
+  {
+    "id": "start-here",
+    "kind": "dashboard",
+    "source": "images/report-pages/01-start-here.png",
+    "image": "media/composed/02-start-here.png",
+    "eyebrow": "OVERVIEW | START WITH THE DECISION",
+    "title": "Start Here",
+    "subtitle": "Nine pages, clear questions, and a traceable evidence path",
+    "caption": "Begin with the decision, then follow the right evidence.",
+    "text": "Start Here routes program owners to the right question: Is adoption growing? Are people returning? How deeply do they delegate? Where are potential champions? Begin with the decision, then follow the report to the right page and evidence."
+  },
+  {
+    "id": "executive-summary",
+    "kind": "dashboard",
+    "source": "images/report-pages/02-executive-summary.png",
+    "image": "media/composed/03-executive-summary.png",
+    "eyebrow": "LATEST ACTIVE WEEK | ADOPTION AT A GLANCE",
+    "title": "Executive Summary",
+    "subtitle": "Reach, recurrence, intensity, and delegation maturity",
+    "caption": "Read the momentum score together with its four components.",
+    "text": "Executive Summary reads the latest active week. Users and task threads show reach. Prompts, active days, and return rate show habit. The momentum score balances return, consistency, intensity, and advanced delegation, so always read it with its components."
+  },
+  {
+    "id": "weekly-adoption",
+    "kind": "dashboard",
+    "source": "images/report-pages/03-weekly-adoption.png",
+    "image": "media/composed/04-weekly-adoption.png",
+    "eyebrow": "MOMENTUM | SEE WHETHER USE RETURNS",
+    "title": "Weekly Adoption & Usage",
+    "subtitle": "Twelve active weeks of reach, consistency, and concentration",
+    "caption": "Compare the same period and population before calling a trend.",
+    "text": "Weekly Adoption and Usage shows the latest twelve active weeks. Switch metrics without clearing filters, and use the heatmap to find concentration. Compare the same period and population, and check rollout timing or export coverage before calling a trend."
+  },
+  {
+    "id": "user-maturity",
+    "kind": "dashboard",
+    "source": "images/report-pages/04-user-maturity.png",
+    "image": "media/composed/05-user-maturity.png",
+    "eyebrow": "MATURITY | HOW PEOPLE DELEGATE",
+    "title": "User Maturity",
+    "subtitle": "Usage consistency, skill chaining, and delegation depth",
+    "caption": "Maturity signals workflow depth - not unattended work or performance.",
+    "text": "User Maturity combines rolling usage tiers, multi-skill task share, task duration, and the delegation ladder. These signals can show readiness for advanced workflows, but may also reflect retries or friction. Pair them with role and work context."
+  },
+  {
+    "id": "champions",
+    "kind": "summary",
+    "image": "media/composed/06-champions.png",
+    "eyebrow": "CHAMPIONS | ENABLEMENT EVIDENCE, NOT A RATING",
+    "title": "Find potential champions responsibly",
+    "bullets": [
+      "Require at least 3 observed threads across at least 2 active weeks.",
+      "Balance activity, consistency, and delegation maturity.",
+      "Recalculate evidence by date and work category.",
+      "Confirm role fit, willingness, and manager support."
+    ],
+    "footer": "Template in testing | Enablement signal, not employee-performance evidence",
+    "text": "Cowork Champions identifies potential enablement partners, not top performers. Eligibility requires three threads across two active weeks. The score combines forty percent activity, thirty-five percent consistency, and twenty-five percent delegation maturity. Confirm role fit, willingness, and manager support before outreach."
+  },
+  {
+    "id": "actions",
+    "kind": "dashboard",
+    "source": "images/report-pages/06-actions-by-category.png",
+    "image": "media/composed/07-actions.png",
+    "eyebrow": "WORK MIX | WHAT PEOPLE DELEGATE",
+    "title": "Actions by Category",
+    "subtitle": "Observed skills, work categories, and taxonomy coverage",
+    "caption": "The goal is better workflow enablement - not simply more prompts.",
+    "text": "Actions by Category groups observed skills into work patterns and exposes unmapped tools for taxonomy maintenance. Action value tiers are category references, not user scores. Validate the dominant categories before recommending a new workflow or enablement scenario."
+  },
+  {
+    "id": "activity-value",
+    "kind": "dashboard",
+    "source": "images/report-pages/07-activity-value.png",
+    "image": "media/composed/08-activity-value.png",
+    "eyebrow": "VALUE | KEEP ASSUMPTIONS VISIBLE",
+    "title": "Activity & Value",
+    "subtitle": "Observed task volume plus adjustable time and labor assumptions",
+    "caption": "Modeled assistance is scenario planning - not audited savings.",
+    "text": "Activity and Value applies selected low, mid, or high time benchmarks to observed task volume. Estimated value also requires a customer-selected labor rate. Present a range, keep the assumptions visible, and label every result as modeled, not realized savings."
+  },
+  {
+    "id": "metric-guide",
+    "kind": "dashboard",
+    "source": "images/report-pages/09-adoption-metric-guide.png",
+    "image": "media/composed/09-metric-guide.png",
+    "eyebrow": "EVIDENCE | DEFINITIONS BEFORE DECISIONS",
+    "title": "Adoption Metric Guide",
+    "subtitle": "Definitions, thresholds, dependencies, and safe interpretation",
+    "caption": "Optional-source absence means unavailable data - not zero activity.",
+    "text": "The Adoption Metric Guide keeps definitions, thresholds, dependencies, and boundaries visible. Use Usage Explorer to trace a headline to approved source records without assuming intent. Missing optional data means unavailable, not zero activity. This is decision support, not billing, compliance, or personnel evidence."
+  },
+  {
+    "id": "closing",
+    "kind": "dark",
+    "image": "media/composed/10-closing.png",
+    "eyebrow": "GET STARTED",
+    "kicker": "FROM ACTIVITY TO ENABLEMENT",
+    "title": "One report. A clearer adoption story.",
+    "subtitle": "Try the fabricated sample, review the interpretation guide, and connect approved exports when ready.",
+    "text": "That is Cowork Adoption Intelligence: one testing template for reach, return, workflow maturity, champions, and transparent modeled value. Start with the fabricated sample, review the definitions, then connect approved exports to build an evidence-aware enablement plan."
+  }
+]

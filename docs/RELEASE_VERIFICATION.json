@@ -3,6 +3,7 @@
   "version": "2.0.1-testing",
   "verifiedAt": "2026-09-14T17:45:46.268-05:00",
   "packageVerifiedAt": "2026-09-15T19:46:27.588-05:00",
+  "mediaVerifiedAt": "2026-09-15T21:14:50.868-05:00",
   "result": "pass",
   "checks": {
     "pbir": {
@@ -71,6 +72,26 @@
     },
     "documentation": {
       "missingRelativeLinks": 0
+    },
+    "walkthrough": {
+      "filename": "media/Cowork-Adoption-Intelligence-Walkthrough.mp4",
+      "bytes": 8207468,
+      "sha256": "de4dba472a5c27736e44847cff91d2d61be6c33376bbc99fb13f39709781a4dd",
+      "durationSeconds": 158.432,
+      "width": 1920,
+      "height": 1080,
+      "framesPerSecond": 30,
+      "videoCodec": "h264",
+      "audioCodec": "aac",
+      "audioSampleRateHz": 48000,
+      "audioChannels": 2,
+      "integratedLoudnessLufs": -18.31,
+      "segments": 10,
+      "subtitleCues": 34,
+      "subtitleTimeline": "pass",
+      "transcriptAlignment": "pass",
+      "fabricatedScreenshotsOnly": true,
+      "githubAttachment": "https://github.com/user-attachments/assets/2b3aaaf8-feb3-41b0-b4ce-5d871d9feaf5"
     }
   }
 }

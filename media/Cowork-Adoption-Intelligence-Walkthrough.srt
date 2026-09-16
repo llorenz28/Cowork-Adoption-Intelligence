@@ -1,0 +1,135 @@
+1
+00:00:00,100 --> 00:00:07,343
+Meet Cowork Adoption Intelligence: a testing, data-free Power BI template that turns approved Cowork audit exports into a clear adoption story.
+
+2
+00:00:07,344 --> 00:00:13,277
+See reach, return, delegated work, workflow maturity, potential champions, and modeled value.
+
+3
+00:00:13,278 --> 00:00:16,013
+Here is a quick tour of the decisions it supports.
+
+4
+00:00:16,767 --> 00:00:20,713
+Start Here routes program owners to the right question: Is adoption growing?
+
+5
+00:00:20,714 --> 00:00:22,188
+Are people returning?
+
+6
+00:00:22,189 --> 00:00:24,078
+How deeply do they delegate?
+
+7
+00:00:24,079 --> 00:00:25,968
+Where are potential champions?
+
+8
+00:00:25,969 --> 00:00:29,924
+Begin with the decision, then follow the report to the right page and evidence.
+
+9
+00:00:30,700 --> 00:00:33,563
+Executive Summary reads the latest active week.
+
+10
+00:00:33,564 --> 00:00:35,964
+Users and task threads show reach.
+
+11
+00:00:35,965 --> 00:00:39,281
+Prompts, active days, and return rate show habit.
+
+12
+00:00:39,282 --> 00:00:46,239
+The momentum score balances return, consistency, intensity, and advanced delegation, so always read it with its components.
+
+13
+00:00:47,000 --> 00:00:50,522
+Weekly Adoption and Usage shows the latest twelve active weeks.
+
+14
+00:00:50,523 --> 00:00:55,020
+Switch metrics without clearing filters, and use the heatmap to find concentration.
+
+15
+00:00:55,021 --> 00:01:00,453
+Compare the same period and population, and check rollout timing or export coverage before calling a trend.
+
+16
+00:01:01,208 --> 00:01:07,447
+User Maturity combines rolling usage tiers, multi-skill task share, task duration, and the delegation ladder.
+
+17
+00:01:07,448 --> 00:01:12,564
+These signals can show readiness for advanced workflows, but may also reflect retries or friction.
+
+18
+00:01:12,565 --> 00:01:14,936
+Pair them with role and work context.
+
+19
+00:01:15,708 --> 00:01:19,998
+Cowork Champions identifies potential enablement partners, not top performers.
+
+20
+00:01:19,999 --> 00:01:23,462
+Eligibility requires three threads across two active weeks.
+
+21
+00:01:23,463 --> 00:01:29,741
+The score combines forty percent activity, thirty-five percent consistency, and twenty-five percent delegation maturity.
+
+22
+00:01:29,742 --> 00:01:33,806
+Confirm role fit, willingness, and manager support before outreach.
+
+23
+00:01:34,575 --> 00:01:40,410
+Actions by Category groups observed skills into work patterns and exposes unmapped tools for taxonomy maintenance.
+
+24
+00:01:40,411 --> 00:01:44,199
+Action value tiers are category references, not user scores.
+
+25
+00:01:44,200 --> 00:01:48,805
+Validate the dominant categories before recommending a new workflow or enablement scenario.
+
+26
+00:01:49,551 --> 00:01:55,042
+Activity and Value applies selected low, mid, or high time benchmarks to observed task volume.
+
+27
+00:01:55,043 --> 00:01:58,584
+Estimated value also requires a customer-selected labor rate.
+
+28
+00:01:58,585 --> 00:02:04,126
+Present a range, keep the assumptions visible, and label every result as modeled, not realized savings.
+
+29
+00:02:04,887 --> 00:02:10,329
+The Adoption Metric Guide keeps definitions, thresholds, dependencies, and boundaries visible.
+
+30
+00:02:10,330 --> 00:02:14,875
+Use Usage Explorer to trace a headline to approved source records without assuming intent.
+
+31
+00:02:14,876 --> 00:02:18,546
+Missing optional data means unavailable, not zero activity.
+
+32
+00:02:18,547 --> 00:02:22,946
+This is decision support, not billing, compliance, or personnel evidence.
+
+33
+00:02:23,703 --> 00:02:31,389
+That is Cowork Adoption Intelligence: one testing template for reach, return, workflow maturity, champions, and transparent modeled value.
+
+34
+00:02:31,390 --> 00:02:37,746
+Start with the fabricated sample, review the definitions, then connect approved exports to build an evidence-aware enablement plan.

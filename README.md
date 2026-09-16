@@ -27,6 +27,16 @@ champion signals.
 
 ![Cowork Adoption Intelligence executive summary populated with fabricated sample data](images/report-pages/02-executive-summary.png)
 
+> **Cowork Adoption Intelligence Walkthrough (video):** a narrated executive
+> tour of adoption momentum, usage maturity, potential champions, work patterns,
+> and transparent modeled value.
+>
+> https://github.com/user-attachments/assets/2b3aaaf8-feb3-41b0-b4ce-5d871d9feaf5
+
+[Download the MP4](media/Cowork-Adoption-Intelligence-Walkthrough.mp4) ·
+[Read the transcript](media/Cowork-Adoption-Intelligence-Walkthrough-transcript.md) ·
+[Download subtitles](media/Cowork-Adoption-Intelligence-Walkthrough.srt)
+
 ---
 
 ## New here? Start in 3 steps
@@ -128,6 +138,7 @@ before requesting permissions.
 | Fabricated sample package | [`release/Cowork-Adoption-Intelligence-Sample-Data.zip`](release/Cowork-Adoption-Intelligence-Sample-Data.zip) |
 | Step-by-step setup | [`SETUP.md`](SETUP.md) |
 | Interpretation guide | [`INTERPRETATION_GUIDE.md`](INTERPRETATION_GUIDE.md) |
+| Narrated walkthrough | [`MP4`](media/Cowork-Adoption-Intelligence-Walkthrough.mp4) · [`Transcript`](media/Cowork-Adoption-Intelligence-Walkthrough-transcript.md) · [`Subtitles`](media/Cowork-Adoption-Intelligence-Walkthrough.srt) · [`Build notes`](media/README.md) |
 | Editable PBIP source | [`src/Cowork Adoption Intelligence.pbip`](src/Cowork%20Adoption%20Intelligence.pbip) |
 | Unpacked sample and generator | [`sample_data/`](sample_data/) · [`build_sample_data.py`](build_sample_data.py) |
 | Security guidance | [`SECURITY.md`](SECURITY.md) · [`docs/SECURITY_ROLES.md`](docs/SECURITY_ROLES.md) |
@@ -145,6 +156,10 @@ docs/
   RELEASE_VERIFICATION.json
   SECURITY_ROLES.md
 images/report-pages/
+media/
+  Cowork-Adoption-Intelligence-Walkthrough.mp4
+  Cowork-Adoption-Intelligence-Walkthrough-transcript.md
+  Cowork-Adoption-Intelligence-Walkthrough.srt
 release/
   Cowork-Adoption-Intelligence-Sample-Data.zip
 sample_data/

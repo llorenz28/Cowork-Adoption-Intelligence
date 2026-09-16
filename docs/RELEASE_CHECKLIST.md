@@ -36,5 +36,9 @@
 - [x] Documentation describes the one-folder setup and classification behavior.
 - [x] Interpretation guidance covers all nine pages and separates observed,
   derived, optional, reference, and modeled evidence.
+- [x] Walkthrough is 1920x1080, 30 fps, H.264/AAC, narrated, and
+  transcript-aligned.
+- [x] Walkthrough follows the Adoption-to-enablement story, identifies the
+  template as testing, and uses only fabricated report screenshots.
 - [x] Unrelated working-tree changes are excluded from the release.
 - [x] Final outbound publication approval is received.
