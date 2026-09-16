@@ -27,13 +27,11 @@ champion signals.
 
 ![Cowork Adoption Intelligence executive summary populated with fabricated sample data](images/report-pages/02-executive-summary.png)
 
-> **Cowork Adoption Intelligence Walkthrough (video):** a narrated executive
-> tour of adoption momentum, usage maturity, potential champions, work patterns,
-> and transparent modeled value.
->
-> https://github.com/user-attachments/assets/2b3aaaf8-feb3-41b0-b4ce-5d871d9feaf5
+> **Cowork Adoption Intelligence Walkthrough:** a narrated executive tour of
+> adoption momentum, usage maturity, potential champions, work patterns, and
+> transparent modeled value.
 
-[Download the MP4](media/Cowork-Adoption-Intelligence-Walkthrough.mp4) ·
+[Watch or download the MP4](media/Cowork-Adoption-Intelligence-Walkthrough.mp4) ·
 [Read the transcript](media/Cowork-Adoption-Intelligence-Walkthrough-transcript.md) ·
 [Download subtitles](media/Cowork-Adoption-Intelligence-Walkthrough.srt)
 

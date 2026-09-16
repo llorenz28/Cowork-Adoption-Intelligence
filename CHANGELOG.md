@@ -12,8 +12,8 @@
 - Adopted the MIT License for the public Microsoft release.
 - Added a page-by-page interpretation guide with evidence labels, safe wording,
   decision boundaries, and recommended follow-up checks.
-- Added a narrated Adoption walkthrough with an inline GitHub player,
-  downloadable MP4, transcript, subtitles, timeline, and reproducible build.
+- Added a narrated Adoption walkthrough with a repository-hosted MP4,
+  transcript, subtitles, timeline, and reproducible build.
 
 ## 2.0.0-testing - 2026-09-14
 
