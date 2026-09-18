@@ -27,6 +27,7 @@ table Dim_TaskCategory
 				Dim_TaskCategory[Category]
 			)
 		dataType: string
+		lineageTag: 348f3bc0-c971-4d46-9b0e-d28821ca105f
 		summarizeBy: none
 		sortByColumn: CategoryKey
 

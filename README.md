@@ -16,7 +16,7 @@
 
 Cowork Adoption Intelligence is a data-free Power BI template for Microsoft 365
 Copilot Cowork program owners, adoption leads, and enablement teams. It turns
-approved Microsoft Purview audit exports into a nine-page adoption report with
+approved Microsoft Purview audit exports into a ten-page adoption report with
 activation, sustained usage, action patterns, delegation maturity, and potential
 champion signals.
 
@@ -40,7 +40,7 @@ champion signals.
 ## New here? Start in 3 steps
 
 1. Download the
-   [Power BI template](Cowork%20Adoption%20Intelligence%20v2%20Testing.pbit)
+   [local-folder Power BI template](Cowork%20Adoption%20Intellgience%20V3.pbit)
    and the
    [fabricated sample package](release/Cowork-Adoption-Intelligence-Sample-Data.zip).
 2. Extract the sample ZIP, open the `.pbit`, and set `DataFolderPath` to the
@@ -52,6 +52,10 @@ The sample path takes about 10 minutes and requires no tenant role. Follow the
 for screenshots, validation checks, production data collection, and
 troubleshooting. Use the
 [interpretation guide](INTERPRETATION_GUIDE.md) before presenting results.
+
+To refresh directly from a SharePoint document library, download the
+[SharePoint edition](Cowork%20Adoption%20Intellgience%20V3%20-%20SharePoint.pbit)
+and follow the [SharePoint setup guide](docs/SHAREPOINT_SETUP.md).
 
 > **Not ready to collect production data?** Start with the sample. It is
 > deterministic, fabricated, and uses only `@example.com` identities and
@@ -66,11 +70,12 @@ troubleshooting. Use the
 | **Start Here** | Which page should I use for my question? |
 | **Executive Summary** | How broad, active, and mature is Cowork adoption? |
 | **Weekly Adoption & Usage** | Are users and task activity growing and recurring? |
+| **Adoption by Attributes** | Where do adoption and maturity patterns differ across available organization attributes? |
 | **User Maturity** | Are people progressing from first use to sustained delegation? |
 | **Cowork Champions** | Who shows strong, consistent category-level engagement for possible enablement outreach? |
-| **Actions by Category** | What kinds of work are people delegating? |
-| **Activity & Value** | Which skills and work patterns account for observed activity and modeled time value? |
-| **Usage Explorer** | Which users, dates, skills, and categories explain the totals? |
+| **Activity & Assisted Hours** | Which observed work patterns account for activity and modeled assisted time? |
+| **What They Use It For** | What kinds of work are people delegating, and which records explain the totals? |
+| **Momentum Score Guide** | What does the adoption momentum score mean, and when should its optional weights or caps be tuned? |
 | **Adoption Metric Guide** | How is each metric calculated and how should it be interpreted? |
 
 Potential champion results are enablement signals, not employee-performance
@@ -100,11 +105,17 @@ ratings. Confirm role fit, willingness, and manager support before outreach.
 | **Identity data** | Fictional `@example.com` users | Customer-controlled approved exports |
 | **Instructions** | [Path A](SETUP.md#path-a-try-the-report-with-fabricated-data) | [Path B](SETUP.md#path-b-connect-production-exports) |
 
+| Source edition | Required parameters | Scheduled refresh |
+| --- | --- | --- |
+| **Local folder** | `DataFolderPath` | Requires an on-premises data gateway after publishing |
+| **SharePoint** | `SharePointSiteUrl`, `SharePointFolderUrl` | Uses the cloud SharePoint connector; no local-file gateway |
+
 ## Before you start
 
 - Windows with a current
   [Power BI Desktop](https://powerbi.microsoft.com/desktop/).
-- A local folder for the sample or protected production working copies.
+- A local folder for the sample or protected production working copies, or an
+  approved SharePoint document-library folder for the SharePoint edition.
 - For production, an authorized Purview owner who can export Audit Search
   results. The Power BI operator does not need every tenant role.
 - The ability to apply your organization's required sensitivity label before
@@ -120,9 +131,10 @@ ratings. Confirm role fit, willingness, and manager support before outreach.
 | Identity enrichment CSV | Optional | Friendly display names for audit identities |
 | Consumption CSV | Optional | Supporting consumption fields where available; not required for core adoption analysis |
 
-All supported files can live under one protected folder. The template prompts
-for one required parameter, `DataFolderPath`, and discovers supported files in
-that folder and its subfolders.
+All supported files can live under one protected folder. The local edition
+prompts for `DataFolderPath`. The SharePoint edition prompts for
+`SharePointSiteUrl` and `SharePointFolderUrl`. Both discover supported files in
+the selected folder and its subfolders.
 
 See [Setup](SETUP.md) for exact filenames, headers, owner handoffs, and
 validation checks. See [Security roles and access](docs/SECURITY_ROLES.md)
@@ -132,7 +144,8 @@ before requesting permissions.
 
 | Resource | Open or download |
 | --- | --- |
-| Power BI template | [`Cowork Adoption Intelligence v2 Testing.pbit`](Cowork%20Adoption%20Intelligence%20v2%20Testing.pbit) |
+| Local-folder Power BI template | [`Cowork Adoption Intellgience V3.pbit`](Cowork%20Adoption%20Intellgience%20V3.pbit) |
+| SharePoint Power BI template | [`Cowork Adoption Intellgience V3 - SharePoint.pbit`](Cowork%20Adoption%20Intellgience%20V3%20-%20SharePoint.pbit) · [`Setup`](docs/SHAREPOINT_SETUP.md) |
 | Fabricated sample package | [`release/Cowork-Adoption-Intelligence-Sample-Data.zip`](release/Cowork-Adoption-Intelligence-Sample-Data.zip) |
 | Step-by-step setup | [`SETUP.md`](SETUP.md) |
 | Interpretation guide | [`INTERPRETATION_GUIDE.md`](INTERPRETATION_GUIDE.md) |
@@ -145,13 +158,15 @@ before requesting permissions.
 ## Repository structure
 
 ```text
-Cowork Adoption Intelligence v2 Testing.pbit
+Cowork Adoption Intellgience V3.pbit
+Cowork Adoption Intellgience V3 - SharePoint.pbit
 README.md
 SETUP.md
 build_sample_data.py
 docs/
   RELEASE_CHECKLIST.md
   RELEASE_VERIFICATION.json
+  SHAREPOINT_SETUP.md
   SECURITY_ROLES.md
 images/report-pages/
 media/
@@ -165,6 +180,8 @@ src/
   Cowork Adoption Intelligence.pbip
   Cowork Adoption Intelligence.Report/
   Cowork Adoption Intelligence.SemanticModel/
+tools/
+  New-SharePointPbit.ps1
 ```
 
 ## Security and privacy
@@ -196,7 +213,7 @@ definitions, safe wording, and recommended follow-up checks.
 
 ## Release status
 
-The current release is **2.0.1-testing**. Review the
+The current release is **3.0.0-testing**. Review the
 [changelog](CHANGELOG.md) and
 [release checklist](docs/RELEASE_CHECKLIST.md) before broad distribution.
 

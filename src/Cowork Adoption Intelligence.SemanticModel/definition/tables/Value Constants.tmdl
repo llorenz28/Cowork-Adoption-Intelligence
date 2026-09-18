@@ -38,11 +38,9 @@ table 'Value Constants'
 					Seed = #table(
 						type table [ConstantName = text, Value = Double.Type, Unit = text, Description = text, Source = text],
 						{
-							{"Reinvestment rate", 0.25, "fraction", "Share of freed time reinvested into productive work (conservative)", "Forrester TEI 2024"},
 							{"Productive capacity hours per week", 40, "hours", "Baseline productive hours per FTE per week", "Standard work week"},
-							{"Penalty factor", 0.5, "fraction", "Conservatism haircut applied to gross estimated value", "Internal guardrail"},
-							{"Default loaded labor rate", 72, "USD per hour", "Fallback fully-loaded hourly cost when the what-if slicer is unset", "Cowork default"},
-							{"Default rate per credit", 0.01, "USD per credit", "Fallback price per Copilot credit when the what-if slicer is unset", "Cowork default"},
+							{"Default loaded labor rate", 72, "USD per hour", "Reference setup value only; value measures remain blank until the customer selects a loaded labor rate", "Template convention"},
+							{"Default rate per credit", 0.01, "USD per credit", "Comparison rate used only by Cost at Default Rate; contracted-cost measures remain blank until the customer selects a rate", "Template convention"},
 							{"Working weeks per year", 46, "weeks", "Productive weeks per year after leave and holidays", "Standard assumption"}
 						}
 					)

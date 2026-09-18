@@ -1,0 +1,15 @@
+table 'Momentum Intensity Weight'
+
+	/// Weight assigned to prompt intensity in the momentum index.
+	measure 'Momentum Intensity Weight Value' = SELECTEDVALUE('Momentum Intensity Weight'[Momentum Intensity Weight], 0.25)
+		formatString: 0%
+
+	column 'Momentum Intensity Weight'
+		dataType: decimal
+		formatString: 0%
+		summarizeBy: none
+		sourceColumn: [Value]
+
+	partition 'Momentum Intensity Weight' = calculated
+		mode: import
+		source = SELECTCOLUMNS(GENERATESERIES(0, 100, 1), "Value", CURRENCY(DIVIDE([Value], 100)))

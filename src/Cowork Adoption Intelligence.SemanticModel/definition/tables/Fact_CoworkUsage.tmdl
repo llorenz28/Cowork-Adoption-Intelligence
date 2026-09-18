@@ -9,6 +9,28 @@ table Fact_CoworkUsage
 		formatString: #,0
 		lineageTag: 8f2a61ff-e799-4b3f-9bab-68b575fa5094
 
+	/// Reports whether optional scheduled-task data supports delegation rung 4 and the full ladder index range.
+	measure 'Scheduled Data Health' =
+			VAR _rows = COUNTROWS(ALL(Fact_CoworkUsage))
+			VAR _sched = CALCULATE(SUM(Fact_CoworkUsage[ScheduledTasks]), ALL(Fact_CoworkUsage))
+			RETURN
+			    SWITCH(
+			        TRUE(),
+			        ISBLANK(_rows) || _rows = 0,
+			            "Scheduled-task data not connected — rung 4 (Automating) cannot be reached and the ladder index is capped near 75.",
+			        ISBLANK(_sched) || _sched = 0,
+			            "Scheduled-task data connected but reports zero scheduled tasks — no user will reach rung 4.",
+			        "Scheduled-task data connected."
+			    )
+
+	/// Discloses that the admin center export has lifetime user grain rather than date grain.
+	measure 'Scheduled Data Grain Note' =
+			IF(
+				ISBLANK([Reported Tasks]),
+				BLANK(),
+				"Scheduled-task data is a per-user lifetime total from the admin center export. It does not vary with the date filter."
+			)
+
 	measure 'Reported User-Initiated' = SUM(Fact_CoworkUsage[UserInitiatedTasks])
 		formatString: #,0
 		lineageTag: 9086aa32-4a3b-4fb7-8460-3191ef06c1a5
@@ -26,8 +48,17 @@ table Fact_CoworkUsage
 						CONTAINSSTRING(Fact_CoworkUsage[DataQuality], "loaded from CoworkUsageCsvPath")
 					)
 				) > 0
+			VAR _dateNarrowed =
+				ISFILTERED(Dim_Date[Date]) ||
+				ISFILTERED(Dim_Date[WeekStart]) ||
+				ISFILTERED(Dim_Date[MonthStart]) ||
+				ISFILTERED(Dim_Date[Year])
 			RETURN
-				IF(_hasIndependentUsageExport, DIVIDE([Cowork Tasks (Threads)], [Reported Tasks]), BLANK())
+				IF(
+					_hasIndependentUsageExport && NOT _dateNarrowed,
+					DIVIDE([Cowork Tasks (Threads)], [Reported Tasks]),
+					BLANK()
+				)
 		formatString: 0.0%
 		lineageTag: 1e03d9c6-afca-4624-8d6a-369c86844f23
 

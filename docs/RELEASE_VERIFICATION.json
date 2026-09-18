@@ -1,19 +1,19 @@
 {
   "report": "Cowork Adoption Intelligence",
-  "version": "2.0.1-testing",
-  "verifiedAt": "2026-09-14T17:45:46.268-05:00",
-  "packageVerifiedAt": "2026-09-15T19:46:27.588-05:00",
+  "version": "3.0.0-testing",
+  "verifiedAt": "2026-09-17T22:27:26.604-05:00",
+  "packageVerifiedAt": "2026-09-17T22:27:26.604-05:00",
   "mediaVerifiedAt": "2026-09-15T21:14:50.868-05:00",
   "result": "pass",
   "checks": {
     "pbir": {
       "errors": 0,
-      "warnings": 3,
+      "warnings": 4,
       "warningScope": "remote JSON schemas unreachable; local structural validation completed"
     },
     "report": {
-      "pages": 9,
-      "visuals": 266,
+      "pages": 10,
+      "visuals": 289,
       "bookmarks": 41,
       "bookmarkActions": 50,
       "unresolvedBookmarkActions": 0,
@@ -38,19 +38,68 @@
         }
       }
     },
+    "model": {
+      "refresh": "pass",
+      "measureErrors": 0,
+      "columnErrors": 0,
+      "partitionErrors": 0,
+      "delegationScoreMaximum": 100.0,
+      "championTierCounts": {
+        "top5Percent": 4,
+        "top10Percent": 8,
+        "top20Percent": 15
+      },
+      "monthlyRunRateBefore": 19.78,
+      "monthlyRunRateAfter": 477.43,
+      "februaryBoundaryTest": "pass",
+      "narrowedAuditCoverage": "blank",
+      "allocationParityOverallAndByDepartment": "pass",
+      "metricGuide": {
+        "pageSections": 10,
+        "rows": 74,
+        "duplicateSortKeys": 0,
+        "metricOrder": "contiguous-per-page"
+      }
+    },
     "parameters": {
-      "requiredPrompts": 1,
-      "promptNames": [
-        "DataFolderPath"
-      ]
+      "local": {
+        "requiredPrompts": 1,
+        "promptNames": [
+          "DataFolderPath"
+        ]
+      },
+      "sharePoint": {
+        "requiredPrompts": 2,
+        "promptNames": [
+          "SharePointSiteUrl",
+          "SharePointFolderUrl"
+        ],
+        "sharePointFilesCalls": 1,
+        "folderFilesCalls": 0,
+        "fileContentsCalls": 0
+      }
     },
     "pbit": {
-      "filename": "Cowork Adoption Intelligence v2 Testing.pbit",
-      "bytes": 659272,
-      "sha256": "68520b63083b4004daa29c25d2d4a4cbb4138e4c56c51f69f8514962a1178146",
+      "filename": "Cowork Adoption Intellgience V3.pbit",
+      "bytes": 719003,
+      "sha256": "097a9d6d3c6f499df22ed1191828702c2bdbf9a477e4a30e776e8811ad48af2c",
       "importedDataModel": false,
       "securityBindings": false,
       "securityBindingsContentTypeOverride": false,
+      "desktopReopen": "pass",
+      "sensitivityState": "public-labeled-and-unprotected",
+      "sensitivityLabelDisplayName": "Public",
+      "sensitivityLabelId": "87867195-f2b8-4ac2-b0b6-6bb73cb33afc",
+      "embeddedLabelPropertyName": "Not Restricted"
+    },
+    "sharePointPbit": {
+      "filename": "Cowork Adoption Intellgience V3 - SharePoint.pbit",
+      "bytes": 725440,
+      "sha256": "58ef5e0ab4c072b34335cc195b2f46b1c1338f0a5dc9fadaa66861485f4a035c",
+      "importedDataModel": false,
+      "securityBindings": false,
+      "securityBindingsContentTypeOverride": false,
+      "builderReproduction": "pass",
       "sensitivityState": "public-labeled-and-unprotected",
       "sensitivityLabelDisplayName": "Public",
       "sensitivityLabelId": "87867195-f2b8-4ac2-b0b6-6bb73cb33afc",

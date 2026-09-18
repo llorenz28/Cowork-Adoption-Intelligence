@@ -78,7 +78,7 @@ table _Measures
 		formatString: 0.0%
 		lineageTag: ad9cf5bc-e2dc-4096-9072-24b7ba550ed8
 
-	/// The rate per credit currently applied (from the what-if slicer, default 0.01).
+	/// Customer-selected contracted or pay-as-you-go rate. Blank until explicitly selected.
 	measure 'Effective Rate' = [Rate per Credit Value]
 		formatString: $ #,0.000
 		lineageTag: 99f5d5e8-e4d5-477b-a66c-c867f2d1b53f
@@ -88,13 +88,29 @@ table _Measures
 		formatString: $ #,0
 		lineageTag: 49b00e66-7a0c-485c-a1de-6617eb8d2003
 
-	/// Cost of consumed credits at the 0.01 USD list rate.
-	measure 'List Cost' = [Total Credits Used] * 0.01
+	/// Cost of consumed credits at the declared template comparison rate, not a sourced list price.
+	measure 'Cost at Default Rate' =
+			VAR _defaultRate =
+				LOOKUPVALUE(
+					'Value Constants'[Value],
+					'Value Constants'[ConstantName], "Default rate per credit"
+				)
+			RETURN
+				IF(
+					ISBLANK([Total Credits Used]) || ISBLANK(_defaultRate),
+					BLANK(),
+					[Total Credits Used] * _defaultRate
+				)
 		formatString: $ #,0
 		lineageTag: 47bc289f-f55b-45e2-9a51-93d421b097ea
 
-	/// Savings achieved versus the list rate at the effective rate.
-	measure 'Savings vs List' = IF(ISBLANK([List Cost]) || ISBLANK([Contracted Cost]), BLANK(), [List Cost] - [Contracted Cost])
+	/// Difference between cost at the template comparison rate and customer-selected contracted cost.
+	measure 'Variance vs Default Rate' =
+			IF(
+				ISBLANK([Cost at Default Rate]) || ISBLANK([Contracted Cost]),
+				BLANK(),
+				[Cost at Default Rate] - [Contracted Cost]
+			)
 		formatString: $ #,0
 		lineageTag: bb04ce39-6314-4645-9138-8338ad2c2051
 
@@ -104,7 +120,19 @@ table _Measures
 		lineageTag: fa286ff3-d2cb-4eb6-bdcd-4ae41736883d
 
 	/// Sum of per-user credits consumed above each user's limit.
-	measure 'Over Limit Credits' = IF([Consumption Data Available] = FALSE(), BLANK(), SUMX(SUMMARIZE(Fact_Consumption, Dim_User[UserKey], "u", [Total Credits Used], "l", [Total Credit Limit]), MAX(0, [u] - [l])))
+	measure 'Over Limit Credits' =
+			IF(
+				NOT [Consumption Data Available],
+				BLANK(),
+				SUMX(
+					ADDCOLUMNS(
+						SUMMARIZE(Fact_Consumption, Dim_User[UserKey]),
+						"@u", [Total Credits Used],
+						"@l", [Total Credit Limit]
+					),
+					MAX(0, [@u] - [@l])
+				)
+			)
 		formatString: #,0
 		lineageTag: 02958e88-f853-4bf8-b87a-c0bd49204e3e
 
@@ -138,13 +166,26 @@ table _Measures
 		formatString: 0.0%
 		lineageTag: bd1dd2a1-8bb6-4063-ae50-16cd8b16bdb8
 
-	/// How efficiently allocated credits are being consumed.
+	/// Backward-compatible alias of Utilization % for existing thin reports; hidden to prevent duplicate field-list choices.
 	measure 'Allocation Efficiency %' = DIVIDE([Total Credits Used], [Total Credit Limit])
 		formatString: 0.0%
+		isHidden
 		lineageTag: 72285c1b-860a-4070-94ed-e2522f3f8043
 
 	/// Sum of per-user credits allocated but not consumed.
-	measure 'Under-Utilized Credits' = IF([Consumption Data Available] = FALSE(), BLANK(), SUMX(SUMMARIZE(Fact_Consumption, Dim_User[UserKey], "u", [Total Credits Used], "l", [Total Credit Limit]), MAX(0, [l] - [u])))
+	measure 'Under-Utilized Credits' =
+			IF(
+				NOT [Consumption Data Available],
+				BLANK(),
+				SUMX(
+					ADDCOLUMNS(
+						SUMMARIZE(Fact_Consumption, Dim_User[UserKey]),
+						"@u", [Total Credits Used],
+						"@l", [Total Credit Limit]
+					),
+					MAX(0, [@l] - [@u])
+				)
+			)
 		formatString: #,0
 		lineageTag: ad91ff8a-0707-400d-8e8c-c3d96d83e865
 
@@ -170,7 +211,15 @@ table _Measures
 		formatString: 0.0%
 		lineageTag: 5431529c-05d5-4343-9e7f-9c182798bb5d
 
-	measure 'Days Elapsed' = DAY(MAX(Fact_Consumption[LastActivityDate]))
+	measure 'Days Elapsed' =
+			VAR _asOf = [Data As Of]
+			VAR _monthStart = EOMONTH(_asOf, -1) + 1
+			RETURN
+				IF(
+					ISBLANK(_asOf),
+					BLANK(),
+					DATEDIFF(_monthStart, _asOf, DAY) + 1
+				)
 		formatString: #,0
 		lineageTag: 84b990e2-b74d-4ba6-b38f-22c4e62aa1a8
 
@@ -179,7 +228,16 @@ table _Measures
 		lineageTag: 89664dfc-c3e4-402c-8bd3-f64595038cf0
 
 	/// Average credits consumed per elapsed day in the month.
-	measure 'Daily Run Rate' = DIVIDE([Total Credits Used], [Days Elapsed])
+	measure 'Daily Run Rate' =
+			VAR _asOf = [Data As Of]
+			VAR _monthStart = EOMONTH(_asOf, -1) + 1
+			VAR _mtdCredits =
+				CALCULATE(
+					[Total Credits Used],
+					DATESBETWEEN(Dim_Date[Date], _monthStart, _asOf)
+				)
+			RETURN
+				DIVIDE(_mtdCredits, [Days Elapsed])
 		formatString: #,0.0
 		lineageTag: 1c9c6161-6662-411b-a501-79bb30d73f7b
 
@@ -246,25 +304,27 @@ table _Measures
 		formatString: #,0
 		lineageTag: b97deae4-964c-4aa0-b1e0-8d3190e33c63
 
-	/// Share of freed time reinvested into productive work (from Value Constants).
-	measure 'Reinvestment Rate' = LOOKUPVALUE('Value Constants'[Value], 'Value Constants'[ConstantName], "Reinvestment rate")
+	/// Customer-selected share of modeled assisted time counted in the adjusted value scenario.
+	measure 'Reinvestment Rate' = [Reinvestment Slider Value]
 		formatString: 0%
 		lineageTag: 43810b42-537e-44ab-b806-af5d064a3a92
 
-	/// Conservatism haircut applied to gross estimated value (from Value Constants).
-	measure 'Penalty Factor' = LOOKUPVALUE('Value Constants'[Value], 'Value Constants'[ConstantName], "Penalty factor")
+	/// Customer-selected success and quality factor applied to the adjusted value scenario.
+	measure 'Success Quality Factor' = [Success Quality Value]
 		formatString: 0%
 		lineageTag: 51481f7c-6b51-44ec-8aea-0b03ba7e1974
 
+	/// Report-facing alias retained for backward compatibility with published report bindings.
 	measure 'Interaction Hours Saved' = [Assisted Hours]
 		formatString: #,0.0
 		lineageTag: 97dfcdba-516a-4b50-8869-30afb158eec5
 
+	/// Report-facing alias retained for backward compatibility and adjusted-value narrative measures.
 	measure 'Interaction Value $' = [Estimated Value $]
 		formatString: $ #,0
 		lineageTag: 0ce6ebb6-ec69-4778-aa93-c66902d5b404
 
-	/// Derived ROI using modeled value, observed customer consumption, and an explicitly selected customer rate. Blank when any required input is unavailable.
+	/// Report-facing alias retained for backward compatibility with published report bindings.
 	measure 'Interaction ROI Multiple' = [ROI Multiple]
 		formatString: 0.0"x"
 		lineageTag: f65a7b06-5c44-4168-8fad-edfd0b2ecd46
@@ -324,22 +384,37 @@ table _Measures
 		lineageTag: a898304b-174a-4a7e-a87d-d60dadbbbf3c
 
 	/// Average categorized tasks per monthly snapshot in context.
-	measure 'Tasks per Month' = DIVIDE([Total Tasks], DISTINCTCOUNT(Fact_Tasks[DateKey]))
+	measure 'Tasks per Month' =
+			VAR _months =
+				COUNTROWS(
+					FILTER(
+						VALUES(Dim_Date[MonthStart]),
+						CALCULATE([Total Tasks]) > 0
+					)
+				)
+			RETURN
+				DIVIDE([Total Tasks], _months)
 		formatString: #,0
 		lineageTag: d22b9141-744a-4c5e-adcb-a7b07dcd9259
 
+	/// Hidden compatibility alias; report visuals use Fact_CoworkUsage[Scheduled Share %] directly.
 	measure 'Scheduled Share' = [Scheduled Share %]
 		formatString: 0.0%
+		isHidden
 		lineageTag: 53d92b1d-e9b2-4f5d-9df9-e5ceefab09af
 
-	measure 'Turns per Month' = DIVIDE([Cowork Task Count], DISTINCTCOUNT(Fact_CoworkDetail[DateKey]))
+	measure 'Turns per Month' =
+			VAR _months =
+				COUNTROWS(
+					FILTER(
+						VALUES(Dim_Date[MonthStart]),
+						CALCULATE([Cowork Task Count]) > 0
+					)
+				)
+			RETURN
+				DIVIDE([Cowork Task Count], _months)
 		formatString: #,0
 		lineageTag: 763e9e32-ccfd-4672-935a-d6a6a1d0c219
-
-	/// Period-over-period user return rate - share of prior-snapshot active users who remain active in the next snapshot, averaged across consecutive snapshots (weekly against real Lynx pulls; snapshot-grain here).
-	measure 'Weekly Return Rate' = AVERAGEX ( FILTER ( VALUES ( Fact_Tasks[DateKey] ), Fact_Tasks[DateKey] > CALCULATE ( MIN ( Fact_Tasks[DateKey] ), ALL ( Fact_Tasks[DateKey] ) ) ), VAR CurrDate = Fact_Tasks[DateKey] VAR PrevDate = CALCULATE ( MAX ( Fact_Tasks[DateKey] ), FILTER ( ALL ( Fact_Tasks[DateKey] ), Fact_Tasks[DateKey] < CurrDate ) ) VAR PrevUsers = CALCULATETABLE ( VALUES ( Fact_Tasks[UserKey] ), ALL ( Fact_Tasks[DateKey] ), Fact_Tasks[DateKey] = PrevDate, Fact_Tasks[Tasks] > 0 ) VAR CurrUsers = CALCULATETABLE ( VALUES ( Fact_Tasks[UserKey] ), ALL ( Fact_Tasks[DateKey] ), Fact_Tasks[DateKey] = CurrDate, Fact_Tasks[Tasks] > 0 ) RETURN DIVIDE ( COUNTROWS ( INTERSECT ( PrevUsers, CurrUsers ) ), COUNTROWS ( PrevUsers ) ) )
-		formatString: 0.0%
-		lineageTag: abff008d-a626-4c20-a6a4-52c05170a0c5
 
 	measure 'High-Value Action Share %' = DIVIDE(CALCULATE([Estimated Value $], KEEPFILTERS(Dim_TaskCategory[Value Tier] = "High")), [Estimated Value $])
 		formatString: 0.0%
@@ -391,7 +466,7 @@ table _Measures
 			VAR _skillHours = IF ( ISBLANK ( _selectedSkill ), 0, CALCULATE ( [Skill-Sliced Assisted Hours], Dim_CoworkSkill[SkillDisplayName] = _selectedSkill ) )
 			VAR _adjustedHours = _baselineHours + _skillHours * ( _adjPct - 1 )
 			RETURN
-				IF ( ISBLANK ( _baselineHours ), BLANK (), _adjustedHours * [Loaded Rate Value] * [Reinvestment Slider Value] * [Success Quality Value] )
+				IF ( ISBLANK ( _baselineHours ), BLANK (), _adjustedHours * [Loaded Rate Value] * [Reinvestment Rate] * [Success Quality Factor] )
 		formatString: $ #,0
 		lineageTag: 7cad0001-cd26-4c01-9a01-0001cd000001
 
@@ -945,7 +1020,7 @@ table _Measures
 			    FORMAT(_users, "#,0") & " active users   -   " &
 			    FORMAT([Cowork Tasks (Threads)], "#,0") & " tasks delegated   -   " &
 			    FORMAT([Assisted Hours], "#,0") & " hours displaced   -   " &
-			    FORMAT([Delegation Ratio], "0.0") & "x delegation ratio   -   " &
+			    FORMAT([Modeled-to-Elapsed Minutes Ratio], "0.0") & "x modeled-to-elapsed minutes   -   " &
 			    FORMAT(DIVIDE([Users on Rung 3+], _users), "0%") & " beyond basic use"
 			)
 		lineageTag: 9cc1c246-3c08-4963-bcbf-ae5af5e4af90
@@ -1025,30 +1100,81 @@ table _Measures
 		formatString: #,0
 		lineageTag: fdaa86b8-0d1e-48c8-bcdf-ed19122d39be
 
-	measure 'Delegation Ratio' = DIVIDE([Assisted Minutes], [Autonomous Minutes])
+	/// Ratio of modeled benchmark minutes saved to observed thread elapsed minutes; the numerator and denominator are intentionally different evidence types.
+	measure 'Modeled-to-Elapsed Minutes Ratio' = DIVIDE([Assisted Minutes], [Autonomous Minutes])
 		formatString: 0.0"x"
 		lineageTag: 7202dd84-75fb-4af7-ba5a-2492010382f4
 
 	measure 'User Delegation Rung' =
-			VAR _tasks  = [Cowork Tasks (Threads)]
-			VAR _sched  = [Reported Scheduled]
-			VAR _multi  = [Multi-Skill Task %]
-			VAR _skills = [Avg Distinct Skills per User]
+			VAR _tasks = [Cowork Tasks (Threads)]
+			VAR _scheduled = [Reported Scheduled]
+			VAR _multiSkill = [Multi-Skill Task %]
+			VAR _duration = [Avg Task Duration (min)]
 			RETURN
-			SWITCH(
-			    TRUE(),
-			    _tasks = 0,      "0 · Not started",
-			    _sched > 0,      "4 · Automating",
-			    _multi >= 0.30,  "3 · Delegating",
-			    _skills >= 3,    "2 · Using",
-			                     "1 · Trying"
-			)
+			    SWITCH(
+			        TRUE(),
+			        COALESCE(_tasks, 0) = 0, "Not started",
+			        _scheduled > 0, "Automating",
+			        _multiSkill >= 0.30, "Delegating",
+			        _duration >= 5, "Using",
+			        "Trying"
+			    )
 		lineageTag: 98e3f117-d463-4243-a722-5b9b9e62543c
+
+	measure 'Cowork Delegation Not Started Users' =
+			COUNTROWS(
+			    FILTER(
+			        VALUES(Dim_User[UserKey]),
+			        [User Delegation Rung] = "Not started"
+			    )
+			)
+		formatString: #,0
+		lineageTag: f3e6bdf4-7961-4cd4-ba53-f85f002b802d
+
+	measure 'Cowork Delegation Trying Users' =
+			COUNTROWS(
+			    FILTER(
+			        VALUES(Dim_User[UserKey]),
+			        [User Delegation Rung] = "Trying"
+			    )
+			)
+		formatString: #,0
+		lineageTag: d9fc206e-e60f-4f24-9ad2-550c8dcbc29c
+
+	measure 'Cowork Delegation Using Users' =
+			COUNTROWS(
+			    FILTER(
+			        VALUES(Dim_User[UserKey]),
+			        [User Delegation Rung] = "Using"
+			    )
+			)
+		formatString: #,0
+		lineageTag: 3e1779b0-acde-41c6-b260-493c0324cdb2
+
+	measure 'Cowork Delegation Delegating Users' =
+			COUNTROWS(
+			    FILTER(
+			        VALUES(Dim_User[UserKey]),
+			        [User Delegation Rung] = "Delegating"
+			    )
+			)
+		formatString: #,0
+		lineageTag: cf1530b9-c750-455f-9619-0506fdc6fb75
+
+	measure 'Cowork Delegation Automating Users' =
+			COUNTROWS(
+			    FILTER(
+			        VALUES(Dim_User[UserKey]),
+			        [User Delegation Rung] = "Automating"
+			    )
+			)
+		formatString: #,0
+		lineageTag: d827b11c-3207-48d6-acc1-b7ee92776c7a
 
 	measure 'Users on Rung 3+' =
 			CALCULATE(
 			    [Cowork Active Users],
-			    FILTER(VALUES(Dim_User[UserKey]), [User Delegation Rung] IN {"3 · Delegating", "4 · Automating"})
+			    FILTER(VALUES(Dim_User[UserKey]), [User Delegation Rung] IN {"Delegating", "Automating"})
 			)
 		formatString: #,0
 		lineageTag: 29773174-b04a-45ae-b3fe-af8b84937c8a
@@ -1059,10 +1185,10 @@ table _Measures
 			        VALUES(Dim_User[UserKey]),
 			        SWITCH(
 			            [User Delegation Rung],
-			            "4 · Automating", 4,
-			            "3 · Delegating", 3,
-			            "2 · Using", 2,
-			            "1 · Trying", 1,
+			            "Automating", 4,
+			            "Delegating", 3,
+			            "Using", 2,
+			            "Trying", 1,
 			            0
 			        )
 			    ),
@@ -1071,12 +1197,30 @@ table _Measures
 		formatString: 0%
 		lineageTag: e67e5f26-9744-4210-94a2-35a78a6f6682
 
-	/// Per-rung user counts for the delegation-ladder trend. The leading rung digit
-	/// keeps the filter stable across localized display text.
+	/// Sort value for the standardized delegation ladder.
+	measure 'Delegation Rung Order' =
+			SWITCH(
+			    [User Delegation Rung],
+			    "Automating", 4,
+			    "Delegating", 3,
+			    "Using", 2,
+			    "Trying", 1,
+			    0
+			)
+		formatString: 0
+
+	/// Per-rung user counts for the delegation-ladder trend.
+	measure 'Users at Rung 0 (Not started)' =
+			CALCULATE(
+			    COUNTROWS(VALUES(Dim_User[UserKey])),
+			    FILTER(VALUES(Dim_User[UserKey]), [User Delegation Rung] = "Not started")
+			)
+		formatString: #,0
+
 	measure 'Users at Rung 1 (Trying)' =
 			CALCULATE(
 			    [Cowork Active Users],
-			    FILTER(VALUES(Dim_User[UserKey]), LEFT([User Delegation Rung], 1) = "1")
+			    FILTER(VALUES(Dim_User[UserKey]), [User Delegation Rung] = "Trying")
 			)
 		formatString: #,0
 		lineageTag: 224726fe-9edc-4e99-a798-c3a1acb68119
@@ -1084,7 +1228,7 @@ table _Measures
 	measure 'Users at Rung 2 (Using)' =
 			CALCULATE(
 			    [Cowork Active Users],
-			    FILTER(VALUES(Dim_User[UserKey]), LEFT([User Delegation Rung], 1) = "2")
+			    FILTER(VALUES(Dim_User[UserKey]), [User Delegation Rung] = "Using")
 			)
 		formatString: #,0
 		lineageTag: 487d63a2-9a51-4fa4-9f71-891b8912cc65
@@ -1092,7 +1236,7 @@ table _Measures
 	measure 'Users at Rung 3 (Delegating)' =
 			CALCULATE(
 			    [Cowork Active Users],
-			    FILTER(VALUES(Dim_User[UserKey]), LEFT([User Delegation Rung], 1) = "3")
+			    FILTER(VALUES(Dim_User[UserKey]), [User Delegation Rung] = "Delegating")
 			)
 		formatString: #,0
 		lineageTag: 80bf76c1-34c5-4f8c-a4be-52c54acc9402
@@ -1100,7 +1244,7 @@ table _Measures
 	measure 'Users at Rung 4 (Automating)' =
 			CALCULATE(
 			    [Cowork Active Users],
-			    FILTER(VALUES(Dim_User[UserKey]), LEFT([User Delegation Rung], 1) = "4")
+			    FILTER(VALUES(Dim_User[UserKey]), [User Delegation Rung] = "Automating")
 			)
 		formatString: #,0
 		lineageTag: fcfc1a05-6e82-413c-9c8e-e53037873c25
@@ -1145,6 +1289,10 @@ table _Measures
 			VAR _user = SELECTEDVALUE(Dim_User[DisplayName])
 			RETURN IF(ISBLANK(_user), BLANK(), [User Delegation Rung])
 		lineageTag: 7a87cf4a-b19c-4e91-8cf5-6f5a5718dce1
+
+	/// Latest observed Cowork activity date in the current organization and user context.
+	measure 'User Last Activity' = MAX(Fact_CoworkUsage[LastActivityDate])
+		formatString: mmm d, yyyy
 
 	/// Per-user enablement action for 99_review_targets. The rules use measured activity and
 	/// delegation depth only; they intentionally do not infer license-removal or cost-risk decisions.
@@ -1227,17 +1375,7 @@ table _Measures
 
 	/// Normalized 0-1 form of the existing measured delegation rung.
 	measure 'Champion Delegation Score' =
-			DIVIDE(
-				SWITCH(
-					LEFT([User Delegation Rung], 1),
-					"4", 4,
-					"3", 3,
-					"2", 2,
-					"1", 1,
-					0
-				),
-				4
-			)
+			DIVIDE([Delegation Rung Order], 4)
 		formatString: 0%
 		displayFolder: Champions
 		lineageTag: afed087d-105e-444e-98af-3c6cb1e6089c

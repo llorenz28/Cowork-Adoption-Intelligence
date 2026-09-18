@@ -50,5 +50,11 @@ ref table Dim_UserOrg
 ref table 'Estimate Basis'
 ref table Dim_ModelProvider
 ref table 'Champion Tier'
+ref table 'Momentum Return Weight'
+ref table 'Momentum Consistency Weight'
+ref table 'Momentum Intensity Weight'
+ref table 'Momentum Maturity Weight'
+ref table 'Momentum Active-Day Cap'
+ref table 'Momentum Prompt Cap'
 
 ref cultureInfo en-US

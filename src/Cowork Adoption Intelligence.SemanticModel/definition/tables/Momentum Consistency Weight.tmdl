@@ -1,0 +1,15 @@
+table 'Momentum Consistency Weight'
+
+	/// Weight assigned to active-day consistency in the momentum index.
+	measure 'Momentum Consistency Weight Value' = SELECTEDVALUE('Momentum Consistency Weight'[Momentum Consistency Weight], 0.25)
+		formatString: 0%
+
+	column 'Momentum Consistency Weight'
+		dataType: decimal
+		formatString: 0%
+		summarizeBy: none
+		sourceColumn: [Value]
+
+	partition 'Momentum Consistency Weight' = calculated
+		mode: import
+		source = SELECTCOLUMNS(GENERATESERIES(0, 100, 1), "Value", CURRENCY(DIVIDE([Value], 100)))

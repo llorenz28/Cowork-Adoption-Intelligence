@@ -3,6 +3,11 @@
 This guide starts with a short packaged-data smoke test, then walks through
 production collection. No single person needs every tenant role.
 
+This guide uses the local-folder edition. To load the same supported exports
+directly from SharePoint, use
+[`Cowork Adoption Intellgience V3 - SharePoint.pbit`](Cowork%20Adoption%20Intellgience%20V3%20-%20SharePoint.pbit)
+and follow the [SharePoint setup guide](docs/SHAREPOINT_SETUP.md).
+
 ## Before you start
 
 For the sample path:
@@ -34,7 +39,7 @@ permissions and production export formats.
 
 Download:
 
-1. [`Cowork Adoption Intelligence v2 Testing.pbit`](Cowork%20Adoption%20Intelligence%20v2%20Testing.pbit)
+1. [`Cowork Adoption Intellgience V3.pbit`](Cowork%20Adoption%20Intellgience%20V3.pbit)
 2. [`Cowork-Adoption-Intelligence-Sample-Data.zip`](release/Cowork-Adoption-Intelligence-Sample-Data.zip)
 
 On GitHub, open each file and select **Download raw file**.
@@ -62,7 +67,7 @@ resource URLs use `tenant.example.com`.
 
 ### Step 3: open the Power BI template
 
-1. Double-click `Cowork Adoption Intelligence v2 Testing.pbit`.
+1. Double-click `Cowork Adoption Intellgience V3.pbit`.
 2. Power BI Desktop opens a parameter screen.
 3. For `DataFolderPath`, enter:
 
@@ -254,7 +259,7 @@ not choose the newest file.
 
 ### Step 7: load and validate
 
-1. Open `Cowork Adoption Intelligence v2 Testing.pbit`.
+1. Open `Cowork Adoption Intellgience V3.pbit`.
 2. Set `DataFolderPath` to `C:\CoworkAdoptionData`.
 3. Select **Load**.
 4. Use the privacy level approved by your organization.
@@ -282,11 +287,13 @@ using champion and modeled-value signals.
 3. Apply or confirm the sensitivity label required by organizational policy.
 4. Publish with Power BI Pro/PPU unless qualifying capacity applies and workspace
    `Contributor` or higher.
-5. Configure an
+5. For the local-folder edition, configure an
    [on-premises data gateway](https://learn.microsoft.com/data-integration/gateway/service-gateway-onprem)
    for scheduled refresh from local or UNC paths.
 
 Publishing does not make `C:\CoworkAdoptionData` cloud-accessible.
+The SharePoint edition uses the SharePoint cloud connector and normally does
+not require an on-premises data gateway.
 
 ## Quick help
 
@@ -300,6 +307,7 @@ Publishing does not make `C:\CoworkAdoptionData` cloud-accessible.
 | Department visuals are blank | Organization file is absent or unmatched | Confirm all ten headers and UPN overlap |
 | Champion list is empty | The selected cohort is too small or below the eligibility floor | Widen the period or clear narrow filters |
 | Service refresh fails | Power BI Service cannot reach local files | Configure and map an on-premises gateway |
+| SharePoint folder returns no files | The folder URL is a sharing link, contains a query string, or is outside the site URL | Use the canonical document-library folder URL from the configured site |
 
 ## Security reminders
 

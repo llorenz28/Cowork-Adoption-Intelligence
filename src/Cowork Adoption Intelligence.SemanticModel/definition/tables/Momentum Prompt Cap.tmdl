@@ -1,0 +1,15 @@
+table 'Momentum Prompt Cap'
+
+	/// Weekly prompts per active user that produce a full intensity component.
+	measure 'Momentum Prompt Cap Value' = SELECTEDVALUE('Momentum Prompt Cap'[Momentum Prompt Cap], 12)
+		formatString: 0
+
+	column 'Momentum Prompt Cap'
+		dataType: int64
+		formatString: 0
+		summarizeBy: none
+		sourceColumn: [Value]
+
+	partition 'Momentum Prompt Cap' = calculated
+		mode: import
+		source = GENERATESERIES(1, 50, 1)

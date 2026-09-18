@@ -72,9 +72,11 @@ table Dim_Date
 		mode: import
 		source =
 				let
-					StartDate = Date.StartOfYear(AsOfDate),
-					EndDate = Date.EndOfMonth(AsOfDate),
-					DayCount = Duration.Days(EndDate - StartDate) + 1,
+				YearStart = Date.StartOfYear(AsOfDate),
+				RollingStart = Date.StartOfWeek(Date.AddMonths(AsOfDate, -13), Day.Monday),
+				StartDate = List.Min({YearStart, RollingStart}),
+				EndDate = Date.EndOfMonth(AsOfDate),
+				DayCount = Duration.Days(EndDate - StartDate) + 1,
 					Dates = List.Dates(StartDate, DayCount, #duration(1, 0, 0, 0)),
 					AsTable = Table.FromList(Dates, Splitter.SplitByNothing(), {"Date"}),
 					Typed = Table.TransformColumnTypes(AsTable, {{"Date", type date}}),

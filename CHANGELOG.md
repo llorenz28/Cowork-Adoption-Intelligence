@@ -1,5 +1,31 @@
 # Changelog
 
+## 3.0.0-testing - 2026-09-17
+
+- Renamed the distributable template to **Cowork Adoption Intellgience V3**.
+- Redesigned Momentum Settings as the plain-language **Momentum Score Guide**
+  with a live score, component explanations, guardrails, and optional advanced
+  controls.
+- Added a separate SharePoint-compatible V3 template with two URL parameters,
+  one static `SharePoint.Files` connector, recursive folder filtering, and
+  binary-based CSV discovery.
+- Synchronized the editable PBIR source with the validated V3 package.
+- Restored the delegation-maturity component of champion scoring and verified
+  sample evidence scores up to 100.0 with Top 5%, 10%, and 20% counts of 4, 8,
+  and 15.
+- Corrected month-to-date run-rate forecasting, per-month activity measures, and
+  the rolling-history date table.
+- Disclosed the lifetime grain of scheduled-task totals and made Audit Coverage
+  unavailable under narrowed date filters.
+- Standardized the delegation ladder on Not started, Trying, Using, Delegating,
+  and Automating with one documented threshold set.
+- Updated all ten Metric Guide sections and documented adjustable momentum
+  weights, the 100% weight guard, and cross-tenant noncomparability.
+- Clarified rate assumptions, replaced misleading list-price terminology,
+  corrected allocation iterators, and documented retained compatibility aliases.
+- Re-exported the data-free PBIT with the Public sensitivity label and no
+  machine-bound `SecurityBindings`.
+
 ## 2.0.1-testing - 2026-09-14
 
 - Rebalanced the Cowork Champions page into a single seven-category row.

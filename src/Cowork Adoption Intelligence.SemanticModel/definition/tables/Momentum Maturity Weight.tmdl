@@ -1,0 +1,15 @@
+table 'Momentum Maturity Weight'
+
+	/// Weight assigned to advanced delegation maturity in the momentum index.
+	measure 'Momentum Maturity Weight Value' = SELECTEDVALUE('Momentum Maturity Weight'[Momentum Maturity Weight], 0.15)
+		formatString: 0%
+
+	column 'Momentum Maturity Weight'
+		dataType: decimal
+		formatString: 0%
+		summarizeBy: none
+		sourceColumn: [Value]
+
+	partition 'Momentum Maturity Weight' = calculated
+		mode: import
+		source = SELECTCOLUMNS(GENERATESERIES(0, 100, 1), "Value", CURRENCY(DIVIDE([Value], 100)))
