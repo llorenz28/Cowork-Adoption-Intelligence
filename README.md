@@ -33,7 +33,9 @@ champion signals.
 > adoption momentum, usage maturity, potential champions, work patterns, and
 > transparent modeled value.
 
-[Watch or download the MP4](media/Cowork-Adoption-Intelligence-Walkthrough.mp4) ·
+![](media/Cowork-Adoption-Intelligence-Walkthrough.mp4)
+
+[Open or download the MP4](media/Cowork-Adoption-Intelligence-Walkthrough.mp4) ·
 [Read the transcript](media/Cowork-Adoption-Intelligence-Walkthrough-transcript.md) ·
 [Download subtitles](media/Cowork-Adoption-Intelligence-Walkthrough.srt)
 
