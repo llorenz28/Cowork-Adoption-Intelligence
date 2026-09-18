@@ -1,131 +1,147 @@
 1
-00:00:00,100 --> 00:00:07,343
-Meet Cowork Adoption Intelligence: a testing, data-free Power BI template that turns approved Cowork audit exports into a clear adoption story.
+00:00:00,100 --> 00:00:08,742
+Meet Cowork Adoption Intelligence: a testing, data-free Power BI template that turns approved Cowork exports into a clear adoption story.
 
 2
-00:00:07,344 --> 00:00:13,277
-See reach, return, delegated work, workflow maturity, potential champions, and modeled value.
+00:00:08,743 --> 00:00:17,621
+It connects reach, return, organizational patterns, workflow maturity, potential champions, work mix, and modeled assisted time.
 
 3
-00:00:13,278 --> 00:00:16,013
-Here is a quick tour of the decisions it supports.
+00:00:18,540 --> 00:00:21,718
+Start Here routes program owners to the right question.
 
 4
-00:00:16,767 --> 00:00:20,713
-Start Here routes program owners to the right question: Is adoption growing?
+00:00:21,719 --> 00:00:23,490
+Is adoption building momentum?
 
 5
-00:00:20,714 --> 00:00:22,188
-Are people returning?
+00:00:23,491 --> 00:00:25,061
+Where is it strongest?
 
 6
-00:00:22,189 --> 00:00:24,078
-How deeply do they delegate?
+00:00:25,062 --> 00:00:26,656
+How mature is usage?
 
 7
-00:00:24,079 --> 00:00:25,968
-Where are potential champions?
+00:00:26,657 --> 00:00:32,609
+Begin with the decision, then open the page that carries the right evidence and interpretation boundary.
 
 8
-00:00:25,969 --> 00:00:29,924
-Begin with the decision, then follow the report to the right page and evidence.
-
-9
-00:00:30,700 --> 00:00:33,563
+00:00:33,540 --> 00:00:36,504
 Executive Summary reads the latest active week.
 
+9
+00:00:36,505 --> 00:00:38,537
+Weekly active users show reach.
+
 10
-00:00:33,564 --> 00:00:35,964
-Users and task threads show reach.
+00:00:38,538 --> 00:00:41,728
+Prompts, return rate, and active days show habit.
 
 11
-00:00:35,965 --> 00:00:39,281
-Prompts, active days, and return rate show habit.
+00:00:41,729 --> 00:00:51,251
+The momentum score balances return, consistency, intensity, and advanced delegation, so share it with the week, filters, weights, and caps.
 
 12
-00:00:39,282 --> 00:00:46,239
-The momentum score balances return, consistency, intensity, and advanced delegation, so always read it with its components.
-
-13
-00:00:47,000 --> 00:00:50,522
+00:00:52,173 --> 00:00:56,292
 Weekly Adoption and Usage shows the latest twelve active weeks.
 
+13
+00:00:56,293 --> 00:01:02,670
+Switch among reach, momentum, prompts, active days, and return rate without clearing filters.
+
 14
-00:00:50,523 --> 00:00:55,020
-Switch metrics without clearing filters, and use the heatmap to find concentration.
+00:01:02,671 --> 00:01:10,265
+Use the heatmap to find concentration, then check rollout timing, holidays, and export coverage before calling a trend.
 
 15
-00:00:55,021 --> 00:01:00,453
-Compare the same period and population, and check rollout timing or export coverage before calling a trend.
+00:01:11,173 --> 00:01:17,434
+Adoption by Attributes compares observed task volume and delegation patterns by department or country.
 
 16
-00:01:01,208 --> 00:01:07,447
-User Maturity combines rolling usage tiers, multi-skill task share, task duration, and the delegation ladder.
+00:01:17,435 --> 00:01:20,730
+These views depend on optional organization enrichment.
 
 17
-00:01:07,448 --> 00:01:12,564
-These signals can show readiness for advanced workflows, but may also reflect retries or friction.
+00:01:20,731 --> 00:01:25,099
+Always check population size and mapping coverage before comparing groups.
 
 18
-00:01:12,565 --> 00:01:14,936
-Pair them with role and work context.
+00:01:26,013 --> 00:01:34,048
+User Maturity combines the delegation ladder, multi-skill task share, task duration, and rolling twelve-week usage tiers.
 
 19
-00:01:15,708 --> 00:01:19,998
-Cowork Champions identifies potential enablement partners, not top performers.
+00:01:34,049 --> 00:01:39,534
+Scheduled-task totals are lifetime-scoped, while the other rungs follow the selected period.
 
 20
-00:01:19,999 --> 00:01:23,462
-Eligibility requires three threads across two active weeks.
+00:01:39,535 --> 00:01:43,129
+Pair every maturity signal with role and work context.
 
 21
-00:01:23,463 --> 00:01:29,741
-The score combines forty percent activity, thirty-five percent consistency, and twenty-five percent delegation maturity.
+00:01:44,047 --> 00:01:49,189
+Cowork Champions identifies potential enablement partners, not top performers.
 
 22
-00:01:29,742 --> 00:01:33,806
-Confirm role fit, willingness, and manager support before outreach.
+00:01:49,190 --> 00:01:53,473
+Eligibility requires three observed threads across two active weeks.
 
 23
-00:01:34,575 --> 00:01:40,410
-What They Use It For groups observed skills into work patterns and exposes unmapped tools for taxonomy maintenance.
+00:01:53,474 --> 00:02:01,044
+The evidence score balances activity, consistency, and delegation maturity, then applies the selected percentile tier.
 
 24
-00:01:40,411 --> 00:01:44,199
-Action value tiers are category references, not user scores.
+00:02:01,959 --> 00:02:08,935
+Activity and Assisted Hours connects observed Cowork records to low, mid, or high time-saved assumptions.
 
 25
-00:01:44,200 --> 00:01:48,805
-Validate the dominant categories before recommending a new workflow or enablement scenario.
+00:02:08,936 --> 00:02:14,016
+Category results are allocated estimates, not per-skill metering or a time study.
 
 26
-00:01:49,551 --> 00:01:55,042
-Activity and Assisted Hours applies selected low, mid, or high time benchmarks to observed task volume.
+00:02:14,017 --> 00:02:18,420
+Present a range and label every result as modeled assisted time.
 
 27
-00:01:55,043 --> 00:02:04,126
-Present a range, keep the assumptions visible, and label every result as modeled assisted time, not realized savings.
+00:02:19,325 --> 00:02:25,729
+What They Use It For groups observed skills into work patterns and preserves action and user detail behind bookmarks.
 
 28
-00:02:04,887 --> 00:02:10,329
-The Adoption Metric Guide keeps definitions, thresholds, dependencies, and boundaries visible.
+00:02:25,730 --> 00:02:30,167
+Action value tiers are declared category references, not user scores.
 
 29
-00:02:10,330 --> 00:02:14,875
-Use Usage Explorer to trace a headline to approved source records without assuming intent.
+00:02:30,168 --> 00:02:35,132
+Review unmapped skills and validate dominant categories before recommending a workflow.
 
 30
-00:02:14,876 --> 00:02:18,546
-Missing optional data means unavailable, not zero activity.
+00:02:36,037 --> 00:02:41,548
+Momentum Score Guide explains the live adoption signal before exposing optional controls.
 
 31
-00:02:18,547 --> 00:02:22,946
-This is decision support, not billing, compliance, or personnel evidence.
+00:02:41,549 --> 00:02:49,987
+The default weights are thirty-five percent return, twenty-five percent consistency, twenty-five percent intensity, and fifteen percent maturity.
 
 32
-00:02:23,703 --> 00:02:31,389
-That is Cowork Adoption Intelligence: one testing template for reach, return, workflow maturity, champions, and transparent modeled value.
+00:02:49,988 --> 00:02:54,617
+If the weights do not total one hundred percent, the score becomes blank.
 
 33
-00:02:31,390 --> 00:02:37,746
-Start with the fabricated sample, review the definitions, then connect approved exports to build an evidence-aware enablement plan.
+00:02:55,537 --> 00:03:04,763
+The Adoption Metric Guide defines all ten report pages, with evidence status, thresholds, dependencies, and interpretation boundaries.
+
+34
+00:03:04,764 --> 00:03:10,427
+Copy the definition, reporting period, filters, and status into decision records.
+
+35
+00:03:10,428 --> 00:03:15,367
+This is decision support, not billing, compliance, or personnel evidence.
+
+36
+00:03:16,281 --> 00:03:28,888
+That is Cowork Adoption Intelligence: one testing template for reach, return, organizational patterns, workflow maturity, champions, work mix, and transparent assisted-time scenarios.
+
+37
+00:03:28,889 --> 00:03:34,957
+Start with the fabricated sample, review the definitions, then connect approved exports when ready.

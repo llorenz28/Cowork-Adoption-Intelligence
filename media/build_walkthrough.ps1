@@ -4,13 +4,13 @@
 #>
 [CmdletBinding()]
 param(
-    [string]$Voice = 'en-US-ChristopherNeural',
+    [string]$Voice = 'en-US-AvaNeural',
     [ValidatePattern('^[+-]\d+%$')]
-    [string]$Rate = '+27%',
+    [string]$Rate = '+5%',
     [ValidatePattern('^[+-]\d+Hz$')]
-    [string]$Pitch = '+2Hz',
+    [string]$Pitch = '-2Hz',
     [ValidateRange(0.5, 3.0)]
-    [double]$SegmentGapSeconds = 0.6
+    [double]$SegmentGapSeconds = 0.8
 )
 
 Set-StrictMode -Version Latest
