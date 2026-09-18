@@ -1,8 +1,1 @@
-{
-  "$schema": "https://developer.microsoft.com/json-schemas/fabric/item/report/definition/page/2.1.0/schema.json",
-  "name": "92_actions_hub",
-  "displayName": "Usage Explorer",
-  "displayOption": "FitToPage",
-  "height": 720,
-  "width": 1280
-}
+{"$schema":"https://developer.microsoft.com/json-schemas/fabric/item/report/definition/page/2.1.0/schema.json","name":"92_actions_hub","displayName":"What They Use It For","displayOption":"FitToPage","height":720,"width":1280}

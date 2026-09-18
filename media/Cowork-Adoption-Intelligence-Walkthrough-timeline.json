@@ -49,7 +49,7 @@
   },
   {
     "id": "actions",
-    "title": "Actions by Category",
+    "title": "What They Use It For",
     "startSeconds": 94.475,
     "endSeconds": 109.451,
     "narrationSeconds": 14.376,
@@ -57,7 +57,7 @@
   },
   {
     "id": "activity-value",
-    "title": "Activity & Value",
+    "title": "Activity & Assisted Hours",
     "startSeconds": 109.451,
     "endSeconds": 124.787,
     "narrationSeconds": 14.736,

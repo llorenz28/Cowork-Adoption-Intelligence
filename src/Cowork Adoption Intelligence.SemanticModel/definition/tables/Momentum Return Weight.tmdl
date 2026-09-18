@@ -1,0 +1,15 @@
+table 'Momentum Return Weight'
+
+	/// Weight assigned to weekly return behavior in the momentum index.
+	measure 'Momentum Return Weight Value' = SELECTEDVALUE('Momentum Return Weight'[Momentum Return Weight], 0.35)
+		formatString: 0%
+
+	column 'Momentum Return Weight'
+		dataType: decimal
+		formatString: 0%
+		summarizeBy: none
+		sourceColumn: [Value]
+
+	partition 'Momentum Return Weight' = calculated
+		mode: import
+		source = SELECTCOLUMNS(GENERATESERIES(0, 100, 1), "Value", CURRENCY(DIVIDE([Value], 100)))

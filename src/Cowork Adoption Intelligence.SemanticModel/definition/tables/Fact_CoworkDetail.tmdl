@@ -193,10 +193,21 @@ table Fact_CoworkDetail
 		formatString: #,0
 		lineageTag: 5761b2cb-5faf-5e1d-a11b-4cc80175dcf0
 
-	/// Composite 0-100 momentum score inspired by the Super User reach-and-habit framing.
-	/// Components: weekly return 35%, active-day consistency 25%, prompt intensity 25%,
-	/// and advanced delegation 15%. Intensity is capped at the 12-action habit signal.
+	/// Composite 0-100 adoption momentum index using customer-adjustable component
+	/// weights and normalization caps. The default selections preserve the original
+	/// 35/25/25/15 weighting and 3-day/12-prompt conventions.
 	measure 'Cowork Adoption Momentum Score' =
+			VAR _returnWeight = [Momentum Return Weight Value]
+			VAR _consistencyWeight = [Momentum Consistency Weight Value]
+			VAR _intensityWeight = [Momentum Intensity Weight Value]
+			VAR _maturityWeight = [Momentum Maturity Weight Value]
+			VAR _activeDayCap = [Momentum Active-Day Cap Value]
+			VAR _promptCap = [Momentum Prompt Cap Value]
+			VAR _weightSum =
+			    _returnWeight +
+			    _consistencyWeight +
+			    _intensityWeight +
+			    _maturityWeight
 			VAR _axisWeek = SELECTEDVALUE(Dim_Date[WeekStart])
 			VAR _scoreWeek =
 			    IF(
@@ -243,27 +254,44 @@ table Fact_CoworkDetail
 			VAR _returnComponent =
 			    MIN(1.0, MAX(0.0, COALESCE(_returnRate, 0.0)))
 			VAR _consistencyComponent =
-			    MIN(1.0, MAX(0.0, DIVIDE(COALESCE(_activeDays, 0.0), 3.0)))
+			    MIN(1.0, MAX(0.0, DIVIDE(COALESCE(_activeDays, 0.0), _activeDayCap)))
 			VAR _intensityComponent =
-			    MIN(1.0, MAX(0.0, DIVIDE(COALESCE(_promptIntensity, 0.0), 12.0)))
+			    MIN(1.0, MAX(0.0, DIVIDE(COALESCE(_promptIntensity, 0.0), _promptCap)))
 			VAR _maturityComponent =
 			    MIN(1.0, MAX(0.0, DIVIDE(COALESCE(_advancedUsers, 0.0), _activeUsers)))
 			RETURN
 			    IF(
-			        ISBLANK(_activeUsers) || _activeUsers = 0,
+			        ISBLANK(_activeUsers) ||
+			        _activeUsers = 0 ||
+			        ABS(_weightSum - 1.0) > 0.0001,
 			        BLANK(),
 			        ROUND(
 			            100.0 * (
-			                0.35 * _returnComponent +
-			                0.25 * _consistencyComponent +
-			                0.25 * _intensityComponent +
-			                0.15 * _maturityComponent
+			                _returnWeight * _returnComponent +
+			                _consistencyWeight * _consistencyComponent +
+			                _intensityWeight * _intensityComponent +
+			                _maturityWeight * _maturityComponent
 			            ),
 			            0
 			        )
 			    )
 		formatString: 0
 		lineageTag: fe91b202-e663-5d95-9226-320d217d6e94
+
+	/// Confirms whether the four selected momentum weights total 100 percent.
+	measure 'Momentum Weight Status' =
+			VAR _weightSum =
+			    [Momentum Return Weight Value] +
+			    [Momentum Consistency Weight Value] +
+			    [Momentum Intensity Weight Value] +
+			    [Momentum Maturity Weight Value]
+			RETURN
+			    IF(
+			        ABS(_weightSum - 1.0) <= 0.0001,
+			        "Weights total 100% — momentum index is enabled.",
+			        "Weights sum to " & FORMAT(_weightSum, "0%") &
+			            " — adjust so they total 100%"
+			    )
 
 	measure 'Cowork Weekly Prompt Change %' =
 			VAR _axisWeek = SELECTEDVALUE(Dim_Date[WeekStart])
@@ -391,6 +419,32 @@ table Fact_CoworkDetail
 		formatString: 0.0%
 		lineageTag: 3a92e2fe-1715-579d-b3b8-425db4544347
 
+	/// Percentile rank of prompt volume within the current selected user population.
+	/// Returns blank below the same 20-active-user floor used by Value Percentile.
+	measure 'Cowork User Prompt Percentile' =
+			VAR _pop =
+			    COUNTROWS(
+			        FILTER(
+			            ALLSELECTED(Dim_User[UserKey]),
+			            [Cowork Prompt Count] > 0
+			        )
+			    )
+			VAR _rank =
+			    RANKX(
+			        FILTER(
+			            ALLSELECTED(Dim_User[UserKey]),
+			            [Cowork Prompt Count] > 0
+			        ),
+			        [Cowork Prompt Count],
+			        ,
+			        DESC
+			    )
+			RETURN
+			    IF(_pop < 20, BLANK(), DIVIDE(_pop - _rank, _pop - 1))
+		formatString: 0.0%
+		isHidden
+		lineageTag: 5701e3e4-31d9-4ff8-a7ae-e6074b1edb18
+
 	/// Rolling 12-week Cowork usage tier, evaluated per user and per week.
 	measure 'Cowork User Usage Tier' =
 			VAR _axisWeek = SELECTEDVALUE(Dim_Date[WeekStart])
@@ -425,7 +479,12 @@ table Fact_CoworkDetail
 			            CALCULATE([Cowork Prompt Count]) > 0
 			        )
 			    )
-			VAR _averageWeeklyPrompts = DIVIDE(_prompts, 12.0)
+			VAR _p =
+			    CALCULATE(
+			        [Cowork User Prompt Percentile],
+			        REMOVEFILTERS(Dim_Date),
+			        DATESBETWEEN(Dim_Date[Date], _startDate, _endDate)
+			    )
 			RETURN
 			    IF(
 			        ISBLANK(_endWeek),
@@ -433,9 +492,10 @@ table Fact_CoworkDetail
 			        SWITCH(
 			            TRUE(),
 			            COALESCE(_prompts, 0) = 0, "Inactive",
-			            _averageWeeklyPrompts >= 20 && _activeWeeks >= 9, "Power users",
-			            _averageWeeklyPrompts >= 8 && _activeWeeks >= 9, "Habitual users",
-			            _averageWeeklyPrompts >= 1, "Novice users",
+			            ISBLANK(_p), "Insufficient sample",
+			            _p >= 0.90 && _activeWeeks >= 9, "Power users",
+			            _p >= 0.60 && _activeWeeks >= 9, "Habitual users",
+			            _p >= 0.20, "Novice users",
 			            "Low users"
 			        )
 			    )
@@ -492,12 +552,23 @@ table Fact_CoworkDetail
 		formatString: #,0
 		lineageTag: 55ee835b-5a09-5401-b25c-1230029f7212
 
+	measure 'Cowork Insufficient Sample Users' =
+			COUNTROWS(
+			    FILTER(
+			        VALUES(Dim_User[UserKey]),
+			        [Cowork User Usage Tier] = "Insufficient sample"
+			    )
+			)
+		formatString: #,0
+		lineageTag: 55b3b2cf-77a3-45ec-8f03-eace6798a278
+
 	measure 'Cowork Usage Tier Population' =
 			[Cowork Power Users] +
 			[Cowork Habitual Users] +
 			[Cowork Novice Users] +
 			[Cowork Low Users] +
-			[Cowork Inactive Users]
+			[Cowork Inactive Users] +
+			[Cowork Insufficient Sample Users]
 		formatString: #,0
 		lineageTag: 84251bee-0f78-5f62-85f9-afefa1325616
 
@@ -624,6 +695,30 @@ table Fact_CoworkDetail
 			    )
 		formatString: #,0
 		lineageTag: 86b7c372-9e39-5539-b2c0-5e98c1f084d1
+
+	measure 'Cowork Insufficient Sample Users Trend' =
+			VAR _week = SELECTEDVALUE(Dim_Date[WeekStart])
+			VAR _lastWeek =
+			    MAXX(
+			        FILTER(
+			            ALLSELECTED(Dim_Date[WeekStart]),
+			            CALCULATE(
+			                [Cowork Active Users],
+			                REMOVEFILTERS(Dim_User[Department])
+			            ) > 0
+			        ),
+			        Dim_Date[WeekStart]
+			    )
+			RETURN
+			    IF(
+			        NOT ISBLANK(_week) &&
+			        NOT ISBLANK(_lastWeek) &&
+			        _week >= _lastWeek - 77 &&
+			        _week <= _lastWeek,
+			        [Cowork Insufficient Sample Users]
+			    )
+		formatString: #,0
+		lineageTag: 387e6b46-c5a9-426b-ba36-3faf2a89c6ac
 
 	/// Distinct Cowork threads at the activity grain so date, org, user-tier, and LLM filters all propagate.
 	measure 'Cowork Tasks in Filter Context' = DISTINCTCOUNT(Fact_CoworkDetail[ThreadId])

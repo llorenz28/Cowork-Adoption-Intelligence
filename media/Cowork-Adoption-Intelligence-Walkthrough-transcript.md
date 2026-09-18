@@ -26,13 +26,13 @@ User Maturity combines rolling usage tiers, multi-skill task share, task duratio
 
 Cowork Champions identifies potential enablement partners, not top performers. Eligibility requires three threads across two active weeks. The score combines forty percent activity, thirty-five percent consistency, and twenty-five percent delegation maturity. Confirm role fit, willingness, and manager support before outreach.
 
-## Actions by Category
+## What They Use It For
 
-Actions by Category groups observed skills into work patterns and exposes unmapped tools for taxonomy maintenance. Action value tiers are category references, not user scores. Validate the dominant categories before recommending a new workflow or enablement scenario.
+What They Use It For groups observed skills into work patterns and exposes unmapped tools for taxonomy maintenance. Action value tiers are category references, not user scores. Validate the dominant categories before recommending a new workflow or enablement scenario.
 
-## Activity & Value
+## Activity & Assisted Hours
 
-Activity and Value applies selected low, mid, or high time benchmarks to observed task volume. Estimated value also requires a customer-selected labor rate. Present a range, keep the assumptions visible, and label every result as modeled, not realized savings.
+Activity and Assisted Hours applies selected low, mid, or high time benchmarks to observed task volume. Present a range, keep the assumptions visible, and label every result as modeled assisted time, not realized savings.
 
 ## Adoption Metric Guide
 

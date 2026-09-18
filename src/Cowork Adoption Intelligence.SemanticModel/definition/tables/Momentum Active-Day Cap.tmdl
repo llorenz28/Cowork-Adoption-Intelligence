@@ -1,0 +1,15 @@
+table 'Momentum Active-Day Cap'
+
+	/// Active days per week that produce a full consistency component.
+	measure 'Momentum Active-Day Cap Value' = SELECTEDVALUE('Momentum Active-Day Cap'[Momentum Active-Day Cap], 3)
+		formatString: 0
+
+	column 'Momentum Active-Day Cap'
+		dataType: int64
+		formatString: 0
+		summarizeBy: none
+		sourceColumn: [Value]
+
+	partition 'Momentum Active-Day Cap' = calculated
+		mode: import
+		source = GENERATESERIES(1, 7, 1)

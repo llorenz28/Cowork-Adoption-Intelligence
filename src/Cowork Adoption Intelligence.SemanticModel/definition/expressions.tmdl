@@ -2,6 +2,7 @@
 /// consumption, usage, optional organization, and identity CSVs anywhere under
 /// this folder. The model discovers the optional exports by filename or schema.
 expression DataFolderPath = "C:\CoworkValueIntelligence\sample_data" meta [IsParameterQuery=true, Type="Text", IsParameterQueryRequired=true, Description="DATA FOLDER — REQUIRED. Select one folder containing your Purview Audit Search export CSVs and any optional Consumption - Users, Cowork usage, organization, and cowork_users.csv identity exports. Files may be placed in subfolders; supported exports are discovered automatically."]
+	lineageTag: 461f7acc-9867-4a36-9132-5ebb84c8ffa6
 
 	annotation PBI_ResultType = Text
 
@@ -31,6 +32,7 @@ expression fnFindCsvPath =
 					if Match = null then null else Match[#"Folder Path"] & Match[Name]
 		in
 			fn
+	lineageTag: a9f6bcaa-5519-45cb-8307-b08c8e59680c
 
 /// Retained as an internal compatibility value; it is not a template prompt.
 expression DataSourceMode = "Hybrid"
