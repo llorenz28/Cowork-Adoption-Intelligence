@@ -25,7 +25,9 @@ champion signals.
 > Cowork. Optional Microsoft 365 usage and organization files add reconciliation
 > and segmentation.
 
-![Cowork Adoption Intelligence executive summary populated with fabricated sample data](images/report-pages/02-executive-summary.png)
+<div align="center">
+<img src="images/report-preview.gif" alt="Animated preview of all 10 Cowork Adoption Intelligence pages using fabricated sample data" width="900">
+</div>
 
 > **Cowork Adoption Intelligence Walkthrough:** a narrated executive tour of
 > adoption momentum, usage maturity, potential champions, work patterns, and
@@ -149,6 +151,7 @@ before requesting permissions.
 | Fabricated sample package | [`release/Cowork-Adoption-Intelligence-Sample-Data.zip`](release/Cowork-Adoption-Intelligence-Sample-Data.zip) |
 | Step-by-step setup | [`SETUP.md`](SETUP.md) |
 | Interpretation guide | [`INTERPRETATION_GUIDE.md`](INTERPRETATION_GUIDE.md) |
+| Interpretation storyboard | [`PPTX`](Cowork%20Adoption%20Intelligence%20V3.0%20In%20Testing%20-%20Interpretation%20Storyboard.pptx) |
 | Narrated walkthrough | [`MP4`](media/Cowork-Adoption-Intelligence-Walkthrough.mp4) · [`Transcript`](media/Cowork-Adoption-Intelligence-Walkthrough-transcript.md) · [`Subtitles`](media/Cowork-Adoption-Intelligence-Walkthrough.srt) · [`Build notes`](media/README.md) |
 | Editable PBIP source | [`src/Cowork Adoption Intelligence.pbip`](src/Cowork%20Adoption%20Intelligence.pbip) |
 | Unpacked sample and generator | [`sample_data/`](sample_data/) · [`build_sample_data.py`](build_sample_data.py) |

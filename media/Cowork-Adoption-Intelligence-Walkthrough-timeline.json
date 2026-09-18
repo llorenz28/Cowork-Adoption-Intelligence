@@ -3,80 +3,96 @@
     "id": "introduction",
     "title": "Cowork Adoption Intelligence",
     "startSeconds": 0.0,
-    "endSeconds": 16.667,
-    "narrationSeconds": 16.056,
-    "gapSeconds": 0.6
+    "endSeconds": 18.44,
+    "narrationSeconds": 17.64,
+    "gapSeconds": 0.8
   },
   {
     "id": "start-here",
     "title": "Start Here",
-    "startSeconds": 16.667,
-    "endSeconds": 30.6,
-    "narrationSeconds": 13.32,
-    "gapSeconds": 0.6
+    "startSeconds": 18.44,
+    "endSeconds": 33.44,
+    "narrationSeconds": 14.184,
+    "gapSeconds": 0.8
   },
   {
     "id": "executive-summary",
     "title": "Executive Summary",
-    "startSeconds": 30.6,
-    "endSeconds": 46.9,
-    "narrationSeconds": 15.696,
-    "gapSeconds": 0.6
+    "startSeconds": 33.44,
+    "endSeconds": 52.073,
+    "narrationSeconds": 17.832,
+    "gapSeconds": 0.8
   },
   {
     "id": "weekly-adoption",
     "title": "Weekly Adoption & Usage",
-    "startSeconds": 46.9,
-    "endSeconds": 61.108,
-    "narrationSeconds": 13.608,
-    "gapSeconds": 0.6
+    "startSeconds": 52.073,
+    "endSeconds": 71.073,
+    "narrationSeconds": 18.192,
+    "gapSeconds": 0.8
+  },
+  {
+    "id": "adoption-attributes",
+    "title": "Adoption by Attributes",
+    "startSeconds": 71.073,
+    "endSeconds": 85.913,
+    "narrationSeconds": 14.04,
+    "gapSeconds": 0.8
   },
   {
     "id": "user-maturity",
     "title": "User Maturity",
-    "startSeconds": 61.108,
-    "endSeconds": 75.608,
-    "narrationSeconds": 13.896,
-    "gapSeconds": 0.6
+    "startSeconds": 85.913,
+    "endSeconds": 103.947,
+    "narrationSeconds": 17.232,
+    "gapSeconds": 0.8
   },
   {
     "id": "champions",
-    "title": "Find potential champions responsibly",
-    "startSeconds": 75.608,
-    "endSeconds": 94.475,
-    "narrationSeconds": 18.264,
-    "gapSeconds": 0.6
-  },
-  {
-    "id": "actions",
-    "title": "What They Use It For",
-    "startSeconds": 94.475,
-    "endSeconds": 109.451,
-    "narrationSeconds": 14.376,
-    "gapSeconds": 0.6
+    "title": "Cowork Champions",
+    "startSeconds": 103.947,
+    "endSeconds": 121.859,
+    "narrationSeconds": 17.112,
+    "gapSeconds": 0.8
   },
   {
     "id": "activity-value",
     "title": "Activity & Assisted Hours",
-    "startSeconds": 109.451,
-    "endSeconds": 124.787,
-    "narrationSeconds": 14.736,
-    "gapSeconds": 0.6
+    "startSeconds": 121.859,
+    "endSeconds": 139.225,
+    "narrationSeconds": 16.56,
+    "gapSeconds": 0.8
+  },
+  {
+    "id": "work-patterns",
+    "title": "What They Use It For",
+    "startSeconds": 139.225,
+    "endSeconds": 155.937,
+    "narrationSeconds": 15.912,
+    "gapSeconds": 0.8
+  },
+  {
+    "id": "momentum-guide",
+    "title": "Momentum Score Guide",
+    "startSeconds": 155.937,
+    "endSeconds": 175.437,
+    "narrationSeconds": 18.696,
+    "gapSeconds": 0.8
   },
   {
     "id": "metric-guide",
     "title": "Adoption Metric Guide",
-    "startSeconds": 124.787,
-    "endSeconds": 143.603,
-    "narrationSeconds": 18.216,
-    "gapSeconds": 0.6
+    "startSeconds": 175.437,
+    "endSeconds": 196.181,
+    "narrationSeconds": 19.944,
+    "gapSeconds": 0.8
   },
   {
     "id": "closing",
     "title": "One report. A clearer adoption story.",
-    "startSeconds": 143.603,
-    "endSeconds": 158.411,
-    "narrationSeconds": 14.208,
-    "gapSeconds": 0.6
+    "startSeconds": 196.181,
+    "endSeconds": 215.781,
+    "narrationSeconds": 18.792,
+    "gapSeconds": 0.8
   }
 ]

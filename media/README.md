@@ -9,12 +9,14 @@ the Cowork Value Intelligence video. It is not a page-by-page inventory.
 2. Start with the business decision.
 3. Read latest-week reach, recurrence, intensity, and maturity together.
 4. Test whether use returns across the latest 12 active weeks.
-5. Understand usage consistency and delegation depth.
-6. Identify potential champions responsibly.
-7. Find the work categories and skills worth enabling.
-8. Keep modeled time and value assumptions visible.
-9. Trace definitions and dependencies before acting.
-10. Connect approved exports and build an evidence-aware enablement plan.
+5. Compare adoption patterns across available organization attributes.
+6. Understand usage consistency and delegation depth.
+7. Identify potential champions responsibly.
+8. Keep observed activity and assisted-time assumptions separate.
+9. Find the work categories and skills worth enabling.
+10. Explain the momentum score, weights, caps, and guardrails.
+11. Trace definitions and dependencies before acting.
+12. Connect approved exports and build an evidence-aware enablement plan.
 
 ## Build
 
@@ -49,9 +51,10 @@ Generated frames under `media\composed` are ignored by Git.
 - 30 fps
 - H.264 video
 - AAC, 48 kHz stereo audio
-- approximately 2:35
+- warm, conversational `en-US-AvaNeural` narration at `+5%` rate
+- approximately 3 minutes 36 seconds
 - approximately -18 LUFS integrated loudness
-- 0.6-second pauses between story beats
+- 0.8-second pauses between story beats
 - visible testing-template and approved-export language
 - no customer identity, tenant URL, or customer export
 - only fabricated report screenshots
