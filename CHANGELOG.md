@@ -1,5 +1,15 @@
 # Changelog
 
+## 4.0.0-testing - 2026-09-23
+
+- Replaced the local-folder distributable with the supplied **Cowork Adoption
+  Intelligence V4** template.
+- Rebuilt the SharePoint-compatible V4 template from the same model.
+- Updated the SharePoint conversion workflow for V4's consolidated
+  `Staging_ModelData` ingestion query.
+- Removed machine-bound `SecurityBindings` from both public PBIT packages and
+  refreshed their release verification metadata.
+
 ## 3.0.0-testing - 2026-09-17
 
 - Renamed the distributable template to **Cowork Adoption Intellgience V3**.

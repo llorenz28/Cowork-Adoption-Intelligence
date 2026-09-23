@@ -1,6 +1,6 @@
 # Cowork Adoption Intelligence: interpretation guide
 
-**Template version:** 3.0.0-testing<br>
+**Template version:** 4.0.0-testing<br>
 **Audience:** adoption leads, program owners, enablement teams, analysts, and Power BI owners
 
 This guide explains what each report page answers, how to read it, what to

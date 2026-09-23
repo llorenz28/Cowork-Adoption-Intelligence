@@ -163,47 +163,10 @@ $sharePointFiles = [PSCustomObject][ordered]@{
 $remainingExpressions = @($schema.model.expressions | Select-Object -Skip 1)
 $schema.model.expressions = @($siteParameter, $folderParameter, $sharePointFiles) + $remainingExpressions
 
-$findCsv = Get-ModelExpression -Schema $schema -Name 'fnFindCsvPath'
-Update-MExpression -Node $findCsv -Transform {
+$stagingModelData = Get-ModelTable -Schema $schema -Name 'Staging_ModelData'
+Update-MExpression -Node $stagingModelData.partitions[0].source -Transform {
     param($lines)
-    $lines = Replace-RequiredText $lines 'as nullable text =>' 'as nullable binary =>' 'fnFindCsvPath return type'
-    $lines = Replace-RequiredText $lines 'Files = try Folder\.Files\(DataFolderPath\) otherwise #table\(type table \[Content = binary, Name = text, Extension = text, #"Folder Path" = text\], \{\}\),' 'Files = SharePointFiles,' 'fnFindCsvPath file source'
-    Replace-RequiredText $lines 'if Match = null then null else Match\[#"Folder Path"\] & Match\[Name\]' 'if Match = null then null else Match[Content]' 'fnFindCsvPath result'
-}
-
-$loadCsv = Get-ModelExpression -Schema $schema -Name 'fnLoadCsv'
-Update-MExpression -Node $loadCsv -Transform {
-    param($lines)
-    $lines = Replace-RequiredText $lines '\(path as text\) as table =>' '(content as binary) as table =>' 'fnLoadCsv input type'
-    Replace-RequiredText $lines 'Csv\.Document\(File\.Contents\(path\),' 'Csv.Document(content,' 'fnLoadCsv binary source'
-}
-
-(Get-ModelExpression -Schema $schema -Name 'CopilotAuditFolderPath').expression = 'SharePointFiles'
-(Get-ModelExpression -Schema $schema -Name 'IdentityEnrichmentFolderPath').expression = 'SharePointFiles'
-
-$auditWithLists = Get-ModelExpression -Schema $schema -Name 'Fact_CopilotAuditRaw_WithLists'
-Update-MExpression -Node $auditWithLists -Transform {
-    param($lines)
-    Replace-RequiredText $lines 'Folder\.Files\(CopilotAuditFolderPath\)' 'CopilotAuditFolderPath' 'audit file enumeration'
-}
-
-$dimUser = Get-ModelTable -Schema $schema -Name 'Dim_User'
-Update-MExpression -Node $dimUser.partitions[0].source -Transform {
-    param($lines)
-    $lines = Replace-RequiredText $lines 'Folder\.Files\(CopilotAuditFolderPath\)' 'CopilotAuditFolderPath' 'Dim_User audit file enumeration'
-    Replace-RequiredText $lines 'Folder\.Files\(IdentityEnrichmentFolderPath\)' 'IdentityEnrichmentFolderPath' 'Dim_User identity file enumeration'
-}
-
-$factUsage = Get-ModelTable -Schema $schema -Name 'Fact_CoworkUsage'
-Update-MExpression -Node $factUsage.partitions[0].source -Transform {
-    param($lines)
-    Replace-RequiredText $lines 'File\.Contents\(CoworkUsageCsvPath\)' 'CoworkUsageCsvPath' 'Fact_CoworkUsage binary source'
-}
-
-$dimUserOrg = Get-ModelTable -Schema $schema -Name 'Dim_UserOrg'
-Update-MExpression -Node $dimUserOrg.partitions[0].source -Transform {
-    param($lines)
-    Replace-RequiredText $lines 'File\.Contents\(OrgCsvPath\)' 'OrgCsvPath' 'Dim_UserOrg binary source'
+    Replace-RequiredText $lines 'FolderFiles = try Folder\.Files\(DataFolderPath\) otherwise EmptyFiles,' 'FolderFiles = try SharePointFiles otherwise EmptyFiles,' 'staging file enumeration'
 }
 
 foreach ($expression in $schema.model.expressions) {

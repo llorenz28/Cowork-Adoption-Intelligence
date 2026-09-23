@@ -1,8 +1,8 @@
 # SharePoint setup
 
-Use `Cowork Adoption Intellgience V3 - SharePoint.pbit` when the supported CSV
+Use `Cowork Adoption Intelligence V4 - SharePoint.pbit` when the supported CSV
 exports are stored in a SharePoint document library. It has the same report,
-model, metrics, and file contracts as the local-folder V3 template.
+model, metrics, and file contracts as the local-folder V4 template.
 
 ## Before you start
 
@@ -27,7 +27,7 @@ document-library path, replace `%20` with spaces, and omit the trailing slash.
 ## Load the template
 
 1. Download
-   [`Cowork Adoption Intellgience V3 - SharePoint.pbit`](../Cowork%20Adoption%20Intellgience%20V3%20-%20SharePoint.pbit).
+   [`Cowork Adoption Intelligence V4 - SharePoint.pbit`](../Cowork%20Adoption%20Intelligence%20V4%20-%20SharePoint.pbit).
 2. Open the template in Power BI Desktop.
 3. Enter `SharePointSiteUrl` and `SharePointFolderUrl`.
 4. Select **Load**.
@@ -65,12 +65,12 @@ permissions required by your organization before sharing the refreshed report.
 
 ## Rebuild the SharePoint edition
 
-Run the checked-in builder whenever the local V3 template is re-exported:
+Run the checked-in builder whenever the local V4 template is re-exported:
 
 ```powershell
 .\tools\New-SharePointPbit.ps1 `
-  -InputTemplate '.\Cowork Adoption Intellgience V3.pbit' `
-  -OutputTemplate '.\Cowork Adoption Intellgience V3 - SharePoint.pbit' `
+  -InputTemplate '.\Cowork Adoption Intelligence V4.pbit' `
+  -OutputTemplate '.\Cowork Adoption Intelligence V4 - SharePoint.pbit' `
   -Force
 ```
 
