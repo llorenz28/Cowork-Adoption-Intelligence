@@ -1,8 +1,8 @@
 {
   "report": "Cowork Adoption Intelligence",
-  "version": "3.0.0-testing",
+  "version": "4.0.0-testing",
   "verifiedAt": "2026-09-17T22:27:26.604-05:00",
-  "packageVerifiedAt": "2026-09-17T22:27:26.604-05:00",
+  "packageVerifiedAt": "2026-09-23T14:36:14.792-05:00",
   "mediaVerifiedAt": "2026-09-15T21:14:50.868-05:00",
   "result": "pass",
   "checks": {
@@ -80,9 +80,9 @@
       }
     },
     "pbit": {
-      "filename": "Cowork Adoption Intellgience V3.pbit",
-      "bytes": 719003,
-      "sha256": "097a9d6d3c6f499df22ed1191828702c2bdbf9a477e4a30e776e8811ad48af2c",
+      "filename": "Cowork Adoption Intelligence V4.pbit",
+      "bytes": 747484,
+      "sha256": "23d3e80f138daf6494cb530a184a455418640c2535006ffe07fcba72d619c928",
       "importedDataModel": false,
       "securityBindings": false,
       "securityBindingsContentTypeOverride": false,
@@ -93,9 +93,9 @@
       "embeddedLabelPropertyName": "Not Restricted"
     },
     "sharePointPbit": {
-      "filename": "Cowork Adoption Intellgience V3 - SharePoint.pbit",
-      "bytes": 725440,
-      "sha256": "58ef5e0ab4c072b34335cc195b2f46b1c1338f0a5dc9fadaa66861485f4a035c",
+      "filename": "Cowork Adoption Intelligence V4 - SharePoint.pbit",
+      "bytes": 740500,
+      "sha256": "7741de883771e0ab0725111c044cf41ce06d1e18606551fc3eda4d2edb765d14",
       "importedDataModel": false,
       "securityBindings": false,
       "securityBindingsContentTypeOverride": false,

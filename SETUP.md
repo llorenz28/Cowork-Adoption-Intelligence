@@ -5,7 +5,7 @@ production collection. No single person needs every tenant role.
 
 This guide uses the local-folder edition. To load the same supported exports
 directly from SharePoint, use
-[`Cowork Adoption Intellgience V3 - SharePoint.pbit`](Cowork%20Adoption%20Intellgience%20V3%20-%20SharePoint.pbit)
+[`Cowork Adoption Intelligence V4 - SharePoint.pbit`](Cowork%20Adoption%20Intelligence%20V4%20-%20SharePoint.pbit)
 and follow the [SharePoint setup guide](docs/SHAREPOINT_SETUP.md).
 
 ## Before you start
@@ -39,7 +39,7 @@ permissions and production export formats.
 
 Download:
 
-1. [`Cowork Adoption Intellgience V3.pbit`](Cowork%20Adoption%20Intellgience%20V3.pbit)
+1. [`Cowork Adoption Intelligence V4.pbit`](Cowork%20Adoption%20Intelligence%20V4.pbit)
 2. [`Cowork-Adoption-Intelligence-Sample-Data.zip`](release/Cowork-Adoption-Intelligence-Sample-Data.zip)
 
 On GitHub, open each file and select **Download raw file**.
@@ -67,7 +67,7 @@ resource URLs use `tenant.example.com`.
 
 ### Step 3: open the Power BI template
 
-1. Double-click `Cowork Adoption Intellgience V3.pbit`.
+1. Double-click `Cowork Adoption Intelligence V4.pbit`.
 2. Power BI Desktop opens a parameter screen.
 3. For `DataFolderPath`, enter:
 
@@ -259,7 +259,7 @@ not choose the newest file.
 
 ### Step 7: load and validate
 
-1. Open `Cowork Adoption Intellgience V3.pbit`.
+1. Open `Cowork Adoption Intelligence V4.pbit`.
 2. Set `DataFolderPath` to `C:\CoworkAdoptionData`.
 3. Select **Load**.
 4. Use the privacy level approved by your organization.

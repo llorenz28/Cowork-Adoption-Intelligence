@@ -1,4 +1,4 @@
-# Cowork Adoption Intelligence V3 Testing release checklist
+# Cowork Adoption Intelligence V4 Testing release checklist
 
 ## Report
 
@@ -46,7 +46,7 @@
   Organizational account authentication, recursive discovery, and rebuild
   command.
 - [x] The checked-in SharePoint builder reproduces the published SharePoint
-  edition from the local V3 template.
+  edition from the local V4 template.
 - [x] Interpretation guidance covers all ten pages and separates observed,
   derived, optional, reference, and modeled evidence.
 - [x] Walkthrough is 1920x1080, 30 fps, H.264/AAC, narrated, and

@@ -44,7 +44,7 @@ https://github.com/user-attachments/assets/fc171e77-8269-4ef1-a8c5-b382247f563e
 ## New here? Start in 3 steps
 
 1. Download the
-   [local-folder Power BI template](Cowork%20Adoption%20Intellgience%20V3.pbit)
+   [local-folder Power BI template](Cowork%20Adoption%20Intelligence%20V4.pbit)
    and the
    [fabricated sample package](release/Cowork-Adoption-Intelligence-Sample-Data.zip).
 2. Extract the sample ZIP, open the `.pbit`, and set `DataFolderPath` to the
@@ -58,7 +58,7 @@ troubleshooting. Use the
 [interpretation guide](INTERPRETATION_GUIDE.md) before presenting results.
 
 To refresh directly from a SharePoint document library, download the
-[SharePoint edition](Cowork%20Adoption%20Intellgience%20V3%20-%20SharePoint.pbit)
+[SharePoint edition](Cowork%20Adoption%20Intelligence%20V4%20-%20SharePoint.pbit)
 and follow the [SharePoint setup guide](docs/SHAREPOINT_SETUP.md).
 
 > **Not ready to collect production data?** Start with the sample. It is
@@ -148,12 +148,12 @@ before requesting permissions.
 
 | Resource | Open or download |
 | --- | --- |
-| Local-folder Power BI template | [`Cowork Adoption Intellgience V3.pbit`](Cowork%20Adoption%20Intellgience%20V3.pbit) |
-| SharePoint Power BI template | [`Cowork Adoption Intellgience V3 - SharePoint.pbit`](Cowork%20Adoption%20Intellgience%20V3%20-%20SharePoint.pbit) · [`Setup`](docs/SHAREPOINT_SETUP.md) |
+| Local-folder Power BI template | [`Cowork Adoption Intelligence V4.pbit`](Cowork%20Adoption%20Intelligence%20V4.pbit) |
+| SharePoint Power BI template | [`Cowork Adoption Intelligence V4 - SharePoint.pbit`](Cowork%20Adoption%20Intelligence%20V4%20-%20SharePoint.pbit) · [`Setup`](docs/SHAREPOINT_SETUP.md) |
 | Fabricated sample package | [`release/Cowork-Adoption-Intelligence-Sample-Data.zip`](release/Cowork-Adoption-Intelligence-Sample-Data.zip) |
 | Step-by-step setup | [`SETUP.md`](SETUP.md) |
 | Interpretation guide | [`INTERPRETATION_GUIDE.md`](INTERPRETATION_GUIDE.md) |
-| Interpretation storyboard | [`PPTX`](Cowork%20Adoption%20Intelligence%20V3.0%20In%20Testing%20-%20Interpretation%20Storyboard.pptx) |
+| Interpretation storyboard | [`PPTX`](Cowork%20Adoption%20Intelligence%20V4.0%20In%20Testing%20-%20Interpretation%20Storyboard.pptx) |
 | Narrated walkthrough | [`MP4`](media/Cowork-Adoption-Intelligence-Walkthrough.mp4) · [`Transcript`](media/Cowork-Adoption-Intelligence-Walkthrough-transcript.md) · [`Subtitles`](media/Cowork-Adoption-Intelligence-Walkthrough.srt) · [`Build notes`](media/README.md) |
 | Editable PBIP source | [`src/Cowork Adoption Intelligence.pbip`](src/Cowork%20Adoption%20Intelligence.pbip) |
 | Unpacked sample and generator | [`sample_data/`](sample_data/) · [`build_sample_data.py`](build_sample_data.py) |
@@ -163,8 +163,9 @@ before requesting permissions.
 ## Repository structure
 
 ```text
-Cowork Adoption Intellgience V3.pbit
-Cowork Adoption Intellgience V3 - SharePoint.pbit
+Cowork Adoption Intelligence V4.pbit
+Cowork Adoption Intelligence V4 - SharePoint.pbit
+Cowork Adoption Intelligence V4.0 In Testing - Interpretation Storyboard.pptx
 README.md
 SETUP.md
 build_sample_data.py
@@ -218,7 +219,7 @@ definitions, safe wording, and recommended follow-up checks.
 
 ## Release status
 
-The current release is **3.0.0-testing**. Review the
+The current release is **4.0.0-testing**. Review the
 [changelog](CHANGELOG.md) and
 [release checklist](docs/RELEASE_CHECKLIST.md) before broad distribution.
 
