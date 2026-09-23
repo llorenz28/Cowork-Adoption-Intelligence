@@ -153,7 +153,7 @@ before requesting permissions.
 | Fabricated sample package | [`release/Cowork-Adoption-Intelligence-Sample-Data.zip`](release/Cowork-Adoption-Intelligence-Sample-Data.zip) |
 | Step-by-step setup | [`SETUP.md`](SETUP.md) |
 | Interpretation guide | [`INTERPRETATION_GUIDE.md`](INTERPRETATION_GUIDE.md) |
-| Interpretation storyboard | [`PPTX`](Cowork%20Adoption%20Intelligence%20V3.0%20In%20Testing%20-%20Interpretation%20Storyboard.pptx) |
+| Interpretation storyboard | [`PPTX`](Cowork%20Adoption%20Intelligence%20V4.0%20In%20Testing%20-%20Interpretation%20Storyboard.pptx) |
 | Narrated walkthrough | [`MP4`](media/Cowork-Adoption-Intelligence-Walkthrough.mp4) · [`Transcript`](media/Cowork-Adoption-Intelligence-Walkthrough-transcript.md) · [`Subtitles`](media/Cowork-Adoption-Intelligence-Walkthrough.srt) · [`Build notes`](media/README.md) |
 | Editable PBIP source | [`src/Cowork Adoption Intelligence.pbip`](src/Cowork%20Adoption%20Intelligence.pbip) |
 | Unpacked sample and generator | [`sample_data/`](sample_data/) · [`build_sample_data.py`](build_sample_data.py) |
@@ -165,6 +165,7 @@ before requesting permissions.
 ```text
 Cowork Adoption Intelligence V4.pbit
 Cowork Adoption Intelligence V4 - SharePoint.pbit
+Cowork Adoption Intelligence V4.0 In Testing - Interpretation Storyboard.pptx
 README.md
 SETUP.md
 build_sample_data.py

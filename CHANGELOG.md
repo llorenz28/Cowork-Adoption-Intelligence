@@ -5,6 +5,8 @@
 - Replaced the local-folder distributable with the supplied **Cowork Adoption
   Intelligence V4** template.
 - Rebuilt the SharePoint-compatible V4 template from the same model.
+- Renamed the interpretation storyboard for the V4 release and standardized all
+  three release filenames on the correctly spelled **Intelligence**.
 - Updated the SharePoint conversion workflow for V4's consolidated
   `Staging_ModelData` ingestion query.
 - Removed machine-bound `SecurityBindings` from both public PBIT packages and
@@ -12,7 +14,7 @@
 
 ## 3.0.0-testing - 2026-09-17
 
-- Renamed the distributable template to **Cowork Adoption Intellgience V3**.
+- Renamed the distributable template to **Cowork Adoption Intelligence V3**.
 - Redesigned Momentum Settings as the plain-language **Momentum Score Guide**
   with a live score, component explanations, guardrails, and optional advanced
   controls.
