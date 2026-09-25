@@ -1,57 +1,100 @@
-# Cowork Adoption Intelligence V4 Testing release checklist
+# Cowork Adoption Intelligence V4.1 release checklist
 
-## Report
+Release target: **4.1.0**
+Preprocessor target: **0.1.0**
+Validation date: **2026-09-25**
 
-- [x] PBIR validation reports zero errors.
-- [x] All canvas bookmark actions resolve to internal bookmark IDs.
-- [x] Filter drawers open and close without cross-page jumps.
-- [x] The local template opens with only the required `DataFolderPath` prompt.
-- [x] The SharePoint template opens with only the required
-  `SharePointSiteUrl` and `SharePointFolderUrl` prompts.
-- [x] The bundled synthetic sample refreshes every supported report capability.
-- [x] All ten pages render, including Cowork Champions after User Maturity.
-- [x] The category lens recalculates candidates and department coverage.
-- [x] All seven category tiles render in one row with readable labels.
-- [x] Candidate and coverage panels align; all eight default candidates are
-  visible without clipping.
-- [x] Selection basis and enablement guidance fill the lower analysis row
-  without text truncation.
-- [x] Champion delegation maturity contributes to the score: the synthetic
-  sample reaches 100.0 instead of the pre-fix cap at 75.0.
-- [x] Top 5%, Top 10%, and Top 20% were re-measured after the scoring correction
-  and return 4, 8, and 15 sample candidates.
-- [x] The Champions drawer preserves category/tier state through open and close.
-- [x] Start Here navigation opens Cowork Champions.
-- [x] Adoption Metric Guide defines the score, floor, tiers, coverage, and
-  interpretation boundary.
-- [x] Momentum Score Guide shows the live score, explains all four components,
-  states that it is not a performance rating, and keeps tuning optional.
+## Release artifacts
 
-## Security and portability
+- [x] Root `Cowork Adoption Intelligence V4.pbit` is the new data-free,
+  preprocessed-ingestion template.
+- [x] Editable PBIP source under `src/` matches the released report and model.
+- [x] `scripts/Cowork_Purview_Preprocessor_v0.1.0.py` and
+  `scripts/cowork-contract.json` are version-matched.
+- [x] `scripts/README.md` documents download, operation, safety, and
+  troubleshooting.
+- [x] Previous raw-Purview and SharePoint V4.0 PBITs are backed up under
+  `release/archive/`.
+- [x] `release/Cowork-Adoption-Intelligence-Preprocessor-v0.1.0.zip` contains
+  the script, contract, instructions, PBIT, and checksum file.
+- [x] `docs/RELEASE_VERIFICATION.json` contains final hashes and package
+  inventory.
 
-- [x] Both PBIT editions contain no imported customer data.
-- [x] Both PBIT editions contain no `SecurityBindings` stream or content-type
-  override.
-- [x] PBIP source contains no `.pbi` local state or user-profile paths.
-- [x] PBIT retains the tenant Public sensitivity label without encryption.
-- [x] Public label metadata remains after the machine-bound security stream is removed.
-- [x] Sample identities and URLs use only synthetic `example.com` values.
+## Model and report validation
 
-## Repository
+- [x] The protected canonical remediation project was not modified.
+- [x] Offline TOM/TMDL import passed with 45 tables, 321 measures, 408 columns,
+  45 partitions, and 27 active relationships.
+- [x] PBIR validation passed with zero errors and zero warnings.
+- [x] The exported PBIT prompted only for `PreprocessedOutputPath`.
+- [x] A clean Power BI Desktop process loaded all 45 partitions successfully.
+- [x] Live DAX reconciliation matched 14,624 Cowork detail rows, 260 thread
+  tasks, 21 active users, and 10,816 prompts.
+- [x] Champion reconciliation passed at `2 summary / 2 row-level / 0 delta`.
+- [x] Both expected Champion identities, ranks, and scores matched.
+- [x] All 10 pages, 39 bookmarks, hidden visual states, and required
+  interactions were validated before export.
 
-- [x] Existing repository state has a dated rollback reference.
-- [x] Existing canonical Adoption template has a dated backup.
-- [x] Documentation describes the one-folder setup and classification behavior.
-- [x] SharePoint setup documents the canonical site and folder URL parameters,
-  Organizational account authentication, recursive discovery, and rebuild
-  command.
-- [x] The checked-in SharePoint builder reproduces the published SharePoint
-  edition from the local V4 template.
-- [x] Interpretation guidance covers all ten pages and separates observed,
-  derived, optional, reference, and modeled evidence.
-- [x] Walkthrough is 1920x1080, 30 fps, H.264/AAC, narrated, and
-  transcript-aligned.
-- [x] Walkthrough follows the Adoption-to-enablement story, identifies the
-  template as testing, and uses only fabricated report screenshots.
-- [x] Unrelated working-tree changes are excluded from the release.
-- [x] Final outbound publication approval is received.
+## Preprocessor validation
+
+- [x] The script uses only the Python standard library.
+- [x] Input and output paths must be separate and non-overlapping.
+- [x] Source discovery is recursive and deterministic.
+- [x] Required source/header failures stop the run.
+- [x] Malformed `AuditData` JSON stops the run; it is not silently skipped.
+- [x] Deduplication uses immutable record identity and payload evidence.
+- [x] Output is staged and validated before destination replacement.
+- [x] An existing foreign output folder is not overwritten.
+- [x] The manifest records versions, hashes, source files, row counts,
+  duplicates, and collision checks.
+- [x] `--validate-output` verifies the published entities independently.
+- [x] The exact repository script and contract pass a fresh sample-data run.
+- [x] The exact repository script and contract pass a fresh lower-scale
+  regression run.
+
+## Scale evidence
+
+- [x] 70,976-row fixture preprocessing completed in 14.811 seconds.
+- [x] The corresponding Desktop load completed in 12.894 seconds and reconciled
+  exactly with the validated baseline.
+- [x] 1,050,000-row, 70,000-user synthetic preprocessing completed in 200.528
+  seconds.
+- [x] The enterprise synthetic model loaded with exact core-count parity.
+- [x] Documentation states that timings are machine-dependent and not a
+  service-level objective.
+- [x] Documentation states that the 5.50 GiB large-scale Desktop peak is scale
+  evidence, not a safe customer memory target.
+
+## Security and privacy
+
+- [x] The released PBIT contains no imported customer data.
+- [x] The released PBIT contains no machine-bound `SecurityBindings` stream.
+- [x] The released PBIT stores no local user-profile or fixture path.
+- [x] Repository source contains no `.pbi` local state.
+- [x] Repository source contains no customer data, credentials, tokens, or
+  retained SQLite work database.
+- [x] `SECURITY.md` covers raw data, generated entities, manifests, output
+  replacement, scheduled refresh, labeling, retention, and least privilege.
+- [x] Sample content remains synthetic and uses only reserved example domains.
+
+## Documentation
+
+- [x] `README.md` presents the V4.1 preprocessor workflow as the primary path.
+- [x] `SETUP.md` includes sample and production commands.
+- [x] `scripts/README.md` explains the 13 entities and `manifest.json`.
+- [x] Legacy V4.0 templates are clearly marked as rollback artifacts.
+- [x] Power BI Service refresh behavior is explicit: the service reads generated
+  files and does not run Python.
+- [x] All repository-relative documentation links resolve.
+
+## Final publication gate
+
+- [x] Python syntax and CLI validation pass.
+- [x] PBIR and offline TOM/TMDL validation pass against the repository source.
+- [x] The release ZIP inventory and internal checksums pass.
+- [x] Final hashes in `docs/RELEASE_VERIFICATION.json` match repository files.
+- [x] `git diff --check` passes.
+- [x] The final Git diff is limited to the validated release, source
+  synchronization, script, package, archive, and directly related docs.
+- [ ] Branch is committed, pushed, and opened as a pull request against
+  `microsoft/Cowork-Adoption-Intelligence`.

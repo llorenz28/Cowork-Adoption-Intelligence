@@ -1,12 +1,15 @@
 table 'Momentum Return Weight'
+	lineageTag: 54135cb7-eac3-4fbd-9626-e30034110e4c
 
 	/// Weight assigned to weekly return behavior in the momentum index.
 	measure 'Momentum Return Weight Value' = SELECTEDVALUE('Momentum Return Weight'[Momentum Return Weight], 0.35)
 		formatString: 0%
+		lineageTag: 9d154760-a690-466e-bf66-0128964f9395
 
 	column 'Momentum Return Weight'
 		dataType: decimal
 		formatString: 0%
+		lineageTag: 28b69d40-95de-40ee-a6ee-c1ddf75a770d
 		summarizeBy: none
 		sourceColumn: [Value]
 

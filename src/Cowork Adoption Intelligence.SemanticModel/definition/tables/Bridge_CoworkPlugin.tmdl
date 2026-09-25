@@ -21,54 +21,64 @@ table Bridge_CoworkPlugin
 		isHidden
 		lineageTag: bb353db2-51f3-45f3-9371-9a6f246a1871
 		summarizeBy: none
-		sourceColumn: RecordId
+		sourceColumn: Staging_ModelData[RecordId]
 
 	column ThreadId
 		dataType: string
 		lineageTag: bb41160b-93fd-4ecf-9acc-9f0516ec9a9e
 		summarizeBy: none
-		sourceColumn: ThreadId
+		sourceColumn: Staging_ModelData[ThreadId]
 
 	column DateKey
 		dataType: int64
 		isHidden
 		lineageTag: a27f526e-064d-4242-9be3-5636bb4e5732
 		summarizeBy: none
-		sourceColumn: DateKey
+		sourceColumn: Staging_ModelData[DateKey]
 
 	column UserKey
 		dataType: int64
 		isHidden
 		lineageTag: 1ddf7b28-ae55-45be-826e-f383bca45bce
 		summarizeBy: none
-		sourceColumn: UserKey
+		sourceColumn: Staging_ModelData[UserKey]
 
 	column PluginName
 		dataType: string
 		lineageTag: 6126d027-28cd-4e51-9d28-df86f4da2dc0
 		summarizeBy: none
-		sourceColumn: PluginName
+		sourceColumn: Staging_ModelData[PluginName]
 
 	column PluginId
 		dataType: string
 		isHidden
 		lineageTag: 1c16e732-c3f1-4786-9f11-597d102fc7f7
 		summarizeBy: none
-		sourceColumn: PluginId
+		sourceColumn: Staging_ModelData[PluginId]
 
-	partition Bridge_CoworkPlugin = m
+	column _RowId
+		dataType: int64
+		isHidden
+		formatString: 0
+		lineageTag: 88854fc2-02c8-44c9-9364-ae184f8ed2bb
+		summarizeBy: none
+		sourceColumn: Staging_ModelData[_RowId]
+
+	partition Bridge_CoworkPlugin = calculated
 		mode: import
 		source =
-				let
-					Src      = Fact_CopilotAuditRaw_WithLists,
-					Cowork   = Table.SelectRows(Src, each Text.Lower([AppHost]) = "cowork"),
-					Keep     = Table.SelectColumns(Cowork, {"RecordId","ThreadId","DateKey","UserKey","_plugins"}),
-					HasAny   = Table.SelectRows(Keep, each List.Count([_plugins]) > 0),
-					Expanded = Table.ExpandListColumn(HasAny, "_plugins"),
-					AddName  = Table.AddColumn(Expanded, "PluginName", each try [_plugins][Name] otherwise null, type text),
-					AddId    = Table.AddColumn(AddName,  "PluginId",   each try [_plugins][Id]   otherwise null, type text),
-					Final    = Table.SelectColumns(AddId, {"RecordId","ThreadId","DateKey","UserKey","PluginName","PluginId"})
-				in
-					Final
+				SUMMARIZE(
+					FILTER(
+						Staging_ModelData,
+						Staging_ModelData[_Entity] = "Bridge_CoworkPlugin"
+					),
+					Staging_ModelData[_RowId],
+					Staging_ModelData[RecordId],
+					Staging_ModelData[ThreadId],
+					Staging_ModelData[DateKey],
+					Staging_ModelData[UserKey],
+					Staging_ModelData[PluginName],
+					Staging_ModelData[PluginId]
+				)
 
 	annotation PBI_ResultType = Exception

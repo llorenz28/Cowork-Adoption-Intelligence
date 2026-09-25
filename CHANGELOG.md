@@ -1,5 +1,30 @@
 # Changelog
 
+## 4.1.0-testing - 2026-09-25
+
+- Added the standard-library
+  `scripts/Cowork_Purview_Preprocessor_v0.1.0.py` workflow and its versioned
+  `cowork-contract.json`.
+- Added deterministic generation and independent validation of 13 entity CSVs
+  plus `manifest.json`.
+- Replaced the primary root PBIT and editable PBIP source with the validated
+  preprocessed-ingestion release.
+- Reduced customer template setup to one required parameter:
+  `PreprocessedOutputPath`.
+- Corrected optimized row-level Champion ranking and confirmed
+  `2 summary / 2 row-level / 0 delta`.
+- Passed offline TOM/TMDL import with 45 tables, 321 measures, 408 columns, 45
+  partitions, and 27 active relationships.
+- Passed PBIR validation with zero errors and zero warnings.
+- Opened the exported PBIT in a clean Power BI Desktop process, confirmed one
+  parameter prompt, loaded all 45 partitions, and reconciled core totals and
+  both Champion identities and scores.
+- Preprocessed the 70,976-row fixture in 14.811 seconds and the
+  1,050,000-row synthetic fixture in 200.528 seconds. Large-scale timings are
+  evidence, not a service-level objective.
+- Backed up the previous raw-Purview and SharePoint V4.0 PBITs under
+  `release/archive/` for rollback.
+
 ## 4.0.0-testing - 2026-09-23
 
 - Replaced the local-folder distributable with the supplied **Cowork Adoption

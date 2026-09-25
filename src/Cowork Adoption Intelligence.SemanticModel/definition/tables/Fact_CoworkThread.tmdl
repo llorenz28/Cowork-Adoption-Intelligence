@@ -2,13 +2,8 @@
 /// the Microsoft admin center Cowork usage export.
 /// This is the reconciliation anchor: thread grain is directly comparable to the admin-center
 /// task count, turning value/ROI measures from a heuristic into something a customer can audit.
-/// Sourced from the shared Fact_CopilotAuditRaw_WithLists parser (same one Bridge_CoworkPlugin/
-/// Bridge_CoworkResource use), filtered to AppHost = "cowork", NOT from the Fact_CoworkDetail
-/// DAX calculated table -- Power Query (M) partitions cannot reference a calculated table, so
-/// this re-applies the identical AppHost filter directly against the M-side raw table instead.
-/// Row-level content is identical either way (Fact_CoworkDetail = FILTER(Fact_CopilotAuditRaw,
-/// AppHost="cowork"), and Fact_CopilotAuditRaw is itself a thin SelectColumns projection of the
-/// same _WithLists expression), so this is a mechanism change only, not a different data set.
+/// Projected from the same single-pass Staging_ModelData result used by the
+/// audit fact and bridge tables, filtered to AppHost = "cowork".
 table Fact_CoworkThread
 	lineageTag: 64486635-8864-4b48-945d-401080a4d85b
 
@@ -184,114 +179,199 @@ table Fact_CoworkThread
 		dataType: string
 		lineageTag: 70a3a3e3-cc33-4a52-a997-7b32f7887cde
 		summarizeBy: none
-		sourceColumn: ThreadId
+		sourceColumn: Staging_ModelData[ThreadId]
 
 	column UserKey
 		dataType: int64
 		isHidden
 		lineageTag: 4e2ad6fa-91cd-4886-8158-da4d935e56bb
 		summarizeBy: none
-		sourceColumn: UserKey
+		sourceColumn: Staging_ModelData[UserKey]
 
 	column DateKey
 		dataType: int64
 		isHidden
 		lineageTag: 2e88b3fa-8bc6-4187-af88-1769e8917b83
 		summarizeBy: none
-		sourceColumn: DateKey
+		sourceColumn: Staging_ModelData[DateKey]
+
+	column WeekStartDate
+		dataType: dateTime
+		isHidden
+		formatString: General Date
+		lineageTag: 0cd4bb4f-24e4-49c9-a6a1-1ecbf8f4b449
+		summarizeBy: none
+		sourceColumn: Staging_ModelData[WeekStartDate]
 
 	column StartedAt
 		dataType: dateTime
 		formatString: General Date
 		lineageTag: 818f3856-b0f1-442b-b124-bfb675bad020
 		summarizeBy: none
-		sourceColumn: StartedAt
+		sourceColumn: Staging_ModelData[StartedAt]
 
 	column EndedAt
 		dataType: dateTime
 		formatString: General Date
 		lineageTag: e706e7eb-5d15-4c44-b102-0891f801975e
 		summarizeBy: none
-		sourceColumn: EndedAt
+		sourceColumn: Staging_ModelData[EndedAt]
 
 	column RecordCount
 		dataType: int64
 		formatString: #,0
 		lineageTag: 76f67b23-5988-454e-9fe9-6cde9075d80f
 		summarizeBy: sum
-		sourceColumn: RecordCount
+		sourceColumn: Staging_ModelData[RecordCount]
 
 	column PromptCount
 		dataType: int64
 		formatString: #,0
 		lineageTag: b5995d40-637c-48b2-8591-7da28bcae487
 		summarizeBy: sum
-		sourceColumn: PromptCount
+		sourceColumn: Staging_ModelData[PromptCount]
 
 	column ResourceCount
 		dataType: int64
 		formatString: #,0
 		lineageTag: 1a022c8b-e06a-4012-9129-0043462c9b15
 		summarizeBy: sum
-		sourceColumn: ResourceCount
+		sourceColumn: Staging_ModelData[ResourceCount]
 
 	column PluginCount
 		dataType: int64
 		formatString: #,0
 		lineageTag: e347e0f5-b2fc-40fe-8dea-83a0321801c4
 		summarizeBy: sum
-		sourceColumn: PluginCount
+		sourceColumn: Staging_ModelData[PluginCount]
 
 	column DurationMin
 		dataType: double
 		formatString: #,0.0
 		lineageTag: cb637f69-d51f-413a-a3b9-fbba52c04934
 		summarizeBy: average
-		sourceColumn: DurationMin
+		sourceColumn: Staging_ModelData[DurationMin]
 
 	column PrimarySkill
 		dataType: string
+		isHidden
 		lineageTag: bd2811fe-120a-4dc8-baec-048bea7128e1
 		summarizeBy: none
-		sourceColumn: PrimarySkill
+		sourceColumn: Staging_ModelData[PrimarySkill]
 
-	partition Fact_CoworkThread = m
+	/// Highest-priority customer-facing tool observed in the thread after
+	/// orchestration tools are excluded.
+	column PrimaryBusinessTool
+		dataType: string
+		isHidden
+		lineageTag: f5065cce-b07f-44ae-85f6-c86188809d1f
+		summarizeBy: none
+		sourceColumn: Staging_ModelData[PrimaryBusinessTool]
+
+	column PrimarySkillDisplayName
+		dataType: string
+		lineageTag: 23b40552-90a9-4511-ac54-71f43569b00b
+		summarizeBy: none
+		sourceColumn: Staging_ModelData[PrimarySkillDisplayName]
+
+	column BusinessBehavior
+		dataType: string
+		lineageTag: 89ddfe03-c402-4884-b38d-6d402d466c8b
+		summarizeBy: none
+		sourceColumn: Staging_ModelData[BusinessBehavior]
+
+	column BehaviorConfidence
+		dataType: string
+		lineageTag: 9294e4df-36d3-41c0-a978-3fa5c84fe1e5
+		summarizeBy: none
+		sourceColumn: Staging_ModelData[BehaviorConfidence]
+
+	column PrimaryCategory
+		dataType: string
+		lineageTag: 08009843-e44b-44ed-97d8-69aaca5b65e0
+		summarizeBy: none
+		sourceColumn: Staging_ModelData[PrimaryCategory]
+
+	column ThreadCategory
+		dataType: string
+		lineageTag: fde9c6b1-3d6c-4ce8-93c9-2d4b5ca17790
+		summarizeBy: none
+		sourceColumn: Staging_ModelData[ThreadCategory]
+
+	column ThreadCategoryKey
+		dataType: int64
+		isHidden
+		lineageTag: d18ceaee-305f-49a1-b38c-267ce9815592
+		summarizeBy: sum
+		sourceColumn: Staging_ModelData[ThreadCategoryKey]
+
+	column TaskClassification
+		dataType: string
+		lineageTag: 95f80297-a3d5-4da0-8854-119c5a0ced03
+		summarizeBy: none
+		sourceColumn: Staging_ModelData[TaskClassification]
+
+	column BusinessToolCount
+		dataType: int64
+		isHidden
+		lineageTag: 2dd030f6-845f-4b85-bfe5-4c454f18e5ba
+		summarizeBy: sum
+		sourceColumn: Staging_ModelData[BusinessToolCount]
+
+	column UnclassifiedToolCount
+		dataType: int64
+		isHidden
+		lineageTag: 6a79a1f3-9555-4612-9d53-d02654fb10c2
+		summarizeBy: sum
+		sourceColumn: Staging_ModelData[UnclassifiedToolCount]
+
+	column OrchestrationToolCount
+		dataType: int64
+		isHidden
+		lineageTag: 2f48af70-d13e-46cf-a6b9-c322db644cb1
+		summarizeBy: sum
+		sourceColumn: Staging_ModelData[OrchestrationToolCount]
+
+	column _RowId
+		dataType: int64
+		isHidden
+		formatString: 0
+		lineageTag: 8ed4a908-ef51-4008-b92b-e6ea21c88674
+		summarizeBy: none
+		sourceColumn: Staging_ModelData[_RowId]
+
+	partition Fact_CoworkThread = calculated
 		mode: import
 		source =
-				let
-					Src      = Fact_CopilotAuditRaw_WithLists,
-					Cowork   = Table.SelectRows(Src, each Text.Lower([AppHost]) = "cowork"),
-					Grp      = Table.Group(Cowork, {"ThreadId"}, {
-									{"UserKey",       each List.Max([UserKey]),             Int64.Type},
-									{"DateKey",       each List.Min([DateKey]),             Int64.Type},
-									{"StartedAt",     each List.Min([CreationDateParsed]),  type nullable datetime},
-									{"EndedAt",       each List.Max([CreationDateParsed]),  type nullable datetime},
-									{"RecordCount",   each Table.RowCount(_),               Int64.Type},
-									{"PromptCount",   each List.Sum([Message_PromptCount]), Int64.Type},
-									{"ResourceCount", each List.Sum([Resource_Count]),       Int64.Type},
-									{"PluginCount",   each List.Sum([Plugin_Count]),         Int64.Type}
-								}),
-					AddDur   = Table.AddColumn(Grp, "DurationMin",
-									each if [StartedAt] = null or [EndedAt] = null then null
-										else Duration.TotalMinutes([EndedAt] - [StartedAt]), type nullable number),
-
-
-					PerThreadPlugin  = Table.Group(Bridge_CoworkPlugin, {"ThreadId", "PluginName"}, {
-									{"Invocations",   each Table.RowCount(_), Int64.Type},
-									{"FirstRecordId", each List.Min([RecordId]), type text}
-								}),
-					RankedPlugin     = Table.Sort(PerThreadPlugin, {
-									{"ThreadId",      Order.Ascending},
-									{"Invocations",   Order.Descending},
-									{"FirstRecordId", Order.Ascending}
-								}),
-					PrimaryPerThread = Table.Group(RankedPlugin, {"ThreadId"}, {
-									{"PrimarySkill", each List.First([PluginName]), type text}
-								}),
-
-					MergePrimary  = Table.NestedJoin(AddDur, {"ThreadId"}, PrimaryPerThread, {"ThreadId"}, "pp", JoinKind.LeftOuter),
-					ExpandPrimary = Table.ExpandTableColumn(MergePrimary, "pp", {"PrimarySkill"}, {"PrimarySkill"})
-				in
-					ExpandPrimary
+				SUMMARIZE(
+					FILTER(
+						Staging_ModelData,
+						Staging_ModelData[_Entity] = "Fact_CoworkThread"
+					),
+					Staging_ModelData[_RowId],
+					Staging_ModelData[ThreadId],
+					Staging_ModelData[UserKey],
+					Staging_ModelData[DateKey],
+					Staging_ModelData[WeekStartDate],
+					Staging_ModelData[StartedAt],
+					Staging_ModelData[EndedAt],
+					Staging_ModelData[RecordCount],
+					Staging_ModelData[PromptCount],
+					Staging_ModelData[ResourceCount],
+					Staging_ModelData[PluginCount],
+					Staging_ModelData[DurationMin],
+					Staging_ModelData[PrimarySkill],
+					Staging_ModelData[PrimaryBusinessTool],
+					Staging_ModelData[PrimarySkillDisplayName],
+					Staging_ModelData[BusinessBehavior],
+					Staging_ModelData[BehaviorConfidence],
+					Staging_ModelData[PrimaryCategory],
+					Staging_ModelData[ThreadCategory],
+					Staging_ModelData[ThreadCategoryKey],
+					Staging_ModelData[TaskClassification],
+					Staging_ModelData[BusinessToolCount],
+					Staging_ModelData[UnclassifiedToolCount],
+					Staging_ModelData[OrchestrationToolCount]
+				)
 
 	annotation PBI_ResultType = Exception

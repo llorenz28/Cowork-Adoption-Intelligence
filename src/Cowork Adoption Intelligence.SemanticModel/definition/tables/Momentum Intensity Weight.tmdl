@@ -1,12 +1,15 @@
 table 'Momentum Intensity Weight'
+	lineageTag: 13ac45f5-d7a4-4b29-94f1-a077d821c056
 
 	/// Weight assigned to prompt intensity in the momentum index.
 	measure 'Momentum Intensity Weight Value' = SELECTEDVALUE('Momentum Intensity Weight'[Momentum Intensity Weight], 0.25)
 		formatString: 0%
+		lineageTag: 2af31c23-6aea-4250-b69b-2bab83e0723a
 
 	column 'Momentum Intensity Weight'
 		dataType: decimal
 		formatString: 0%
+		lineageTag: d837e0a6-01a0-4886-97b0-29a0ed7fad52
 		summarizeBy: none
 		sourceColumn: [Value]
 

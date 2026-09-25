@@ -1,19 +1,37 @@
 table Dim_CoworkSkill
 	lineageTag: 846598ff-b38c-470d-8141-0fb81e26f2d9
 
-	measure 'Cowork Skills Observed' = COUNTROWS(Dim_CoworkSkill)
+	measure 'Cowork Skills Observed' = [Cowork Tools Observed]
 		formatString: #,0
 		lineageTag: 34a0d93a-d788-4f85-b276-aab5a41ade05
 
-	measure 'Cowork Skills Mapped' = CALCULATE(COUNTROWS(Dim_CoworkSkill), Dim_CoworkSkill[IsMapped] = TRUE)
+	measure 'Cowork Skills Mapped' = [Cowork Tools Classified]
 		formatString: #,0
 		lineageTag: 640f79a7-6158-4d65-a543-21142d11c5ae
+
+	/// Distinct technical tools observed in Purview. This is execution telemetry,
+	/// not a count of business behaviors.
+	measure 'Cowork Tools Observed' = COUNTROWS(Dim_CoworkSkill)
+		formatString: #,0
+		lineageTag: 1ea600d0-0c23-4eeb-a89a-27f507542b88
+
+	measure 'Cowork Tools Classified' = CALCULATE(COUNTROWS(Dim_CoworkSkill), Dim_CoworkSkill[ToolRole] <> "Unclassified")
+		formatString: #,0
+		lineageTag: fb5eadcb-87b8-44f0-8a89-1db236b74109
+
+	measure 'Business Tools Observed' = CALCULATE(COUNTROWS(Dim_CoworkSkill), Dim_CoworkSkill[ToolRole] = "Business")
+		formatString: #,0
+		lineageTag: fa0a2d18-a600-4f89-be8a-6d549db384f1
+
+	measure 'Unclassified Tools Observed' = CALCULATE(COUNTROWS(Dim_CoworkSkill), Dim_CoworkSkill[ToolRole] = "Unclassified")
+		formatString: #,0
+		lineageTag: 7be7ec06-3353-44ff-aad5-67c44210a8af
 
 	column PluginName
 		dataType: string
 		lineageTag: 55622cee-a9f4-4da3-be1e-2f941cb3a815
 		summarizeBy: none
-		sourceColumn: PluginName
+		sourceColumn: Staging_ModelData[PluginName]
 
 	/// Cowork v3 remediation (Sept 2026): now prefers the curated FriendlyName from 'Cowork
 	/// Skill Category Map' (e.g. "mcp__m365_search__SearchM365" -> "Microsoft 365 Search") so
@@ -25,74 +43,115 @@ table Dim_CoworkSkill
 		dataType: string
 		lineageTag: 5430ce85-be8c-4f5a-8698-c4f34da725af
 		summarizeBy: none
-		sourceColumn: SkillDisplayName
+		sourceColumn: Staging_ModelData[SkillDisplayName]
 
 	column Category
 		dataType: string
 		lineageTag: 9d9bbb1f-9f83-478d-9ea0-5fbbff3ba27b
 		summarizeBy: none
-		sourceColumn: Category
+		sourceColumn: Staging_ModelData[Category]
 
 	column CategoryKey
 		dataType: int64
 		isHidden
 		lineageTag: 84701cc7-0053-4d4c-a911-cd3a9a1732f6
 		summarizeBy: none
-		sourceColumn: CategoryKey
+		sourceColumn: Staging_ModelData[CategoryKey]
 
 	column IsMapped
 		dataType: boolean
 		lineageTag: edd5b2f0-e73f-4f7a-946f-b525d8988393
 		summarizeBy: none
-		sourceColumn: IsMapped
+		sourceColumn: Staging_ModelData[IsMapped]
+
+	column ToolRole
+		dataType: string
+		lineageTag: d5b58fe3-8c08-44a2-83de-7538209587aa
+		summarizeBy: none
+		sourceColumn: Staging_ModelData[ToolRole]
+
+	column BusinessBehavior
+		dataType: string
+		lineageTag: 1d304539-f9b1-4465-88ce-47b7c6f778db
+		summarizeBy: none
+		sourceColumn: Staging_ModelData[BusinessBehavior]
+
+	column MappingConfidence
+		dataType: string
+		isHidden
+		lineageTag: 1ea03848-bc86-4839-a3ef-e7655a2e7568
+		summarizeBy: none
+		sourceColumn: Staging_ModelData[MappingConfidence]
+
+	column AttributionPriority
+		dataType: int64
+		isHidden
+		lineageTag: b9f1bd87-cbb2-42d3-a513-3cc5ce28bad7
+		summarizeBy: none
+		sourceColumn: Staging_ModelData[AttributionPriority]
+
+	column IsBusinessTool
+		dataType: boolean
+		isHidden
+		lineageTag: bdd3f838-8bee-4fbb-afa2-c17e5db95293
+		summarizeBy: none
+		sourceColumn: Staging_ModelData[IsBusinessTool]
 
 	column LowMin
 		dataType: int64
 		isHidden
 		lineageTag: 8a289490-90fb-415a-af2e-5f63cc138e19
 		summarizeBy: none
-		sourceColumn: LowMin
+		sourceColumn: Staging_ModelData[LowMin]
 
 	column MidMin
 		dataType: int64
 		lineageTag: f2659e4c-174b-4404-9e19-c8297101a947
 		summarizeBy: none
-		sourceColumn: MidMin
+		sourceColumn: Staging_ModelData[MidMin]
 
 	column HighMin
 		dataType: int64
 		isHidden
 		lineageTag: 68fcffd1-16ea-4e14-bd04-39558c743006
 		summarizeBy: none
-		sourceColumn: HighMin
+		sourceColumn: Staging_ModelData[HighMin]
 
 	column 'Value Tier' = SWITCH(TRUE(), Dim_CoworkSkill[MidMin] >= 30, "High", Dim_CoworkSkill[MidMin] >= 10, "Mid", "Low")
 		dataType: string
 		lineageTag: 1a7cf5d6-3e42-4b7a-8e0f-6c9d2b4a1e5f
 		summarizeBy: none
 
-	partition Dim_CoworkSkill = m
+	column _RowId
+		dataType: int64
+		isHidden
+		formatString: 0
+		lineageTag: 4d67e4e5-5f17-4e73-b1d7-87d1c41c81b5
+		summarizeBy: none
+		sourceColumn: Staging_ModelData[_RowId]
+
+	partition Dim_CoworkSkill = calculated
 		mode: import
 		source =
-				let
-					Src         = Bridge_CoworkPlugin,
-					Distinct    = Table.Distinct(Table.SelectColumns(Src, {"PluginName"})),
-					Normalize   = Table.TransformColumns(Distinct, {"PluginName", each if _ = null then "" else _, type text}),
-					MergeMap    = Table.NestedJoin(Normalize, {"PluginName"}, #"Cowork Skill Category Map", {"Plugin_FirstName"}, "cm", JoinKind.LeftOuter),
-					ExpandMap   = Table.ExpandTableColumn(MergeMap, "cm", {"Category", "FriendlyName"}, {"MappedCategory", "MappedFriendlyName"}),
-					AddIsMapped = Table.AddColumn(ExpandMap, "IsMapped", each [MappedCategory] <> null, type logical),
-					AddCategory = Table.AddColumn(AddIsMapped, "Category", each if [MappedCategory] = null then "Unmapped" else [MappedCategory], type text),
-					MergeCatKey = Table.NestedJoin(AddCategory, {"Category"}, Dim_TaskCategory, {"Category"}, "dtc1", JoinKind.LeftOuter),
-					ExpandCatKey = Table.ExpandTableColumn(MergeCatKey, "dtc1", {"CategoryKey"}, {"CategoryKey"}),
-
-					FillUnmappedKey = Table.TransformColumns(ExpandCatKey, {"CategoryKey", each if _ = null then 8 else _, Int64.Type}),
-					// Second join by the FINAL (post-fallback) CategoryKey so LowMin/MidMin/HighMin
-					// are always sourced live from Dim_TaskCategory, never hardcoded/duplicated here.
-					MergeMinutes = Table.NestedJoin(FillUnmappedKey, {"CategoryKey"}, Dim_TaskCategory, {"CategoryKey"}, "dtc2", JoinKind.LeftOuter),
-					ExpandMinutes = Table.ExpandTableColumn(MergeMinutes, "dtc2", {"LowMin", "MidMin", "HighMin"}, {"LowMin", "MidMin", "HighMin"}),
-					AddDisplay  = Table.AddColumn(ExpandMinutes, "SkillDisplayName", each if [MappedFriendlyName] <> null and [MappedFriendlyName] <> "" then [MappedFriendlyName] else [PluginName], type text),
-					Final       = Table.SelectColumns(AddDisplay, {"PluginName", "SkillDisplayName", "Category", "CategoryKey", "IsMapped", "LowMin", "MidMin", "HighMin"})
-				in
-					Final
+				SUMMARIZE(
+					FILTER(
+						Staging_ModelData,
+						Staging_ModelData[_Entity] = "Dim_CoworkSkill"
+					),
+					Staging_ModelData[_RowId],
+					Staging_ModelData[PluginName],
+					Staging_ModelData[SkillDisplayName],
+					Staging_ModelData[Category],
+					Staging_ModelData[CategoryKey],
+					Staging_ModelData[IsMapped],
+					Staging_ModelData[ToolRole],
+					Staging_ModelData[BusinessBehavior],
+					Staging_ModelData[MappingConfidence],
+					Staging_ModelData[AttributionPriority],
+					Staging_ModelData[IsBusinessTool],
+					Staging_ModelData[LowMin],
+					Staging_ModelData[MidMin],
+					Staging_ModelData[HighMin]
+				)
 
 	annotation PBI_ResultType = Exception

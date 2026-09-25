@@ -65,6 +65,8 @@ table 'Human Time Estimates'
 							{"Summarize an email thread", 5, "Medium", "Time saved", "Dillon et al. NBER w33795 2025", "https://www.nber.org/papers/w33795", "Email workflows"},
 							{"Summarize a Teams chat or channel", 4, "Medium", "Time saved", "Microsoft WTI 2024", "https://www.microsoft.com/en-us/worklab/work-trend-index", "Communication workflows"},
 							{"Prepare for an upcoming meeting", 15, "High", "Time saved", "Microsoft WTI 2023", "https://www.microsoft.com/en-us/worklab/work-trend-index", "Meeting workflows"},
+							{"Review calendar availability", 5, "Low", "Time saved", "Conservative operational estimate", "", "Meeting workflows"},
+							{"Schedule or update a meeting", 8, "Low", "Time saved", "Conservative operational estimate", "", "Meeting workflows"},
 							{"Extract action items from a meeting", 12, "Medium", "Time saved", "Microsoft WTI 2023", "https://www.microsoft.com/en-us/worklab/work-trend-index", "Meeting workflows"},
 							{"Summarize a recorded meeting or video", 30, "Medium", "Time saved", "Microsoft WTI 2024", "https://www.microsoft.com/en-us/worklab/work-trend-index", "Meeting workflows"},
 							{"Rewrite or improve existing text", 15, "Medium", "Time saved", "Microsoft IDEAS 2026", "https://www.microsoft.com/en-us/research/", "Document & content creation"},

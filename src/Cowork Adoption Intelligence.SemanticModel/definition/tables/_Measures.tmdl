@@ -256,14 +256,16 @@ table _Measures
 		formatString: $ #,0
 		lineageTag: d0b66ee9-620c-4754-8547-24700092f028
 
-	/// Estimated hours assisted, using real per-category task volume times the selected cited Estimate Basis benchmark (Low/Mid/High). The basis measure defaults to Mid when no single basis is selected.
+	/// Estimated hours assisted at one row per Cowork thread. The midpoint uses
+	/// the selected primary business behavior; low/high retain the cited category
+	/// envelope. Orchestration calls never multiply task value.
 	measure 'Assisted Hours' =
 			VAR _basis = [Estimate Basis Selected]
 			RETURN
 				SWITCH(
 					_basis,
 					"Low", [Assisted Hours Low],
-					"Mid", DIVIDE(SUMX(Fact_Tasks, Fact_Tasks[Tasks] * RELATED(Dim_TaskCategory[MidMin])), 60),
+					"Mid", DIVIDE(SUMX(Fact_Tasks, Fact_Tasks[Tasks] * Fact_Tasks[MidMin]), 60),
 					"High", [Assisted Hours High],
 					BLANK()
 				)
@@ -271,12 +273,12 @@ table _Measures
 		lineageTag: 144462ba-0ad3-4d91-80f3-980ffbc48379
 
 	/// Estimated assisted hours using the conservative (low) time-saved benchmark.
-	measure 'Assisted Hours Low' = DIVIDE(SUMX(Fact_Tasks, Fact_Tasks[Tasks] * RELATED(Dim_TaskCategory[LowMin])), 60)
+	measure 'Assisted Hours Low' = DIVIDE(SUMX(Fact_Tasks, Fact_Tasks[Tasks] * Fact_Tasks[LowMin]), 60)
 		formatString: #,0.0
 		lineageTag: dd5c90e7-5e8e-4230-8d11-1e376f270355
 
 	/// Estimated assisted hours using the optimistic (high) time-saved benchmark.
-	measure 'Assisted Hours High' = DIVIDE(SUMX(Fact_Tasks, Fact_Tasks[Tasks] * RELATED(Dim_TaskCategory[HighMin])), 60)
+	measure 'Assisted Hours High' = DIVIDE(SUMX(Fact_Tasks, Fact_Tasks[Tasks] * Fact_Tasks[HighMin]), 60)
 		formatString: #,0.0
 		lineageTag: 176454ba-709d-4903-9775-d78c0a8f8a43
 
@@ -343,9 +345,26 @@ table _Measures
 		formatString: #,0.0
 		lineageTag: 6654e386-c551-4538-bc09-28e38cc3db68
 
-	measure 'Behaviors Used' = DISTINCTCOUNT(Bridge_CoworkPlugin[PluginName])
+	/// Distinct customer-facing business behaviors represented by classified tasks.
+	measure 'Behaviors Used' = CALCULATE(DISTINCTCOUNT(Fact_Tasks[BusinessBehavior]), Fact_Tasks[TaskClassification] = "Business classified")
 		formatString: #,0
 		lineageTag: bdcd2653-8cf1-47cf-b4da-92ea174dd4af
+
+	measure 'Tools Observed' = DISTINCTCOUNT(Bridge_CoworkPlugin[PluginName])
+		formatString: #,0
+		lineageTag: 5528478b-9853-40d7-b21e-10735260ec24
+
+	measure 'Business Tool Calls' = CALCULATE([Skill Invocations], Dim_CoworkSkill[ToolRole] = "Business")
+		formatString: #,0
+		lineageTag: 8e130e44-e9cc-4cbc-bbb2-e1caa97a5a6f
+
+	measure 'Orchestration Tool Calls' = CALCULATE([Skill Invocations], Dim_CoworkSkill[ToolRole] = "Orchestration")
+		formatString: #,0
+		lineageTag: ec62c391-8328-451e-b996-d66fae802fce
+
+	measure 'Unclassified Tool Calls' = CALCULATE([Skill Invocations], Dim_CoworkSkill[ToolRole] = "Unclassified")
+		formatString: #,0
+		lineageTag: ef90cabd-17ca-4a89-890d-bf29daf36b46
 
 	measure 'Attributed Users %' = DIVIDE(CALCULATE([User Count], KEEPFILTERS(NOT ISBLANK(Dim_User[BusinessUnit]) && Dim_User[BusinessUnit] <> "Unassigned")), [User Count])
 		formatString: 0.0%
@@ -529,13 +548,12 @@ table _Measures
 				)
 		lineageTag: f2413b66-915f-48fb-a621-29a1ca0462a5
 
-	measure 'Skill-Sliced Assisted Hours' = CALCULATE([Assisted Hours], CROSSFILTER(Dim_CoworkSkill[CategoryKey], Dim_TaskCategory[CategoryKey], Both))
+	/// Assisted hours for tasks whose primary customer-facing tool is selected.
+	measure 'Skill-Sliced Assisted Hours' = CALCULATE([Assisted Hours], TREATAS(VALUES(Dim_CoworkSkill[PluginName]), Fact_Tasks[PrimaryBusinessTool]))
 		formatString: #,0.0
 		lineageTag: 7c4e9a1d-5f68-4b3e-9c72-1e8a6d4f2b90
 
-	/// Same category-grain-via-skill-filter technique as 'Skill-Sliced Assisted Hours', applied
-	/// to Estimated Value $. Same "repeated per category, not truly per-skill" caveat applies.
-	measure 'Skill-Sliced Estimated Value $' = CALCULATE([Estimated Value $], CROSSFILTER(Dim_CoworkSkill[CategoryKey], Dim_TaskCategory[CategoryKey], Both))
+	measure 'Skill-Sliced Estimated Value $' = CALCULATE([Estimated Value $], TREATAS(VALUES(Dim_CoworkSkill[PluginName]), Fact_Tasks[PrimaryBusinessTool]))
 		formatString: $ #,0
 		lineageTag: 9d3f7b2e-8a41-4c95-b6d0-3f5e9a7c1d84
 
@@ -1121,60 +1139,17 @@ table _Measures
 			    )
 		lineageTag: 98e3f117-d463-4243-a722-5b9b9e62543c
 
-	measure 'Cowork Delegation Not Started Users' =
-			COUNTROWS(
-			    FILTER(
-			        VALUES(Dim_User[UserKey]),
-			        [User Delegation Rung] = "Not started"
-			    )
-			)
-		formatString: #,0
-		lineageTag: f3e6bdf4-7961-4cd4-ba53-f85f002b802d
-
-	measure 'Cowork Delegation Trying Users' =
-			COUNTROWS(
-			    FILTER(
-			        VALUES(Dim_User[UserKey]),
-			        [User Delegation Rung] = "Trying"
-			    )
-			)
-		formatString: #,0
-		lineageTag: d9fc206e-e60f-4f24-9ad2-550c8dcbc29c
-
-	measure 'Cowork Delegation Using Users' =
-			COUNTROWS(
-			    FILTER(
-			        VALUES(Dim_User[UserKey]),
-			        [User Delegation Rung] = "Using"
-			    )
-			)
-		formatString: #,0
-		lineageTag: 3e1779b0-acde-41c6-b260-493c0324cdb2
-
-	measure 'Cowork Delegation Delegating Users' =
-			COUNTROWS(
-			    FILTER(
-			        VALUES(Dim_User[UserKey]),
-			        [User Delegation Rung] = "Delegating"
-			    )
-			)
-		formatString: #,0
-		lineageTag: cf1530b9-c750-455f-9619-0506fdc6fb75
-
-	measure 'Cowork Delegation Automating Users' =
-			COUNTROWS(
-			    FILTER(
-			        VALUES(Dim_User[UserKey]),
-			        [User Delegation Rung] = "Automating"
-			    )
-			)
-		formatString: #,0
-		lineageTag: d827b11c-3207-48d6-acc1-b7ee92776c7a
-
 	measure 'Users on Rung 3+' =
-			CALCULATE(
-			    [Cowork Active Users],
-			    FILTER(VALUES(Dim_User[UserKey]), [User Delegation Rung] IN {"Delegating", "Automating"})
+			COUNTROWS(
+			    FILTER(
+			        VALUES(Dim_User[UserKey]),
+			        VAR _tasks = [Cowork Tasks (Threads)]
+			        VAR _scheduled = [Reported Scheduled]
+			        VAR _multiSkill = [Multi-Skill Task %]
+			        RETURN
+			            COALESCE(_tasks, 0) > 0 &&
+			            (_scheduled > 0 || _multiSkill >= 0.30)
+			    )
 			)
 		formatString: #,0
 		lineageTag: 29773174-b04a-45ae-b3fe-af8b84937c8a
@@ -1196,26 +1171,6 @@ table _Measures
 			)
 		formatString: 0%
 		lineageTag: e67e5f26-9744-4210-94a2-35a78a6f6682
-
-	/// Sort value for the standardized delegation ladder.
-	measure 'Delegation Rung Order' =
-			SWITCH(
-			    [User Delegation Rung],
-			    "Automating", 4,
-			    "Delegating", 3,
-			    "Using", 2,
-			    "Trying", 1,
-			    0
-			)
-		formatString: 0
-
-	/// Per-rung user counts for the delegation-ladder trend.
-	measure 'Users at Rung 0 (Not started)' =
-			CALCULATE(
-			    COUNTROWS(VALUES(Dim_User[UserKey])),
-			    FILTER(VALUES(Dim_User[UserKey]), [User Delegation Rung] = "Not started")
-			)
-		formatString: #,0
 
 	measure 'Users at Rung 1 (Trying)' =
 			CALCULATE(
@@ -1290,10 +1245,6 @@ table _Measures
 			RETURN IF(ISBLANK(_user), BLANK(), [User Delegation Rung])
 		lineageTag: 7a87cf4a-b19c-4e91-8cf5-6f5a5718dce1
 
-	/// Latest observed Cowork activity date in the current organization and user context.
-	measure 'User Last Activity' = MAX(Fact_CoworkUsage[LastActivityDate])
-		formatString: mmm d, yyyy
-
 	/// Per-user enablement action for 99_review_targets. The rules use measured activity and
 	/// delegation depth only; they intentionally do not infer license-removal or cost-risk decisions.
 	measure 'Review Next Action' =
@@ -1349,13 +1300,7 @@ table _Measures
 		lineageTag: 3e5fbb78-9152-48e2-8096-8df2bd544052
 
 	/// Number of distinct weeks with observed tasks in the current category context.
-	measure 'Champion Active Weeks' =
-			COUNTROWS(
-				FILTER(
-					VALUES(Dim_Date[WeekStart]),
-					CALCULATE([Champion Category Tasks]) > 0
-				)
-			)
+	measure 'Champion Active Weeks' = COUNTROWS(SUMMARIZE(Fact_CoworkThread, Fact_CoworkThread[WeekStartDate]))
 		formatString: #,0
 		displayFolder: Champions
 		lineageTag: a61b07f5-600a-4d2e-ac99-4df8e006b3bb
@@ -1374,8 +1319,7 @@ table _Measures
 		lineageTag: 6a0d13c4-364a-4196-98a0-0736fa58e58c
 
 	/// Normalized 0-1 form of the existing measured delegation rung.
-	measure 'Champion Delegation Score' =
-			DIVIDE([Delegation Rung Order], 4)
+	measure 'Champion Delegation Score' = DIVIDE([Delegation Rung Order], 4)
 		formatString: 0%
 		displayFolder: Champions
 		lineageTag: afed087d-105e-444e-98af-3c6cb1e6089c
@@ -1394,45 +1338,58 @@ table _Measures
 
 	/// Eligible users in the current visual and report filter context.
 	measure 'Champion Eligible Users' =
-			SUMX(
-				VALUES(Dim_User[UserKey]),
-				CALCULATE([Champion Eligible])
-			)
+			VAR _stats =
+				SUMMARIZE(
+					Fact_CoworkThread,
+					Dim_User[UserKey],
+					"__Tasks", COUNTROWS(Fact_CoworkThread),
+					"__Weeks", DISTINCTCOUNT(Fact_CoworkThread[WeekStartDate])
+				)
+			RETURN
+				COUNTROWS(
+					FILTER(
+						_stats,
+						[__Tasks] >= 3 &&
+						[__Weeks] >= 2
+					)
+				)
 		formatString: #,0
 		displayFolder: Champions
 		lineageTag: 3d5a9204-a1a2-4135-a959-a45b2c57024f
 
 	/// Percentile rank of category task volume across users while preserving date and category filters.
 	measure 'Champion Activity Percentile' =
-			VAR _allUsers =
+			VAR _stats =
 				CALCULATETABLE(
-					VALUES(Dim_User[UserKey]),
+					SUMMARIZE(
+						Fact_CoworkThread,
+						Dim_User[UserKey],
+						"__Tasks", COUNTROWS(Fact_CoworkThread),
+						"__Weeks", DISTINCTCOUNT(Fact_CoworkThread[WeekStartDate])
+					),
 					REMOVEFILTERS(Dim_User)
 				)
 			VAR _population =
 				FILTER(
-					_allUsers,
-					CALCULATE(
-						[Champion Eligible],
-						ALLEXCEPT(Dim_User, Dim_User[UserKey])
-					) = 1
+					_stats,
+					[__Tasks] >= 3 &&
+					[__Weeks] >= 2
 				)
 			VAR _populationCount = COUNTROWS(_population)
 			VAR _currentTasks = [Champion Category Tasks]
+			VAR _currentWeeks = [Champion Active Weeks]
 			VAR _rank =
 				RANKX(
 					_population,
-					CALCULATE(
-						[Champion Category Tasks],
-						ALLEXCEPT(Dim_User, Dim_User[UserKey])
-					),
+					[__Tasks],
 					_currentTasks,
 					DESC,
 					SKIP
 				)
 			RETURN
 				IF(
-					[Champion Eligible] = 1,
+					_currentTasks >= 3 &&
+					_currentWeeks >= 2,
 					IF(
 						_populationCount <= 1,
 						1,
@@ -1445,35 +1402,37 @@ table _Measures
 
 	/// Percentile rank of sustained weekly activity across users while preserving date and category filters.
 	measure 'Champion Consistency Percentile' =
-			VAR _allUsers =
+			VAR _stats =
 				CALCULATETABLE(
-					VALUES(Dim_User[UserKey]),
+					SUMMARIZE(
+						Fact_CoworkThread,
+						Dim_User[UserKey],
+						"__Tasks", COUNTROWS(Fact_CoworkThread),
+						"__Weeks", DISTINCTCOUNT(Fact_CoworkThread[WeekStartDate])
+					),
 					REMOVEFILTERS(Dim_User)
 				)
 			VAR _population =
 				FILTER(
-					_allUsers,
-					CALCULATE(
-						[Champion Eligible],
-						ALLEXCEPT(Dim_User, Dim_User[UserKey])
-					) = 1
+					_stats,
+					[__Tasks] >= 3 &&
+					[__Weeks] >= 2
 				)
 			VAR _populationCount = COUNTROWS(_population)
+			VAR _currentTasks = [Champion Category Tasks]
 			VAR _currentWeeks = [Champion Active Weeks]
 			VAR _rank =
 				RANKX(
 					_population,
-					CALCULATE(
-						[Champion Active Weeks],
-						ALLEXCEPT(Dim_User, Dim_User[UserKey])
-					),
+					[__Weeks],
 					_currentWeeks,
 					DESC,
 					SKIP
 				)
 			RETURN
 				IF(
-					[Champion Eligible] = 1,
+					_currentTasks >= 3 &&
+					_currentWeeks >= 2,
 					IF(
 						_populationCount <= 1,
 						1,
@@ -1486,49 +1445,156 @@ table _Measures
 
 	/// Transparent 0-100 evidence score: 40% category activity, 35% consistency, and 25% delegation maturity.
 	measure 'Champion Evidence Score' =
-			IF(
-				[Champion Eligible] = 1,
-				100 * (
-					0.40 * [Champion Activity Percentile] +
-					0.35 * [Champion Consistency Percentile] +
-					0.25 * [Champion Delegation Score]
+			VAR _stats =
+				CALCULATETABLE(
+					SUMMARIZE(
+						Fact_CoworkThread,
+						Dim_User[UserKey],
+						"__Tasks", COUNTROWS(Fact_CoworkThread),
+						"__Weeks", DISTINCTCOUNT(Fact_CoworkThread[WeekStartDate])
+					),
+					REMOVEFILTERS(Dim_User)
 				)
-			)
+			VAR _population =
+				FILTER(
+					_stats,
+					[__Tasks] >= 3 &&
+					[__Weeks] >= 2
+				)
+			VAR _populationCount = COUNTROWS(_population)
+			VAR _currentTasks = [Champion Category Tasks]
+			VAR _currentWeeks = [Champion Active Weeks]
+			VAR _activityRank =
+				RANKX(
+					_population,
+					[__Tasks],
+					_currentTasks,
+					DESC,
+					SKIP
+				)
+			VAR _consistencyRank =
+				RANKX(
+					_population,
+					[__Weeks],
+					_currentWeeks,
+					DESC,
+					SKIP
+				)
+			VAR _activityPercentile =
+				IF(
+					_populationCount <= 1,
+					1,
+					DIVIDE(_populationCount - _activityRank, _populationCount - 1)
+				)
+			VAR _consistencyPercentile =
+				IF(
+					_populationCount <= 1,
+					1,
+					DIVIDE(_populationCount - _consistencyRank, _populationCount - 1)
+				)
+			RETURN
+				IF(
+					_currentTasks >= 3 &&
+					_currentWeeks >= 2,
+					100 * (
+						0.40 * _activityPercentile +
+						0.35 * _consistencyPercentile +
+						0.25 * [Champion Delegation Score]
+					)
+				)
 		formatString: 0.0
 		displayFolder: Champions
 		lineageTag: 318c46e0-d497-436e-85b2-bb69b3ab77c6
 
 	/// Rank of an eligible user by champion evidence score inside the selected organization and category scope.
 	measure 'Champion Evidence Rank' =
-			VAR _allUsers =
+			VAR _baseStats =
 				CALCULATETABLE(
-					VALUES(Dim_User[UserKey]),
+					SUMMARIZE(
+						Fact_CoworkThread,
+						Dim_User[UserKey],
+						"__Tasks", COUNTROWS(Fact_CoworkThread),
+						"__Weeks", DISTINCTCOUNT(Fact_CoworkThread[WeekStartDate]),
+						"__MultiSkillTasks",
+							CALCULATE(
+								COUNTROWS(Fact_CoworkThread),
+								Fact_CoworkThread[PluginCount] > 1
+							),
+						"__Duration", AVERAGE(Fact_CoworkThread[DurationMin])
+					),
 					REMOVEFILTERS(Dim_User)
+				)
+			VAR _stats =
+				ADDCOLUMNS(
+					_baseStats,
+					"__Delegation",
+						VAR _tasks = [__Tasks]
+						VAR _userKey = Dim_User[UserKey]
+						VAR _scheduled =
+							CALCULATE(
+								[Reported Scheduled],
+								REMOVEFILTERS(Dim_User),
+								TREATAS({_userKey}, Dim_User[UserKey])
+							)
+						VAR _multiSkill = DIVIDE([__MultiSkillTasks], _tasks)
+						VAR _duration = [__Duration]
+						RETURN
+							SWITCH(
+								TRUE(),
+								COALESCE(_tasks, 0) = 0, 0,
+								_scheduled > 0, 1,
+								_multiSkill >= 0.30, 0.75,
+								_duration >= 5, 0.5,
+								0.25
+							)
 				)
 			VAR _population =
 				FILTER(
-					_allUsers,
-					CALCULATE(
-						[Champion Eligible],
-						ALLEXCEPT(Dim_User, Dim_User[UserKey])
-					) = 1
+					_stats,
+					[__Tasks] >= 3 &&
+					[__Weeks] >= 2
 				)
-			VAR _currentScore = [Champion Evidence Score]
+			VAR _populationCount = COUNTROWS(_population)
+			VAR _withPercentiles =
+				ADDCOLUMNS(
+					_population,
+					"__ActivityPercentile",
+						VAR _tasks = [__Tasks]
+						VAR _rank = RANKX(_population, [__Tasks], _tasks, DESC, SKIP)
+						RETURN IF(_populationCount <= 1, 1, DIVIDE(_populationCount - _rank, _populationCount - 1)),
+					"__ConsistencyPercentile",
+						VAR _weeks = [__Weeks]
+						VAR _rank = RANKX(_population, [__Weeks], _weeks, DESC, SKIP)
+						RETURN IF(_populationCount <= 1, 1, DIVIDE(_populationCount - _rank, _populationCount - 1))
+				)
+			VAR _scored =
+				ADDCOLUMNS(
+					_withPercentiles,
+					"__Score",
+						100 * (
+							0.40 * [__ActivityPercentile] +
+							0.35 * [__ConsistencyPercentile] +
+							0.25 * [__Delegation]
+						)
+				)
+			VAR _ranked =
+				ADDCOLUMNS(
+					_scored,
+					"__RankValue",
+						[__Score] * 1000000 - Dim_User[UserKey]
+				)
+			VAR _currentUser = SELECTEDVALUE(Dim_User[UserKey])
 			VAR _currentRankValue =
-				_currentScore * 1000000 -
-				SELECTEDVALUE(Dim_User[UserKey])
+				MAXX(
+					FILTER(_ranked, Dim_User[UserKey] = _currentUser),
+					[__RankValue]
+				)
 			RETURN
 				IF(
-					[Champion Eligible] = 1,
+					NOT ISBLANK(_currentRankValue),
 					RANKX(
-						_population,
-						VAR _score =
-							CALCULATE(
-								[Champion Evidence Score],
-								ALLEXCEPT(Dim_User, Dim_User[UserKey])
-							)
-						RETURN
-							_score * 1000000 - Dim_User[UserKey],
+						_ranked,
+						[__RankValue],
 						_currentRankValue,
 						DESC,
 						DENSE
@@ -1540,19 +1606,22 @@ table _Measures
 
 	/// Number of eligible users admitted by the selected Top 5/10/20 tier.
 	measure 'Champion Cutoff Count' =
-			VAR _allUsers =
+			VAR _stats =
 				CALCULATETABLE(
-					VALUES(Dim_User[UserKey]),
+					SUMMARIZE(
+						Fact_CoworkThread,
+						Dim_User[UserKey],
+						"__Tasks", COUNTROWS(Fact_CoworkThread),
+						"__Weeks", DISTINCTCOUNT(Fact_CoworkThread[WeekStartDate])
+					),
 					REMOVEFILTERS(Dim_User)
 				)
 			VAR _populationCount =
 				COUNTROWS(
 					FILTER(
-						_allUsers,
-						CALCULATE(
-							[Champion Eligible],
-							ALLEXCEPT(Dim_User, Dim_User[UserKey])
-						) = 1
+						_stats,
+						[__Tasks] >= 3 &&
+						[__Weeks] >= 2
 					)
 				)
 			RETURN
@@ -1581,62 +1650,404 @@ table _Measures
 
 	/// Potential champion count in the current visual context.
 	measure 'Champion Candidates' =
-			SUMX(
-				VALUES(Dim_User[UserKey]),
-				CALCULATE([Is Champion Candidate])
-			)
+			VAR _visibleUsers = VALUES(Dim_User[UserKey])
+			VAR _baseStats =
+				CALCULATETABLE(
+					SUMMARIZE(
+						Fact_CoworkThread,
+						Dim_User[UserKey],
+						"__Tasks", COUNTROWS(Fact_CoworkThread),
+						"__Weeks", DISTINCTCOUNT(Fact_CoworkThread[WeekStartDate]),
+						"__MultiSkillTasks",
+							CALCULATE(
+								COUNTROWS(Fact_CoworkThread),
+								Fact_CoworkThread[PluginCount] > 1
+							),
+						"__Duration", AVERAGE(Fact_CoworkThread[DurationMin])
+					),
+					REMOVEFILTERS(Dim_User)
+				)
+			VAR _stats =
+				ADDCOLUMNS(
+					_baseStats,
+					"__Delegation",
+						VAR _tasks = [__Tasks]
+						VAR _userKey = Dim_User[UserKey]
+						VAR _scheduled =
+							CALCULATE(
+								[Reported Scheduled],
+								REMOVEFILTERS(Dim_User),
+								TREATAS({_userKey}, Dim_User[UserKey])
+							)
+						VAR _multiSkill = DIVIDE([__MultiSkillTasks], _tasks)
+						VAR _duration = [__Duration]
+						RETURN
+							SWITCH(
+								TRUE(),
+								COALESCE(_tasks, 0) = 0, 0,
+								_scheduled > 0, 1,
+								_multiSkill >= 0.30, 0.75,
+								_duration >= 5, 0.5,
+								0.25
+							)
+				)
+			VAR _population =
+				FILTER(
+					_stats,
+					[__Tasks] >= 3 &&
+					[__Weeks] >= 2
+				)
+			VAR _populationCount = COUNTROWS(_population)
+			VAR _withPercentiles =
+				ADDCOLUMNS(
+					_population,
+					"__ActivityPercentile",
+						VAR _tasks = [__Tasks]
+						VAR _rank = RANKX(_population, [__Tasks], _tasks, DESC, SKIP)
+						RETURN IF(_populationCount <= 1, 1, DIVIDE(_populationCount - _rank, _populationCount - 1)),
+					"__ConsistencyPercentile",
+						VAR _weeks = [__Weeks]
+						VAR _rank = RANKX(_population, [__Weeks], _weeks, DESC, SKIP)
+						RETURN IF(_populationCount <= 1, 1, DIVIDE(_populationCount - _rank, _populationCount - 1))
+				)
+			VAR _scored =
+				ADDCOLUMNS(
+					_withPercentiles,
+					"__Score",
+						100 * (
+							0.40 * [__ActivityPercentile] +
+							0.35 * [__ConsistencyPercentile] +
+							0.25 * [__Delegation]
+						)
+				)
+			VAR _ranked =
+				ADDCOLUMNS(
+					_scored,
+					"__Rank",
+						VAR _rankValue = [__Score] * 1000000 - Dim_User[UserKey]
+						RETURN
+							RANKX(
+								_scored,
+								[__Score] * 1000000 - Dim_User[UserKey],
+								_rankValue,
+								DESC,
+								DENSE
+							)
+				)
+			VAR _cutoff =
+				IF(
+					_populationCount > 0,
+					MIN(
+						_populationCount,
+						MAX(1, CEILING(_populationCount * [Champion Percent Selected], 1))
+					)
+				)
+			RETURN
+				COUNTROWS(
+					FILTER(
+						_ranked,
+						[__Rank] <= _cutoff &&
+						Dim_User[UserKey] IN _visibleUsers
+					)
+				)
 		formatString: #,0
 		displayFolder: Champions
 		lineageTag: 5218cf0a-4e3d-4db0-8169-76b68792b96c
 
 	/// Average category task volume across the currently displayed champion candidates.
 	measure 'Average Tasks per Champion' =
-			AVERAGEX(
-				FILTER(
-					VALUES(Dim_User[UserKey]),
-					CALCULATE([Is Champion Candidate]) = 1
-				),
-				CALCULATE([Champion Category Tasks])
-			)
+			VAR _visibleUsers = VALUES(Dim_User[UserKey])
+			VAR _baseStats =
+				CALCULATETABLE(
+					SUMMARIZE(
+						Fact_CoworkThread,
+						Dim_User[UserKey],
+						"__Tasks", COUNTROWS(Fact_CoworkThread),
+						"__Weeks", DISTINCTCOUNT(Fact_CoworkThread[WeekStartDate]),
+						"__MultiSkillTasks",
+							CALCULATE(
+								COUNTROWS(Fact_CoworkThread),
+								Fact_CoworkThread[PluginCount] > 1
+							),
+						"__Duration", AVERAGE(Fact_CoworkThread[DurationMin])
+					),
+					REMOVEFILTERS(Dim_User)
+				)
+			VAR _stats =
+				ADDCOLUMNS(
+					_baseStats,
+					"__Delegation",
+						VAR _tasks = [__Tasks]
+						VAR _userKey = Dim_User[UserKey]
+						VAR _scheduled =
+							CALCULATE(
+								[Reported Scheduled],
+								REMOVEFILTERS(Dim_User),
+								TREATAS({_userKey}, Dim_User[UserKey])
+							)
+						VAR _multiSkill = DIVIDE([__MultiSkillTasks], _tasks)
+						VAR _duration = [__Duration]
+						RETURN
+							SWITCH(
+								TRUE(),
+								_scheduled > 0, 1,
+								_multiSkill >= 0.30, 0.75,
+								_duration >= 5, 0.5,
+								0.25
+							)
+				)
+			VAR _population = FILTER(_stats, [__Tasks] >= 3 && [__Weeks] >= 2)
+			VAR _populationCount = COUNTROWS(_population)
+			VAR _withPercentiles =
+				ADDCOLUMNS(
+					_population,
+					"__ActivityPercentile",
+						VAR _tasks = [__Tasks]
+						VAR _rank = RANKX(_population, [__Tasks], _tasks, DESC, SKIP)
+						RETURN IF(_populationCount <= 1, 1, DIVIDE(_populationCount - _rank, _populationCount - 1)),
+					"__ConsistencyPercentile",
+						VAR _weeks = [__Weeks]
+						VAR _rank = RANKX(_population, [__Weeks], _weeks, DESC, SKIP)
+						RETURN IF(_populationCount <= 1, 1, DIVIDE(_populationCount - _rank, _populationCount - 1))
+				)
+			VAR _scored =
+				ADDCOLUMNS(
+					_withPercentiles,
+					"__Score",
+						100 * (
+							0.40 * [__ActivityPercentile] +
+							0.35 * [__ConsistencyPercentile] +
+							0.25 * [__Delegation]
+						)
+				)
+			VAR _ranked =
+				ADDCOLUMNS(
+					_scored,
+					"__Rank",
+						VAR _rankValue = [__Score] * 1000000 - Dim_User[UserKey]
+						RETURN RANKX(_scored, [__Score] * 1000000 - Dim_User[UserKey], _rankValue, DESC, DENSE)
+				)
+			VAR _cutoff =
+				IF(
+					_populationCount > 0,
+					MIN(_populationCount, MAX(1, CEILING(_populationCount * [Champion Percent Selected], 1)))
+				)
+			RETURN
+				AVERAGEX(
+					FILTER(_ranked, [__Rank] <= _cutoff && Dim_User[UserKey] IN _visibleUsers),
+					[__Tasks]
+				)
 		formatString: #,0.0
 		displayFolder: Champions
 		lineageTag: 0e1b2b1f-5fb2-431d-b951-b536efcacd93
 
 	/// Average active-week count across the currently displayed champion candidates.
 	measure 'Average Active Weeks per Champion' =
-			AVERAGEX(
-				FILTER(
-					VALUES(Dim_User[UserKey]),
-					CALCULATE([Is Champion Candidate]) = 1
-				),
-				CALCULATE([Champion Active Weeks])
-			)
+			VAR _visibleUsers = VALUES(Dim_User[UserKey])
+			VAR _baseStats =
+				CALCULATETABLE(
+					SUMMARIZE(
+						Fact_CoworkThread,
+						Dim_User[UserKey],
+						"__Tasks", COUNTROWS(Fact_CoworkThread),
+						"__Weeks", DISTINCTCOUNT(Fact_CoworkThread[WeekStartDate]),
+						"__MultiSkillTasks",
+							CALCULATE(
+								COUNTROWS(Fact_CoworkThread),
+								Fact_CoworkThread[PluginCount] > 1
+							),
+						"__Duration", AVERAGE(Fact_CoworkThread[DurationMin])
+					),
+					REMOVEFILTERS(Dim_User)
+				)
+			VAR _stats =
+				ADDCOLUMNS(
+					_baseStats,
+					"__Delegation",
+						VAR _tasks = [__Tasks]
+						VAR _userKey = Dim_User[UserKey]
+						VAR _scheduled =
+							CALCULATE(
+								[Reported Scheduled],
+								REMOVEFILTERS(Dim_User),
+								TREATAS({_userKey}, Dim_User[UserKey])
+							)
+						VAR _multiSkill = DIVIDE([__MultiSkillTasks], _tasks)
+						VAR _duration = [__Duration]
+						RETURN
+							SWITCH(
+								TRUE(),
+								_scheduled > 0, 1,
+								_multiSkill >= 0.30, 0.75,
+								_duration >= 5, 0.5,
+								0.25
+							)
+				)
+			VAR _population = FILTER(_stats, [__Tasks] >= 3 && [__Weeks] >= 2)
+			VAR _populationCount = COUNTROWS(_population)
+			VAR _withPercentiles =
+				ADDCOLUMNS(
+					_population,
+					"__ActivityPercentile",
+						VAR _tasks = [__Tasks]
+						VAR _rank = RANKX(_population, [__Tasks], _tasks, DESC, SKIP)
+						RETURN IF(_populationCount <= 1, 1, DIVIDE(_populationCount - _rank, _populationCount - 1)),
+					"__ConsistencyPercentile",
+						VAR _weeks = [__Weeks]
+						VAR _rank = RANKX(_population, [__Weeks], _weeks, DESC, SKIP)
+						RETURN IF(_populationCount <= 1, 1, DIVIDE(_populationCount - _rank, _populationCount - 1))
+				)
+			VAR _scored =
+				ADDCOLUMNS(
+					_withPercentiles,
+					"__Score",
+						100 * (
+							0.40 * [__ActivityPercentile] +
+							0.35 * [__ConsistencyPercentile] +
+							0.25 * [__Delegation]
+						)
+				)
+			VAR _ranked =
+				ADDCOLUMNS(
+					_scored,
+					"__Rank",
+						VAR _rankValue = [__Score] * 1000000 - Dim_User[UserKey]
+						RETURN RANKX(_scored, [__Score] * 1000000 - Dim_User[UserKey], _rankValue, DESC, DENSE)
+				)
+			VAR _cutoff =
+				IF(
+					_populationCount > 0,
+					MIN(_populationCount, MAX(1, CEILING(_populationCount * [Champion Percent Selected], 1)))
+				)
+			RETURN
+				AVERAGEX(
+					FILTER(_ranked, [__Rank] <= _cutoff && Dim_User[UserKey] IN _visibleUsers),
+					[__Weeks]
+				)
 		formatString: #,0.0
 		displayFolder: Champions
 		lineageTag: 88063e61-94de-4a4c-92c4-8b5242e415c4
 
 	/// Departments in scope with at least one qualifying potential champion.
 	measure 'Departments with Champions' =
-			COUNTROWS(
-				FILTER(
-					VALUES(Dim_User[Department]),
-					NOT ISBLANK(Dim_User[Department]) &&
-					CALCULATE([Champion Candidates]) > 0
+			VAR _visibleUsers = VALUES(Dim_User[UserKey])
+			VAR _baseStats =
+				CALCULATETABLE(
+					SUMMARIZE(
+						Fact_CoworkThread,
+						Dim_User[UserKey],
+						Dim_User[Department],
+						"__Tasks", COUNTROWS(Fact_CoworkThread),
+						"__Weeks", DISTINCTCOUNT(Fact_CoworkThread[WeekStartDate]),
+						"__MultiSkillTasks",
+							CALCULATE(
+								COUNTROWS(Fact_CoworkThread),
+								Fact_CoworkThread[PluginCount] > 1
+							),
+						"__Duration", AVERAGE(Fact_CoworkThread[DurationMin])
+					),
+					REMOVEFILTERS(Dim_User)
 				)
-			)
+			VAR _stats =
+				ADDCOLUMNS(
+					_baseStats,
+					"__Delegation",
+						VAR _tasks = [__Tasks]
+						VAR _userKey = Dim_User[UserKey]
+						VAR _scheduled =
+							CALCULATE(
+								[Reported Scheduled],
+								REMOVEFILTERS(Dim_User),
+								TREATAS({_userKey}, Dim_User[UserKey])
+							)
+						VAR _multiSkill = DIVIDE([__MultiSkillTasks], _tasks)
+						VAR _duration = [__Duration]
+						RETURN
+							SWITCH(
+								TRUE(),
+								_scheduled > 0, 1,
+								_multiSkill >= 0.30, 0.75,
+								_duration >= 5, 0.5,
+								0.25
+							)
+				)
+			VAR _population = FILTER(_stats, [__Tasks] >= 3 && [__Weeks] >= 2)
+			VAR _populationCount = COUNTROWS(_population)
+			VAR _withPercentiles =
+				ADDCOLUMNS(
+					_population,
+					"__ActivityPercentile",
+						VAR _tasks = [__Tasks]
+						VAR _rank = RANKX(_population, [__Tasks], _tasks, DESC, SKIP)
+						RETURN IF(_populationCount <= 1, 1, DIVIDE(_populationCount - _rank, _populationCount - 1)),
+					"__ConsistencyPercentile",
+						VAR _weeks = [__Weeks]
+						VAR _rank = RANKX(_population, [__Weeks], _weeks, DESC, SKIP)
+						RETURN IF(_populationCount <= 1, 1, DIVIDE(_populationCount - _rank, _populationCount - 1))
+				)
+			VAR _scored =
+				ADDCOLUMNS(
+					_withPercentiles,
+					"__Score",
+						100 * (
+							0.40 * [__ActivityPercentile] +
+							0.35 * [__ConsistencyPercentile] +
+							0.25 * [__Delegation]
+						)
+				)
+			VAR _ranked =
+				ADDCOLUMNS(
+					_scored,
+					"__Rank",
+						VAR _rankValue = [__Score] * 1000000 - Dim_User[UserKey]
+						RETURN RANKX(_scored, [__Score] * 1000000 - Dim_User[UserKey], _rankValue, DESC, DENSE)
+				)
+			VAR _cutoff =
+				IF(
+					_populationCount > 0,
+					MIN(_populationCount, MAX(1, CEILING(_populationCount * [Champion Percent Selected], 1)))
+				)
+			VAR _candidateDepartments =
+				SUMMARIZE(
+					FILTER(
+						_ranked,
+						[__Rank] <= _cutoff &&
+						Dim_User[UserKey] IN _visibleUsers &&
+						NOT ISBLANK(Dim_User[Department])
+					),
+					Dim_User[Department]
+				)
+			RETURN COUNTROWS(_candidateDepartments)
 		formatString: #,0
 		displayFolder: Champions
 		lineageTag: e2afaeb5-b8ed-495f-8108-f46d9c7e097f
 
 	/// Departments in scope with at least one user meeting the minimum evidence floor.
 	measure 'Departments with Eligible Users' =
-			COUNTROWS(
-				FILTER(
-					VALUES(Dim_User[Department]),
-					NOT ISBLANK(Dim_User[Department]) &&
-					CALCULATE([Champion Eligible Users]) > 0
+			VAR _visibleUsers = VALUES(Dim_User[UserKey])
+			VAR _stats =
+				CALCULATETABLE(
+					SUMMARIZE(
+						Fact_CoworkThread,
+						Dim_User[UserKey],
+						Dim_User[Department],
+						"__Tasks", COUNTROWS(Fact_CoworkThread),
+						"__Weeks", DISTINCTCOUNT(Fact_CoworkThread[WeekStartDate])
+					),
+					REMOVEFILTERS(Dim_User)
 				)
-			)
+			VAR _eligibleDepartments =
+				SUMMARIZE(
+					FILTER(
+						_stats,
+						[__Tasks] >= 3 &&
+						[__Weeks] >= 2 &&
+						Dim_User[UserKey] IN _visibleUsers &&
+						NOT ISBLANK(Dim_User[Department])
+					),
+					Dim_User[Department]
+				)
+			RETURN COUNTROWS(_eligibleDepartments)
 		formatString: #,0
 		displayFolder: Champions
 		lineageTag: 6d22122e-329c-4259-9da2-9837bf5b57ae
@@ -1725,6 +2136,110 @@ table _Measures
 				)
 		displayFolder: Champions
 		lineageTag: fbf52e9e-9cc9-44aa-84cb-c804faf7392e
+
+	measure 'Cowork Delegation Not Started Users' =
+			COUNTROWS(
+			    FILTER(
+			        VALUES(Dim_User[UserKey]),
+			        [User Delegation Rung] = "Not started"
+			    )
+			)
+		formatString: #,0
+		lineageTag: f3e6bdf4-7961-4cd4-ba53-f85f002b802d
+
+	measure 'Cowork Delegation Trying Users' =
+			COUNTROWS(
+			    FILTER(
+			        VALUES(Dim_User[UserKey]),
+			        [User Delegation Rung] = "Trying"
+			    )
+			)
+		formatString: #,0
+		lineageTag: d9fc206e-e60f-4f24-9ad2-550c8dcbc29c
+
+	measure 'Cowork Delegation Using Users' =
+			COUNTROWS(
+			    FILTER(
+			        VALUES(Dim_User[UserKey]),
+			        [User Delegation Rung] = "Using"
+			    )
+			)
+		formatString: #,0
+		lineageTag: 3e1779b0-acde-41c6-b260-493c0324cdb2
+
+	measure 'Cowork Delegation Delegating Users' =
+			COUNTROWS(
+			    FILTER(
+			        VALUES(Dim_User[UserKey]),
+			        [User Delegation Rung] = "Delegating"
+			    )
+			)
+		formatString: #,0
+		lineageTag: cf1530b9-c750-455f-9619-0506fdc6fb75
+
+	measure 'Cowork Delegation Automating Users' =
+			COUNTROWS(
+			    FILTER(
+			        VALUES(Dim_User[UserKey]),
+			        [User Delegation Rung] = "Automating"
+			    )
+			)
+		formatString: #,0
+		lineageTag: d827b11c-3207-48d6-acc1-b7ee92776c7a
+
+	/// Sort value for the standardized delegation ladder.
+	measure 'Delegation Rung Order' =
+			SWITCH(
+			    [User Delegation Rung],
+			    "Automating", 4,
+			    "Delegating", 3,
+			    "Using", 2,
+			    "Trying", 1,
+			    0
+			)
+		formatString: 0
+		lineageTag: f98f8ba3-8724-4527-aa2f-dabaaf0ed361
+
+	/// Per-rung user counts for the delegation-ladder trend.
+	measure 'Users at Rung 0 (Not started)' =
+			CALCULATE(
+			    COUNTROWS(VALUES(Dim_User[UserKey])),
+			    FILTER(VALUES(Dim_User[UserKey]), [User Delegation Rung] = "Not started")
+			)
+		formatString: #,0
+		lineageTag: cd1021d3-ff38-4514-aed0-3ec55cf252b3
+
+	/// Latest observed Cowork activity date in the current organization and user context.
+	measure 'User Last Activity' = MAX(Fact_CoworkUsage[LastActivityDate])
+		formatString: mmm d, yyyy
+		lineageTag: 7a424c59-668c-4795-8e9c-ead18921f8fb
+
+	/// Share of Cowork tasks with a category signal beyond the honest no-signal fallback.
+	measure 'Cowork Classified %' =
+			DIVIDE(
+			    CALCULATE([Cowork Task Count], Fact_CoworkDetail[CategorySignal] <> "No signal"),
+			    [Cowork Task Count]
+			)
+		formatString: 0.0%
+		lineageTag: 33f60b1e-9328-4baf-a810-0d11153cbbc0
+
+	/// Share of Cowork tasks classified from an authored artifact under the strict Cowork path.
+	measure 'Cowork Observed-Evidence %' =
+			DIVIDE(
+			    CALCULATE([Cowork Task Count], Fact_CoworkDetail[MappingConfidence] = "Observed"),
+			    [Cowork Task Count]
+			)
+		formatString: 0.0%
+		lineageTag: 6ca89fe2-1e9d-49a9-aded-2272fec8fd74
+
+	/// Share of Cowork tasks whose selected skill has a curated friendly name.
+	measure 'Cowork Friendly-Named %' =
+			DIVIDE(
+			    CALCULATE([Cowork Task Count], Fact_CoworkDetail[MappingConfidence] <> "None"),
+			    [Cowork Task Count]
+			)
+		formatString: 0.0%
+		lineageTag: 287d0fcd-1d98-44a2-b0f4-09bfd18f8639
 
 	column Value
 		dataType: string

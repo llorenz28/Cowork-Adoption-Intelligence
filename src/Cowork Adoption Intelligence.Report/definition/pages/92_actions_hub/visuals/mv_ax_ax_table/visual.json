@@ -1,1 +1,472 @@
-{"$schema":"https://developer.microsoft.com/json-schemas/fabric/item/report/definition/visualContainer/2.12.0/schema.json","name":"mv_ax_ax_table","position":{"x":16,"y":274,"z":130000,"height":350,"width":816,"tabOrder":60000},"visual":{"visualType":"tableEx","query":{"queryState":{"Values":{"projections":[{"field":{"Column":{"Expression":{"SourceRef":{"Entity":"Fact_Tasks"}},"Property":"PrimarySkillDisplayName"}},"queryRef":"Fact_Tasks.PrimarySkillDisplayName","nativeQueryRef":"PrimarySkillDisplayName","displayName":"Primary outcome"},{"field":{"Column":{"Expression":{"SourceRef":{"Entity":"Fact_Tasks"}},"Property":"BusinessBehavior"}},"queryRef":"Fact_Tasks.BusinessBehavior","nativeQueryRef":"BusinessBehavior","displayName":"Business behavior"},{"field":{"Column":{"Expression":{"SourceRef":{"Entity":"Fact_Tasks"}},"Property":"TaskClassification"}},"queryRef":"Fact_Tasks.TaskClassification","nativeQueryRef":"TaskClassification","displayName":"Classification"},{"field":{"Measure":{"Expression":{"SourceRef":{"Entity":"_Measures"}},"Property":"Total Tasks"}},"queryRef":"_Measures.Total Tasks","nativeQueryRef":"Total Tasks","displayName":"Tasks"},{"field":{"Measure":{"Expression":{"SourceRef":{"Entity":"_Measures"}},"Property":"Task Users"}},"queryRef":"_Measures.Task Users","nativeQueryRef":"Task Users","displayName":"Users"}]}},"sortDefinition":{"sort":[{"field":{"Measure":{"Expression":{"SourceRef":{"Entity":"_Measures"}},"Property":"Total Tasks"}},"direction":"Descending"}]}},"objects":{"total":[{"properties":{"totals":{"expr":{"Literal":{"Value":"false"}}}}}],"values":[{"properties":{"fontFamily":{"expr":{"Literal":{"Value":"'Segoe UI'"}}},"fontSize":{"expr":{"Literal":{"Value":"9D"}}},"fontColorPrimary":{"solid":{"color":{"expr":{"Literal":{"Value":"'#1B1F27'"}}}}},"backColorPrimary":{"solid":{"color":{"expr":{"Literal":{"Value":"'#FFFFFF'"}}}}},"fontColorSecondary":{"solid":{"color":{"expr":{"Literal":{"Value":"'#1B1F27'"}}}}},"backColorSecondary":{"solid":{"color":{"expr":{"Literal":{"Value":"'#F6F7FB'"}}}}}}}],"columnHeaders":[{"properties":{"fontFamily":{"expr":{"Literal":{"Value":"'Segoe UI Semibold'"}}},"fontSize":{"expr":{"Literal":{"Value":"9D"}}},"bold":{"expr":{"Literal":{"Value":"true"}}},"fontColor":{"solid":{"color":{"expr":{"Literal":{"Value":"'#FFFFFF'"}}}}},"backColor":{"solid":{"color":{"expr":{"Literal":{"Value":"'#311F5E'"}}}}},"autoSizeColumnWidth":{"expr":{"Literal":{"Value":"true"}}},"columnAdjustment":{"expr":{"Literal":{"Value":"'growToFit'"}}},"wordWrap":{"expr":{"Literal":{"Value":"true"}}}}}],"grid":[{"properties":{"gridVertical":{"expr":{"Literal":{"Value":"true"}}},"gridVerticalColor":{"solid":{"color":{"expr":{"Literal":{"Value":"'#E3E6EC'"}}}}},"gridVerticalWeight":{"expr":{"Literal":{"Value":"1D"}}},"gridHorizontal":{"expr":{"Literal":{"Value":"true"}}},"gridHorizontalColor":{"solid":{"color":{"expr":{"Literal":{"Value":"'#E3E6EC'"}}}}},"gridHorizontalWeight":{"expr":{"Literal":{"Value":"1D"}}},"rowPadding":{"expr":{"Literal":{"Value":"6D"}}}}}]},"visualContainerObjects":{"background":[{"properties":{"show":{"expr":{"Literal":{"Value":"true"}}},"color":{"solid":{"color":{"expr":{"Literal":{"Value":"'#FFFFFF'"}}}}},"transparency":{"expr":{"Literal":{"Value":"0D"}}}}}],"border":[{"properties":{"show":{"expr":{"Literal":{"Value":"true"}}},"color":{"solid":{"color":{"expr":{"Literal":{"Value":"'#E3E6EC'"}}}}},"radius":{"expr":{"Literal":{"Value":"4D"}}},"width":{"expr":{"Literal":{"Value":"1D"}}}}}],"padding":[{"properties":{"top":{"expr":{"Literal":{"Value":"0D"}}},"bottom":{"expr":{"Literal":{"Value":"0D"}}},"left":{"expr":{"Literal":{"Value":"0D"}}},"right":{"expr":{"Literal":{"Value":"0D"}}}}}],"visualHeader":[{"properties":{"show":{"expr":{"Literal":{"Value":"false"}}}}}],"stylePreset":[{"properties":{"name":{"expr":{"Literal":{"Value":"'None'"}}}}}],"general":[{"properties":{"altText":{"expr":{"Literal":{"Value":"'Cowork tasks by primary outcome, business behavior, classification status, task count, and user count.'"}}}}}]}}}
+{
+  "$schema": "https://developer.microsoft.com/json-schemas/fabric/item/report/definition/visualContainer/2.13.0/schema.json",
+  "name": "mv_ax_ax_table",
+  "position": {
+    "x": 16,
+    "y": 274,
+    "z": 130000,
+    "height": 350,
+    "width": 816,
+    "tabOrder": 60000
+  },
+  "visual": {
+    "visualType": "tableEx",
+    "query": {
+      "queryState": {
+        "Values": {
+          "projections": [
+            {
+              "field": {
+                "Column": {
+                  "Expression": {
+                    "SourceRef": {
+                      "Entity": "Fact_Tasks"
+                    }
+                  },
+                  "Property": "PrimarySkillDisplayName"
+                }
+              },
+              "queryRef": "Fact_Tasks.PrimarySkillDisplayName",
+              "nativeQueryRef": "PrimarySkillDisplayName",
+              "displayName": "Primary outcome"
+            },
+            {
+              "field": {
+                "Column": {
+                  "Expression": {
+                    "SourceRef": {
+                      "Entity": "Fact_Tasks"
+                    }
+                  },
+                  "Property": "BusinessBehavior"
+                }
+              },
+              "queryRef": "Fact_Tasks.BusinessBehavior",
+              "nativeQueryRef": "BusinessBehavior",
+              "displayName": "Business behavior"
+            },
+            {
+              "field": {
+                "Column": {
+                  "Expression": {
+                    "SourceRef": {
+                      "Entity": "Fact_Tasks"
+                    }
+                  },
+                  "Property": "TaskClassification"
+                }
+              },
+              "queryRef": "Fact_Tasks.TaskClassification",
+              "nativeQueryRef": "TaskClassification",
+              "displayName": "Classification"
+            },
+            {
+              "field": {
+                "Measure": {
+                  "Expression": {
+                    "SourceRef": {
+                      "Entity": "_Measures"
+                    }
+                  },
+                  "Property": "Total Tasks"
+                }
+              },
+              "queryRef": "_Measures.Total Tasks",
+              "nativeQueryRef": "Total Tasks",
+              "displayName": "Tasks"
+            },
+            {
+              "field": {
+                "Measure": {
+                  "Expression": {
+                    "SourceRef": {
+                      "Entity": "_Measures"
+                    }
+                  },
+                  "Property": "Task Users"
+                }
+              },
+              "queryRef": "_Measures.Task Users",
+              "nativeQueryRef": "Task Users",
+              "displayName": "Users"
+            }
+          ]
+        }
+      },
+      "sortDefinition": {
+        "sort": [
+          {
+            "field": {
+              "Measure": {
+                "Expression": {
+                  "SourceRef": {
+                    "Entity": "_Measures"
+                  }
+                },
+                "Property": "Total Tasks"
+              }
+            },
+            "direction": "Descending"
+          }
+        ]
+      }
+    },
+    "objects": {
+      "total": [
+        {
+          "properties": {
+            "totals": {
+              "expr": {
+                "Literal": {
+                  "Value": "false"
+                }
+              }
+            }
+          }
+        }
+      ],
+      "values": [
+        {
+          "properties": {
+            "fontFamily": {
+              "expr": {
+                "Literal": {
+                  "Value": "'Segoe UI'"
+                }
+              }
+            },
+            "fontSize": {
+              "expr": {
+                "Literal": {
+                  "Value": "9D"
+                }
+              }
+            },
+            "fontColorPrimary": {
+              "solid": {
+                "color": {
+                  "expr": {
+                    "Literal": {
+                      "Value": "'#1B1F27'"
+                    }
+                  }
+                }
+              }
+            },
+            "backColorPrimary": {
+              "solid": {
+                "color": {
+                  "expr": {
+                    "Literal": {
+                      "Value": "'#FFFFFF'"
+                    }
+                  }
+                }
+              }
+            },
+            "fontColorSecondary": {
+              "solid": {
+                "color": {
+                  "expr": {
+                    "Literal": {
+                      "Value": "'#1B1F27'"
+                    }
+                  }
+                }
+              }
+            },
+            "backColorSecondary": {
+              "solid": {
+                "color": {
+                  "expr": {
+                    "Literal": {
+                      "Value": "'#F6F7FB'"
+                    }
+                  }
+                }
+              }
+            }
+          }
+        }
+      ],
+      "columnHeaders": [
+        {
+          "properties": {
+            "fontFamily": {
+              "expr": {
+                "Literal": {
+                  "Value": "'Segoe UI Semibold'"
+                }
+              }
+            },
+            "fontSize": {
+              "expr": {
+                "Literal": {
+                  "Value": "9D"
+                }
+              }
+            },
+            "bold": {
+              "expr": {
+                "Literal": {
+                  "Value": "true"
+                }
+              }
+            },
+            "fontColor": {
+              "solid": {
+                "color": {
+                  "expr": {
+                    "Literal": {
+                      "Value": "'#FFFFFF'"
+                    }
+                  }
+                }
+              }
+            },
+            "backColor": {
+              "solid": {
+                "color": {
+                  "expr": {
+                    "Literal": {
+                      "Value": "'#311F5E'"
+                    }
+                  }
+                }
+              }
+            },
+            "autoSizeColumnWidth": {
+              "expr": {
+                "Literal": {
+                  "Value": "true"
+                }
+              }
+            },
+            "columnAdjustment": {
+              "expr": {
+                "Literal": {
+                  "Value": "'growToFit'"
+                }
+              }
+            },
+            "wordWrap": {
+              "expr": {
+                "Literal": {
+                  "Value": "true"
+                }
+              }
+            }
+          }
+        }
+      ],
+      "grid": [
+        {
+          "properties": {
+            "gridVertical": {
+              "expr": {
+                "Literal": {
+                  "Value": "true"
+                }
+              }
+            },
+            "gridVerticalColor": {
+              "solid": {
+                "color": {
+                  "expr": {
+                    "Literal": {
+                      "Value": "'#E3E6EC'"
+                    }
+                  }
+                }
+              }
+            },
+            "gridVerticalWeight": {
+              "expr": {
+                "Literal": {
+                  "Value": "1D"
+                }
+              }
+            },
+            "gridHorizontal": {
+              "expr": {
+                "Literal": {
+                  "Value": "true"
+                }
+              }
+            },
+            "gridHorizontalColor": {
+              "solid": {
+                "color": {
+                  "expr": {
+                    "Literal": {
+                      "Value": "'#E3E6EC'"
+                    }
+                  }
+                }
+              }
+            },
+            "gridHorizontalWeight": {
+              "expr": {
+                "Literal": {
+                  "Value": "1D"
+                }
+              }
+            },
+            "rowPadding": {
+              "expr": {
+                "Literal": {
+                  "Value": "6D"
+                }
+              }
+            }
+          }
+        }
+      ]
+    },
+    "visualContainerObjects": {
+      "background": [
+        {
+          "properties": {
+            "show": {
+              "expr": {
+                "Literal": {
+                  "Value": "true"
+                }
+              }
+            },
+            "color": {
+              "solid": {
+                "color": {
+                  "expr": {
+                    "Literal": {
+                      "Value": "'#FFFFFF'"
+                    }
+                  }
+                }
+              }
+            },
+            "transparency": {
+              "expr": {
+                "Literal": {
+                  "Value": "0D"
+                }
+              }
+            }
+          }
+        }
+      ],
+      "border": [
+        {
+          "properties": {
+            "show": {
+              "expr": {
+                "Literal": {
+                  "Value": "true"
+                }
+              }
+            },
+            "color": {
+              "solid": {
+                "color": {
+                  "expr": {
+                    "Literal": {
+                      "Value": "'#E3E6EC'"
+                    }
+                  }
+                }
+              }
+            },
+            "radius": {
+              "expr": {
+                "Literal": {
+                  "Value": "4D"
+                }
+              }
+            },
+            "width": {
+              "expr": {
+                "Literal": {
+                  "Value": "1D"
+                }
+              }
+            }
+          }
+        }
+      ],
+      "padding": [
+        {
+          "properties": {
+            "top": {
+              "expr": {
+                "Literal": {
+                  "Value": "0D"
+                }
+              }
+            },
+            "bottom": {
+              "expr": {
+                "Literal": {
+                  "Value": "0D"
+                }
+              }
+            },
+            "left": {
+              "expr": {
+                "Literal": {
+                  "Value": "0D"
+                }
+              }
+            },
+            "right": {
+              "expr": {
+                "Literal": {
+                  "Value": "0D"
+                }
+              }
+            }
+          }
+        }
+      ],
+      "visualHeader": [
+        {
+          "properties": {
+            "show": {
+              "expr": {
+                "Literal": {
+                  "Value": "false"
+                }
+              }
+            }
+          }
+        }
+      ],
+      "stylePreset": [
+        {
+          "properties": {
+            "name": {
+              "expr": {
+                "Literal": {
+                  "Value": "'None'"
+                }
+              }
+            }
+          }
+        }
+      ],
+      "general": [
+        {
+          "properties": {
+            "altText": {
+              "expr": {
+                "Literal": {
+                  "Value": "'Cowork tasks by primary outcome, business behavior, classification status, task count, and user count.'"
+                }
+              }
+            }
+          }
+        }
+      ]
+    }
+  },
+  "isHidden": true
+}

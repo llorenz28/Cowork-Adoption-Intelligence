@@ -12,51 +12,51 @@ table Bridge_CoworkResource
 		isHidden
 		lineageTag: d9353688-bc92-4c6c-b1e4-099f3cbbcbf5
 		summarizeBy: none
-		sourceColumn: RecordId
+		sourceColumn: Staging_ModelData[RecordId]
 
 	column ThreadId
 		dataType: string
 		lineageTag: 6e07a8d8-f8b6-4195-a0c2-5529ea35b02f
 		summarizeBy: none
-		sourceColumn: ThreadId
+		sourceColumn: Staging_ModelData[ThreadId]
 
 	column DateKey
 		dataType: int64
 		isHidden
 		lineageTag: 7ae27de4-d923-42c9-b4dd-467e01b5ba3e
 		summarizeBy: none
-		sourceColumn: DateKey
+		sourceColumn: Staging_ModelData[DateKey]
 
 	column UserKey
 		dataType: int64
 		isHidden
 		lineageTag: 8374cbdc-7c0e-41c8-8611-e33267b7d90c
 		summarizeBy: none
-		sourceColumn: UserKey
+		sourceColumn: Staging_ModelData[UserKey]
 
 	column SiteUrl
 		dataType: string
 		lineageTag: 6dafd04e-3609-42ba-a592-5fcdd417ed98
 		summarizeBy: none
-		sourceColumn: SiteUrl
+		sourceColumn: Staging_ModelData[SiteUrl]
 
 	column ResType
 		dataType: string
 		lineageTag: 68f590a2-5a78-4ef7-bebb-fbbf540d9733
 		summarizeBy: none
-		sourceColumn: ResType
+		sourceColumn: Staging_ModelData[ResType]
 
 	column ResAction
 		dataType: string
 		lineageTag: 17819c0b-3106-4ef3-9ef5-b8a9db1cb86b
 		summarizeBy: none
-		sourceColumn: ResAction
+		sourceColumn: Staging_ModelData[ResAction]
 
 	column SensitivityLabelId
 		dataType: string
 		lineageTag: f5fe4c37-8549-4789-a858-23e4a2cd52c3
 		summarizeBy: none
-		sourceColumn: SensitivityLabelId
+		sourceColumn: Staging_ModelData[SensitivityLabelId]
 
 	/// TRUE only for resources under /Documents/Cowork/ — Cowork's own OneDrive
 	/// write tree. This is what makes "Artifacts Created" a real measured count
@@ -66,37 +66,41 @@ table Bridge_CoworkResource
 		dataType: boolean
 		lineageTag: 24c9f3fb-e938-4067-aa9b-744ce671e846
 		summarizeBy: none
-		sourceColumn: IsCoworkArtifact
+		sourceColumn: Staging_ModelData[IsCoworkArtifact]
 
 	column ArtifactExt
 		dataType: string
 		lineageTag: cf9c4b91-cf00-40a6-84de-45a5afc028f1
 		summarizeBy: none
-		sourceColumn: ArtifactExt
+		sourceColumn: Staging_ModelData[ArtifactExt]
 
-	partition Bridge_CoworkResource = m
+	column _RowId
+		dataType: int64
+		isHidden
+		formatString: 0
+		lineageTag: 33aa44e2-a608-49f5-8708-b1fddaeaf2af
+		summarizeBy: none
+		sourceColumn: Staging_ModelData[_RowId]
+
+	partition Bridge_CoworkResource = calculated
 		mode: import
 		source =
-				let
-					Src      = Fact_CopilotAuditRaw_WithLists,
-					Cowork   = Table.SelectRows(Src, each Text.Lower([AppHost]) = "cowork"),
-					Keep     = Table.SelectColumns(Cowork, {"RecordId","ThreadId","DateKey","UserKey","_resources"}),
-					HasAny   = Table.SelectRows(Keep, each List.Count([_resources]) > 0),
-					Expanded = Table.ExpandListColumn(HasAny, "_resources"),
-					AddUrl   = Table.AddColumn(Expanded, "SiteUrl", each try [_resources][SiteUrl] otherwise null, type text),
-					AddType  = Table.AddColumn(AddUrl,   "ResType", each try [_resources][Type]    otherwise null, type text),
-					AddAct   = Table.AddColumn(AddType,  "ResAction", each try [_resources][Action] otherwise null, type text),
-					AddLabel = Table.AddColumn(AddAct,   "SensitivityLabelId", each try [_resources][SensitivityLabelId] otherwise null, type text),
-					AddOwn   = Table.AddColumn(AddLabel, "IsCoworkArtifact",
-					               each [SiteUrl] <> null and Text.Contains(Text.Lower([SiteUrl]), "/documents/cowork/"), type logical),
-					AddExt   = Table.AddColumn(AddOwn, "ArtifactExt",
-					               each if [SiteUrl] = null then null
-					                    else let p = Text.AfterDelimiter([SiteUrl], ".", {0, RelativePosition.FromEnd})
-					                         in if Text.Length(p) <= 5 then Text.Lower(p) else null, type text),
-					Final    = Table.SelectColumns(AddExt,
-					               {"RecordId","ThreadId","DateKey","UserKey","SiteUrl","ResType","ResAction",
-					                "SensitivityLabelId","IsCoworkArtifact","ArtifactExt"})
-				in
-					Final
+				SUMMARIZE(
+					FILTER(
+						Staging_ModelData,
+						Staging_ModelData[_Entity] = "Bridge_CoworkResource"
+					),
+					Staging_ModelData[_RowId],
+					Staging_ModelData[RecordId],
+					Staging_ModelData[ThreadId],
+					Staging_ModelData[DateKey],
+					Staging_ModelData[UserKey],
+					Staging_ModelData[SiteUrl],
+					Staging_ModelData[ResType],
+					Staging_ModelData[ResAction],
+					Staging_ModelData[SensitivityLabelId],
+					Staging_ModelData[IsCoworkArtifact],
+					Staging_ModelData[ArtifactExt]
+				)
 
 	annotation PBI_ResultType = Exception

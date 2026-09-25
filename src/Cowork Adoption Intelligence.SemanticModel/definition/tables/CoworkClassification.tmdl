@@ -1,0 +1,80 @@
+/// One row per Cowork audit record. Category waterfall: authored artifact, priority-ranked real skill, accessed content, general skill, then honest no-signal fallback.
+table CoworkClassification
+	isHidden
+	lineageTag: 63b7f079-8abb-4823-a61d-2f966349a833
+
+	column RecordId
+		dataType: string
+		isHidden
+		lineageTag: a2d9ff8e-a88d-45cb-ba19-fa8742aec555
+		summarizeBy: none
+		sourceColumn: Staging_ModelData[RecordId]
+
+	column ThreadId
+		dataType: string
+		isHidden
+		lineageTag: b168f2fc-f14d-4d36-b1d1-8bdad5b92884
+		summarizeBy: none
+		sourceColumn: Staging_ModelData[ThreadId]
+
+	column Category
+		dataType: string
+		lineageTag: afcae7ca-ed0a-4718-8ac6-a4ff68e75f4f
+		summarizeBy: none
+		sourceColumn: Staging_ModelData[Category]
+
+	column CategoryKey
+		dataType: int64
+		isHidden
+		lineageTag: 58c0f3b6-8899-4256-bc8d-26681f0cd170
+		summarizeBy: sum
+		sourceColumn: Staging_ModelData[CategoryKey]
+
+	column CategorySignal
+		dataType: string
+		lineageTag: 4b84eaa7-e2ab-4861-8465-60f1015afcf2
+		summarizeBy: none
+		sourceColumn: Staging_ModelData[CategorySignal]
+
+	column MappingConfidence
+		dataType: string
+		lineageTag: 51cae93d-467b-46de-9a7b-33f462d41ca5
+		summarizeBy: none
+		sourceColumn: Staging_ModelData[MappingConfidence]
+
+	column SkillDisplayName
+		dataType: string
+		lineageTag: 2b7aacf4-ce36-4ff5-8823-068ee4e1b7c5
+		summarizeBy: none
+		sourceColumn: Staging_ModelData[SkillDisplayName]
+
+	column ActivityDetail
+		dataType: string
+		lineageTag: 9e70c7be-2fe2-468d-af10-2cec827d3517
+		summarizeBy: none
+		sourceColumn: Staging_ModelData[ActivityDetail]
+
+	column CategoryPriority
+		dataType: int64
+		isHidden
+		lineageTag: 9cc900d5-a54e-44c3-b91d-1856b85b277b
+		summarizeBy: sum
+		sourceColumn: Staging_ModelData[CategoryPriority]
+
+	partition CoworkClassification = calculated
+		mode: import
+		source =
+				SUMMARIZE(
+					FILTER(Staging_ModelData, Staging_ModelData[_Entity] = "CoworkClassification"),
+					Staging_ModelData[RecordId],
+					Staging_ModelData[ThreadId],
+					Staging_ModelData[Category],
+					Staging_ModelData[CategoryKey],
+					Staging_ModelData[CategorySignal],
+					Staging_ModelData[MappingConfidence],
+					Staging_ModelData[SkillDisplayName],
+					Staging_ModelData[ActivityDetail],
+					Staging_ModelData[CategoryPriority]
+				)
+
+	annotation PBI_ResultType = Exception

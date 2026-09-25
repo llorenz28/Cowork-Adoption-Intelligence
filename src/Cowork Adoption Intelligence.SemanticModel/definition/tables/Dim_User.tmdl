@@ -7,38 +7,38 @@ table Dim_User
 		isKey
 		lineageTag: 63331ee0-6751-475e-943a-c0752ee9e81e
 		summarizeBy: none
-		sourceColumn: UserKey
+		sourceColumn: Staging_ModelData[UserKey]
 
 	column UserPrincipalName
 		dataType: string
 		lineageTag: 6f1307cf-7189-4354-94c0-536105654faa
 		summarizeBy: none
-		sourceColumn: UserPrincipalName
+		sourceColumn: Staging_ModelData[UserPrincipalName]
 
 	column DisplayName
 		dataType: string
 		lineageTag: 64637719-29bc-467b-bbf4-a1a51f33bc54
 		summarizeBy: none
-		sourceColumn: DisplayName
+		sourceColumn: Staging_ModelData[DisplayName]
 
 	column UserID
 		dataType: string
 		isHidden
 		lineageTag: fdaf08a9-7c21-467e-9108-eab03e79ec57
 		summarizeBy: none
-		sourceColumn: UserID
+		sourceColumn: Staging_ModelData[UserID]
 
 	column CopilotLicense
 		dataType: string
 		lineageTag: 37a24a1e-3c9d-4a44-8295-eb9f5be45319
 		summarizeBy: none
-		sourceColumn: CopilotLicense
+		sourceColumn: Staging_ModelData[CopilotLicense]
 
 	column LicenseSKU
 		dataType: string
 		lineageTag: 35594813-dd9a-46e1-b129-061c81988e9f
 		summarizeBy: none
-		sourceColumn: LicenseSKU
+		sourceColumn: Staging_ModelData[LicenseSKU]
 
 	column 'Lifetime Value $' = CALCULATE([Estimated Value $])
 		dataType: double
@@ -187,17 +187,17 @@ table Dim_User
 		dataType: string
 		lineageTag: de616c66-e1de-4f81-a39d-c17bc1ef75f7
 		summarizeBy: none
-		sourceColumn: IdentityDataQuality
+		sourceColumn: Staging_ModelData[IdentityDataQuality]
 
 	column DemographicDataQuality
 		dataType: string
 		lineageTag: 064f60e4-61aa-4cda-83d3-eee476333c0d
 		summarizeBy: none
-		sourceColumn: DemographicDataQuality
+		sourceColumn: Staging_ModelData[DemographicDataQuality]
 
 	column OrgDataQuality =
 			VAR q = MAXX(RELATEDTABLE(Dim_UserOrg), Dim_UserOrg[DataQuality])
-			RETURN IF(ISBLANK(q), "Not yet connected - no matching row in Dim_UserOrg (connect a real Entra/HR export at OrgCsvPath)", q)
+			RETURN IF(ISBLANK(q), "Not yet connected - no matching row in Dim_UserOrg (add a real Entra/HR organization export)", q)
 		dataType: string
 		lineageTag: ffe93323-b21a-4bf7-b5c6-0f8d6626d2bd
 		summarizeBy: none
@@ -232,6 +232,14 @@ table Dim_User
 		lineageTag: a53e552a-08f8-43d0-93f5-38d8224713ff
 		summarizeBy: none
 
+	column _RowId
+		dataType: int64
+		isHidden
+		formatString: 0
+		lineageTag: ed1e25d6-f050-464b-b190-98e937ebcfb9
+		summarizeBy: none
+		sourceColumn: Staging_ModelData[_RowId]
+
 	hierarchy 'Org Drilldown'
 		lineageTag: 5e1d15b3-72da-4c8a-ac93-ba560a138b4d
 
@@ -247,90 +255,23 @@ table Dim_User
 			lineageTag: d6050f72-0d86-4aac-8258-6fff3f5fe839
 			column: Manager
 
-	partition Dim_User = m
+	partition Dim_User = calculated
 		mode: import
 		source =
-				let
-					// Dynamically detect Cowork-eligible users from the connected Purview export.
-					// Cannot reference
-					// Fact_CopilotAuditRaw (the table) here: that table's own UserKey resolution joins against
-					// Dim_User, so Dim_User referencing it back would create a circular dependency. This performs
-					// an independent, lightweight scan of the same raw CopilotAuditFolderPath CSVs, extracting
-					// only Operation/AppHost/UserId (not the full audit detail) to keep this necessary second pass
-					// as light as possible. Trade-off, disclosed: refresh now reads the raw folder twice (once
-					// here and once in Fact_CopilotAuditRaw.
-					AuditFiles0 = Folder.Files(CopilotAuditFolderPath),
-					AuditCsvOnly = Table.SelectRows(AuditFiles0, each Text.Lower(Text.End([Name], 4)) = ".csv"),
-					ExtractCoworkUpns = (fileContent as binary) as list =>
-						let
-							Attempt = try
-								let
-									Parsed = Csv.Document(fileContent, [Delimiter = ",", Encoding = 65001, QuoteStyle = QuoteStyle.Csv]),
-									Promoted = Table.PromoteHeaders(Parsed, [PromoteAllScalars = true]),
-									HasCols = Table.HasColumns(Promoted, {"Operation", "AuditData", "UserId"}),
-									Base = if not HasCols then {} else
-										let
-											OnlyCopilot = Table.SelectRows(Promoted, each [Operation] = "CopilotInteraction"),
-											AddJson = Table.AddColumn(OnlyCopilot, "_json", each let a = try Json.Document(Text.ToBinary([AuditData])) in if a[HasError] then null else a[Value]),
-											OnlyValidJson = Table.SelectRows(AddJson, each [_json] <> null),
-											AddCed = Table.AddColumn(OnlyValidJson, "_ced", each try [_json][CopilotEventData] otherwise null),
-											AddAppHost = Table.AddColumn(AddCed, "_apphost", each if [_ced] = null then null else (try [_ced][AppHost] otherwise null)),
-											OnlyCowork = Table.SelectRows(AddAppHost, each [_apphost] <> null and Text.Contains(Text.Lower(Text.Trim(Text.From([_apphost]))), "cowork")),
-											Upns = List.Transform(OnlyCowork[UserId], each Text.Lower(Text.Trim(Text.From(_))))
-										in
-											Upns
-								in
-									Base
-						in
-							if Attempt[HasError] then {} else Attempt[Value],
-					AllCoworkUpnLists = List.Transform(AuditCsvOnly[Content], each ExtractCoworkUpns(_)),
-					DynamicCoworkUpns = List.Distinct(List.Combine(AllCoworkUpnLists)),
-					CoworkUpnTable = Table.FromList(DynamicCoworkUpns, Splitter.SplitByNothing(), {"_upnNorm"}),
-
-					Files0 = Folder.Files(IdentityEnrichmentFolderPath),
-
-					// Gracefully degrade when optional identity enrichment files are absent.
-					// Detected Cowork users remain in the model without Entra or organization enrichment.
-					TryLoadReal = try
-						let
-							RealUsersFile = Table.SelectRows(Files0, each [Name] = "cowork_users.csv"){0},
-							RealPromoted = Table.PromoteHeaders(Csv.Document(RealUsersFile[Content], [Delimiter = ",", Encoding = 65001, QuoteStyle = QuoteStyle.Csv]), [PromoteAllScalars = true]),
-							RealSelected = Table.SelectColumns(RealPromoted, {"id", "displayName", "userPrincipalName"}),
-							RealRenamed = Table.RenameColumns(RealSelected, {{"id", "UserID"}, {"displayName", "DisplayName"}, {"userPrincipalName", "UserPrincipalName"}}),
-							RealNormalized0 = Table.AddColumn(RealRenamed, "_upnNorm", each Text.Lower(Text.Trim([UserPrincipalName])), type text)
-						in
-							RealNormalized0
-						otherwise
-							#table({"UserID", "DisplayName", "UserPrincipalName", "_upnNorm"}, {}),
-					RealNormalized = TryLoadReal,
-
-					// LEFT JOIN (enrichment) from the dynamically-detected UPN set into the real Entra export --
-					// a detected Cowork user is NEVER dropped just because they have no matching Entra row (e.g.
-					// the customer did not supply an Entra export, or that specific account is missing from it).
-					MergeIdentity = Table.NestedJoin(CoworkUpnTable, {"_upnNorm"}, RealNormalized, {"_upnNorm"}, "identity", JoinKind.LeftOuter),
-					ExpandIdentity = Table.ExpandTableColumn(MergeIdentity, "identity", {"UserID", "DisplayName", "UserPrincipalName"}, {"UserID", "DisplayName", "UserPrincipalName"}),
-
-					AddIdentityQuality = Table.AddColumn(ExpandIdentity, "IdentityDataQuality", each
-						if [UserPrincipalName] <> null then "Real (confirmed via Entra export)"
-						else "Real Cowork activity (Purview); no matching Entra identity record found", type text),
-					FillUpn = Table.AddColumn(AddIdentityQuality, "UserPrincipalNameFinal", each if [UserPrincipalName] = null then [_upnNorm] else [UserPrincipalName], type text),
-					FillDisplay = Table.AddColumn(FillUpn, "DisplayNameFinal", each if [DisplayName] = null then [_upnNorm] else [DisplayName], type text),
-
-					RealFinal = Table.SelectColumns(FillDisplay, {"UserID", "DisplayNameFinal", "UserPrincipalNameFinal", "IdentityDataQuality"}),
-					RealRenamedFinal = Table.RenameColumns(RealFinal, {{"DisplayNameFinal", "DisplayName"}, {"UserPrincipalNameFinal", "UserPrincipalName"}}),
-
-					Indexed0 = Table.AddIndexColumn(RealRenamedFinal, "_idx", 0, 1, Int64.Type),
-
-					// License assignment is a separate source domain. Until a real license export is
-					// connected, retain an explicit unavailable state rather than positional sample data.
-					AddCopilotLicense = Table.AddColumn(Indexed0, "CopilotLicense", each "Unknown", type text),
-					AddLicenseSKU = Table.AddColumn(AddCopilotLicense, "LicenseSKU", each null, type nullable text),
-					AddDemoDataQuality = Table.AddColumn(AddLicenseSKU, "DemographicDataQuality", each "Unavailable - no production license-assignment source connected", type text),
-
-					Cleaned = Table.RemoveColumns(AddDemoDataQuality, {"_idx", "_upnNorm"}, MissingField.Ignore),
-					Sorted = Table.Sort(Cleaned, {{"UserPrincipalName", Order.Ascending}}),
-					Indexed = Table.AddIndexColumn(Sorted, "UserKey", 1, 1, Int64.Type)
-				in
-					Indexed
+				SUMMARIZE(
+					FILTER(
+						Staging_ModelData,
+						Staging_ModelData[_Entity] = "Dim_User"
+					),
+					Staging_ModelData[_RowId],
+					Staging_ModelData[UserKey],
+					Staging_ModelData[UserPrincipalName],
+					Staging_ModelData[DisplayName],
+					Staging_ModelData[UserID],
+					Staging_ModelData[CopilotLicense],
+					Staging_ModelData[LicenseSKU],
+					Staging_ModelData[IdentityDataQuality],
+					Staging_ModelData[DemographicDataQuality]
+				)
 
 	annotation PBI_ResultType = Exception
