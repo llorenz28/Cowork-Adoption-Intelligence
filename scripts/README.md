@@ -150,7 +150,7 @@ pipeline, or automation host before the Power BI refresh window.
 | --- | --- |
 | Contract file not found | Keep `cowork-contract.json` beside the script; re-extract the bundle if it is missing |
 | No Purview audit CSV was found | Confirm a CSV has `AuditData`, `RecordId`, and `CreationDate` |
-| Ambiguous optional source | Remove stale or duplicate schema-compatible files |
+| Wrong or stale optional source selected | Keep only one current schema-compatible file for that source |
 | Malformed `AuditData` JSON | Re-export the affected Purview batch |
 | Output exists but is not owned by this tool | Choose an empty output folder; do not delete unknown data automatically |
 | Output validation failed | Do not load the folder in Power BI; inspect the reported entity or hash mismatch and rerun |

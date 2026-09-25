@@ -259,8 +259,8 @@ id,displayName,userPrincipalName
 For an Entra bulk export, rename `objectId` to `id` in the working copy and keep
 only approved fields.
 
-Use lowercase UPNs consistently across all working copies. Optional-source joins
-are case-sensitive.
+Use consistent UPNs across all working copies. The preprocessor trims and
+lowercases UPN values for matching; source header names remain case-sensitive.
 
 Microsoft reference:
 [Download Entra users](https://learn.microsoft.com/entra/identity/users/users-bulk-download).
@@ -346,8 +346,8 @@ whenever source exports change.
 | Folder error during load | `PreprocessedOutputPath` is missing or inaccessible | Select the validated generated output folder |
 | No Cowork users | No valid Cowork `CopilotInteraction` rows | Check audit headers, JSON integrity, period, and `AppHost` |
 | Optional file ignored | Filename or header contract failed | Use a preferred filename and exact headers |
-| Ambiguous optional source | Several compatible files are present | Keep one current working file per optional schema and rerun |
-| Usage split is blank | Usage export is absent, anonymized, or unmatched | Normalize headers, align UPN case, and review concealment |
+| Wrong or stale optional data is selected | Several schema-compatible files are present | Keep one current working file per optional schema and rerun |
+| Usage split is blank | Usage export is absent, anonymized, or unmatched | Normalize headers, confirm UPN overlap, and review concealment |
 | Department visuals are blank | Organization file is absent or unmatched | Confirm all ten headers and UPN overlap |
 | Champion list is empty | The selected cohort is too small or below the eligibility floor | Widen the period or clear narrow filters |
 | Service refresh fails | Power BI Service cannot reach local files | Configure and map an on-premises gateway |
