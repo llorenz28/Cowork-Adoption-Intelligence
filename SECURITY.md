@@ -21,9 +21,13 @@ paste their content into an issue, or store them in an unapproved location.
 ## Required controls
 
 - Keep production exports outside the Git working tree.
-- Restrict raw and normalized files to approved collection and report owners.
+- Restrict raw and generated files to approved collection and report owners.
 - Use least privilege and time-bound access where available.
 - Preserve raw exports; transform only protected working copies.
+- Keep preprocessor input and output in separate, non-overlapping folders.
+- Treat generated entity files and `manifest.json` as customer data.
+- Keep the version-matched `cowork-contract.json` beside the script or verify
+  an explicitly supplied contract before use.
 - Never store credentials, access tokens, or browser session data in scripts or
   parameter defaults.
 - Record source owner, reporting window, export time, transformations, and report
@@ -41,16 +45,22 @@ URLs, or identifiable screenshots in commits, branches, pull requests, or
 issues.
 
 The distributable testing PBIT contains no imported customer data or
-machine-bound `SecurityBindings` stream. It carries the tenant **Public**
-sensitivity label without encryption. Opening the template can cause the
-generated report to receive the tenant's default label. Before sharing a
-refreshed customer-data report, apply or confirm the label and protection
-required by organizational policy.
+machine-bound `SecurityBindings` stream. `PreprocessedOutputPath` is blank.
+Opening the template can cause the generated report to receive the tenant's
+default label. Before sharing a refreshed customer-data report, apply or
+confirm the label and protection required by organizational policy.
+
+The Python preprocessor uses only the standard library and makes no network
+calls. It writes to a staging folder, validates every entity and hash, then
+atomically replaces only a destination previously created by the same tool.
+Malformed required data stops the run rather than being silently skipped.
 
 ## Storage and service refresh
 
-- Store customer exports outside the repository and limit folder permissions.
+- Store customer exports, generated entities, manifests, and optional retained
+  work databases outside the repository and limit folder permissions.
 - Publishing a report does not make local paths cloud-accessible.
 - For scheduled refresh from local or UNC paths, use an approved on-premises
   data gateway and grant the semantic model owner access to its connection.
-
+- Power BI does not execute the Python preprocessor. Rerun or automate it before
+  the report refresh whenever source exports change.

@@ -1,8 +1,6 @@
 /// Additive fact table with one row per Purview `CopilotInteraction` audit
-/// record. Point `CopilotAuditFolderPath` at a folder of raw export CSVs
-/// (schema: RecordId, CreationDate, RecordType, Operation, UserId, AuditData, ...)
-/// and refresh. Unrecognized/other-shaped CSVs dropped in the same folder are
-/// safely skipped (HasColumns guard), so this never breaks on a stray file.
+/// record. Staging_ModelData discovers raw audit exports by schema and parses
+/// each JSON payload once. Unrecognized CSVs are safely skipped.
 table Fact_CopilotAuditRaw
 	lineageTag: c3f1a001-0a11-4a11-9a11-1a11c3f1a001
 
@@ -71,13 +69,14 @@ table Fact_CopilotAuditRaw
 		isKey
 		lineageTag: c3f1a001-0a11-4a11-9a11-1a11c3f1a002
 		summarizeBy: none
-		sourceColumn: RecordId
+		sourceColumn: Staging_ModelData[RecordId]
 
 	column CreationDateParsed
-		dataType: string
+		dataType: dateTime
+		formatString: General Date
 		lineageTag: c3f1a001-0a11-4a11-9a11-1a11c3f1a003
 		summarizeBy: none
-		sourceColumn: CreationDateParsed
+		sourceColumn: Staging_ModelData[CreationDateParsed]
 
 		annotation SummarizationSetBy = Automatic
 
@@ -86,34 +85,34 @@ table Fact_CopilotAuditRaw
 		isHidden
 		lineageTag: c3f1a001-0a11-4a11-9a11-1a11c3f1a004
 		summarizeBy: none
-		sourceColumn: DateKey
+		sourceColumn: Staging_ModelData[DateKey]
 
 	column Audit_UserId
 		dataType: string
 		lineageTag: c3f1a001-0a11-4a11-9a11-1a11c3f1a005
 		summarizeBy: none
-		sourceColumn: Audit_UserId
+		sourceColumn: Staging_ModelData[Audit_UserId]
 
 	column Audit_UserId_Normalized
 		dataType: string
 		isHidden
 		lineageTag: c3f1a001-0a11-4a11-9a11-1a11c3f1a006
 		summarizeBy: none
-		sourceColumn: Audit_UserId_Normalized
+		sourceColumn: Staging_ModelData[Audit_UserId_Normalized]
 
 	column UserKey
 		dataType: int64
 		isHidden
 		lineageTag: c3f1a001-0a11-4a11-9a11-1a11c3f1a007
 		summarizeBy: none
-		sourceColumn: UserKey
+		sourceColumn: Staging_ModelData[UserKey]
 
 	/// Source-provided Purview AppHost value.
 	column AppHost
 		dataType: string
 		lineageTag: c3f1a001-0a11-4a11-9a11-1a11c3f1a008
 		summarizeBy: none
-		sourceColumn: AppHost
+		sourceColumn: Staging_ModelData[AppHost]
 
 	/// Stable bucket derived from AppHost by keyword match, since some real
 	/// AppHost values carry a tenant-specific GUID suffix (e.g.
@@ -150,104 +149,132 @@ table Fact_CopilotAuditRaw
 		dataType: string
 		lineageTag: c3f1a001-0a11-4a11-9a11-1a11c3f1a009
 		summarizeBy: none
-		sourceColumn: Workload
+		sourceColumn: Staging_ModelData[Workload]
 
 	column ClientRegion
 		dataType: string
 		isHidden
 		lineageTag: c3f1a001-0a11-4a11-9a11-1a11c3f1a010
 		summarizeBy: none
-		sourceColumn: ClientRegion
+		sourceColumn: Staging_ModelData[ClientRegion]
 
 	column AppIdentity
 		dataType: string
 		lineageTag: c3f1a001-0a11-4a11-9a11-1a11c3f1a011
 		summarizeBy: none
-		sourceColumn: AppIdentity
+		sourceColumn: Staging_ModelData[AppIdentity]
 
 	column ThreadId
 		dataType: string
 		isHidden
 		lineageTag: c3f1a001-0a11-4a11-9a11-1a11c3f1a012
 		summarizeBy: none
-		sourceColumn: ThreadId
+		sourceColumn: Staging_ModelData[ThreadId]
 
 	column LicenseType
 		dataType: string
 		lineageTag: c3f1a001-0a11-4a11-9a11-1a11c3f1a013
 		summarizeBy: none
-		sourceColumn: LicenseType
+		sourceColumn: Staging_ModelData[LicenseType]
 
 	column Message_Count
 		dataType: int64
 		formatString: #,0
 		lineageTag: c3f1a001-0a11-4a11-9a11-1a11c3f1a014
 		summarizeBy: sum
-		sourceColumn: Message_Count
+		sourceColumn: Staging_ModelData[Message_Count]
 
 	column Message_PromptCount
 		dataType: int64
 		formatString: #,0
 		lineageTag: c3f1a001-0a11-4a11-9a11-1a11c3f1a015
 		summarizeBy: sum
-		sourceColumn: Message_PromptCount
+		sourceColumn: Staging_ModelData[Message_PromptCount]
 
 	column Plugin_Count
 		dataType: int64
 		formatString: #,0
 		lineageTag: c3f1a001-0a11-4a11-9a11-1a11c3f1a016
 		summarizeBy: sum
-		sourceColumn: Plugin_Count
+		sourceColumn: Staging_ModelData[Plugin_Count]
 
 	column Plugin_FirstId
 		dataType: string
 		isHidden
 		lineageTag: c3f1a001-0a11-4a11-9a11-1a11c3f1a017
 		summarizeBy: none
-		sourceColumn: Plugin_FirstId
+		sourceColumn: Staging_ModelData[Plugin_FirstId]
 
 	column Plugin_FirstName
 		dataType: string
 		lineageTag: c3f1a001-0a11-4a11-9a11-1a11c3f1a018
 		summarizeBy: none
-		sourceColumn: Plugin_FirstName
+		sourceColumn: Staging_ModelData[Plugin_FirstName]
 
 	column Resource_Count
 		dataType: int64
 		formatString: #,0
 		lineageTag: c3f1a001-0a11-4a11-9a11-1a11c3f1a019
 		summarizeBy: sum
-		sourceColumn: Resource_Count
+		sourceColumn: Staging_ModelData[Resource_Count]
 
 	column AccessedResource_FirstSiteUrl
 		dataType: string
 		isHidden
 		lineageTag: c3f1a001-0a11-4a11-9a11-1a11c3f1a020
 		summarizeBy: none
-		sourceColumn: AccessedResource_FirstSiteUrl
+		sourceColumn: Staging_ModelData[AccessedResource_FirstSiteUrl]
 
 	column AccessedResource_FirstAction
 		dataType: string
 		lineageTag: c3f1a001-0a11-4a11-9a11-1a11c3f1a021
 		summarizeBy: none
-		sourceColumn: AccessedResource_FirstAction
+		sourceColumn: Staging_ModelData[AccessedResource_FirstAction]
 
 	column ModelProviderName
 		dataType: string
 		lineageTag: c3f1a001-0a11-4a11-9a11-1a11c3f1a022
 		summarizeBy: none
-		sourceColumn: ModelProviderName
+		sourceColumn: Staging_ModelData[ModelProviderName]
 
-	partition Fact_CopilotAuditRaw = m
+	column _RowId
+		dataType: int64
+		isHidden
+		formatString: 0
+		lineageTag: ac8de9f1-0a0e-41d6-a60d-8aafd84acedc
+		summarizeBy: none
+		sourceColumn: Staging_ModelData[_RowId]
+
+	partition Fact_CopilotAuditRaw = calculated
 		mode: import
 		source =
-				Table.SelectColumns(Fact_CopilotAuditRaw_WithLists, {
-					"RecordId", "CreationDateParsed", "DateKey", "Audit_UserId", "Audit_UserId_Normalized", "UserKey",
-					"Workload", "ClientRegion", "AppIdentity", "AppHost", "ThreadId", "LicenseType",
-					"Message_Count", "Message_PromptCount",
-					"Plugin_Count", "Plugin_FirstId", "Plugin_FirstName",
-					"Resource_Count", "AccessedResource_FirstSiteUrl", "AccessedResource_FirstAction",
-					"ModelProviderName"
-				})
+				SUMMARIZE(
+					FILTER(
+						Staging_ModelData,
+						Staging_ModelData[_Entity] = "Fact_CopilotAuditRaw"
+					),
+					Staging_ModelData[_RowId],
+					Staging_ModelData[RecordId],
+					Staging_ModelData[CreationDateParsed],
+					Staging_ModelData[DateKey],
+					Staging_ModelData[Audit_UserId],
+					Staging_ModelData[Audit_UserId_Normalized],
+					Staging_ModelData[UserKey],
+					Staging_ModelData[AppHost],
+					Staging_ModelData[Workload],
+					Staging_ModelData[ClientRegion],
+					Staging_ModelData[AppIdentity],
+					Staging_ModelData[ThreadId],
+					Staging_ModelData[LicenseType],
+					Staging_ModelData[Message_Count],
+					Staging_ModelData[Message_PromptCount],
+					Staging_ModelData[Plugin_Count],
+					Staging_ModelData[Plugin_FirstId],
+					Staging_ModelData[Plugin_FirstName],
+					Staging_ModelData[Resource_Count],
+					Staging_ModelData[AccessedResource_FirstSiteUrl],
+					Staging_ModelData[AccessedResource_FirstAction],
+					Staging_ModelData[ModelProviderName]
+				)
 
 	annotation PBI_ResultType = Exception

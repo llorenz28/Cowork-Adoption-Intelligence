@@ -1,0 +1,894 @@
+{
+  "contract_version": 1,
+  "source": "Protected validated Cowork model semantics, 2026-09-25",
+  "skill_rules": [
+    {
+      "priority": 100,
+      "match": "exact",
+      "pattern": "email",
+      "category": "Email workflows",
+      "friendly_name": "Email",
+      "confidence": "Documented",
+      "business_behavior": "Draft an email reply"
+    },
+    {
+      "priority": 105,
+      "match": "prefix",
+      "pattern": "mcp__outlook__send",
+      "category": "Email workflows",
+      "friendly_name": "Send Email",
+      "confidence": "Inferred",
+      "business_behavior": "Draft an email reply"
+    },
+    {
+      "priority": 110,
+      "match": "prefix",
+      "pattern": "mcp__outlook__createdraft",
+      "category": "Email workflows",
+      "friendly_name": "Draft Email",
+      "confidence": "Inferred",
+      "business_behavior": "Draft an email reply"
+    },
+    {
+      "priority": 111,
+      "match": "prefix",
+      "pattern": "mcp__outlook__createreply",
+      "category": "Email workflows",
+      "friendly_name": "Draft Reply",
+      "confidence": "Inferred",
+      "business_behavior": "Summarize an email thread"
+    },
+    {
+      "priority": 112,
+      "match": "prefix",
+      "pattern": "mcp__outlook__updatedraft",
+      "category": "Email workflows",
+      "friendly_name": "Draft Email",
+      "confidence": "Inferred",
+      "business_behavior": "Draft an email reply"
+    },
+    {
+      "priority": 115,
+      "match": "prefix",
+      "pattern": "mcp__outlook__reply",
+      "category": "Email workflows",
+      "friendly_name": "Reply to Email",
+      "confidence": "Inferred",
+      "business_behavior": "Draft an email reply"
+    },
+    {
+      "priority": 120,
+      "match": "prefix",
+      "pattern": "mcp__outlook__forward",
+      "category": "Email workflows",
+      "friendly_name": "Forward Email",
+      "confidence": "Inferred",
+      "business_behavior": "Draft an email reply"
+    },
+    {
+      "priority": 125,
+      "match": "prefix",
+      "pattern": "mcp__outlook__getmessage",
+      "category": "Email workflows",
+      "friendly_name": "Read Email",
+      "confidence": "Inferred",
+      "business_behavior": "Summarize an email thread"
+    },
+    {
+      "priority": 130,
+      "match": "prefix",
+      "pattern": "mcp__outlook__listmessages",
+      "category": "Email workflows",
+      "friendly_name": "Review Inbox",
+      "confidence": "Inferred",
+      "business_behavior": "Summarize an email thread"
+    },
+    {
+      "priority": 140,
+      "match": "prefix",
+      "pattern": "mcp__outlook__",
+      "category": "Email workflows",
+      "friendly_name": "Mailbox Activity",
+      "confidence": "Inferred",
+      "business_behavior": "Triage and reply to an email"
+    },
+    {
+      "priority": 200,
+      "match": "exact",
+      "pattern": "scheduling",
+      "category": "Meeting workflows",
+      "friendly_name": "Scheduling",
+      "confidence": "Documented",
+      "business_behavior": "Schedule or update a meeting"
+    },
+    {
+      "priority": 205,
+      "match": "exact",
+      "pattern": "calendar management",
+      "category": "Meeting workflows",
+      "friendly_name": "Calendar Management",
+      "confidence": "Documented",
+      "business_behavior": "Review calendar availability"
+    },
+    {
+      "priority": 210,
+      "match": "exact",
+      "pattern": "meetings",
+      "category": "Meeting workflows",
+      "friendly_name": "Meetings",
+      "confidence": "Documented",
+      "business_behavior": "Prepare for an upcoming meeting"
+    },
+    {
+      "priority": 215,
+      "match": "exact",
+      "pattern": "daily briefing",
+      "category": "Meeting workflows",
+      "friendly_name": "Daily Briefing",
+      "confidence": "Documented",
+      "business_behavior": "Prepare for an upcoming meeting"
+    },
+    {
+      "priority": 220,
+      "match": "contains",
+      "pattern": "transcript",
+      "category": "Meeting workflows",
+      "friendly_name": "Meeting Transcript",
+      "confidence": "Inferred",
+      "business_behavior": "Summarize a recorded meeting or video"
+    },
+    {
+      "priority": 225,
+      "match": "contains",
+      "pattern": "findmeetingtimes",
+      "category": "Meeting workflows",
+      "friendly_name": "Find Meeting Time",
+      "confidence": "Inferred",
+      "business_behavior": "Review calendar availability"
+    },
+    {
+      "priority": 230,
+      "match": "prefix",
+      "pattern": "mcp__outlook_calendar__create",
+      "category": "Meeting workflows",
+      "friendly_name": "Schedule Meeting",
+      "confidence": "Inferred",
+      "business_behavior": "Schedule or update a meeting"
+    },
+    {
+      "priority": 235,
+      "match": "prefix",
+      "pattern": "mcp__outlook_calendar__list",
+      "category": "Meeting workflows",
+      "friendly_name": "Check Calendar",
+      "confidence": "Inferred",
+      "business_behavior": "Review calendar availability"
+    },
+    {
+      "priority": 240,
+      "match": "prefix",
+      "pattern": "mcp__outlook_calendar__",
+      "category": "Meeting workflows",
+      "friendly_name": "Calendar Activity",
+      "confidence": "Inferred",
+      "business_behavior": "Schedule or update a meeting"
+    },
+    {
+      "priority": 300,
+      "match": "exact",
+      "pattern": "communications",
+      "category": "Communication workflows",
+      "friendly_name": "Communications",
+      "confidence": "Documented",
+      "business_behavior": "Draft a chat or Teams update"
+    },
+    {
+      "priority": 305,
+      "match": "prefix",
+      "pattern": "mcp__m365_teams__post",
+      "category": "Communication workflows",
+      "friendly_name": "Post to Teams",
+      "confidence": "Inferred",
+      "business_behavior": "Draft a chat or Teams update"
+    },
+    {
+      "priority": 310,
+      "match": "prefix",
+      "pattern": "mcp__m365_teams__reply",
+      "category": "Communication workflows",
+      "friendly_name": "Reply in Teams",
+      "confidence": "Inferred",
+      "business_behavior": "Draft a chat or Teams update"
+    },
+    {
+      "priority": 315,
+      "match": "prefix",
+      "pattern": "mcp__m365_teams__listchat",
+      "category": "Communication workflows",
+      "friendly_name": "Review Teams Chats",
+      "confidence": "Inferred",
+      "business_behavior": "Summarize a Teams chat or channel"
+    },
+    {
+      "priority": 320,
+      "match": "prefix",
+      "pattern": "mcp__m365_teams__listchannel",
+      "category": "Communication workflows",
+      "friendly_name": "Review Teams Channels",
+      "confidence": "Inferred",
+      "business_behavior": "Summarize a Teams chat or channel"
+    },
+    {
+      "priority": 325,
+      "match": "prefix",
+      "pattern": "mcp__m365_teams__listteams",
+      "category": "Communication workflows",
+      "friendly_name": "Review Teams",
+      "confidence": "Inferred",
+      "business_behavior": "Summarize a Teams chat or channel"
+    },
+    {
+      "priority": 330,
+      "match": "prefix",
+      "pattern": "mcp__m365_teams__get",
+      "category": "Communication workflows",
+      "friendly_name": "Read Teams Message",
+      "confidence": "Inferred",
+      "business_behavior": "Summarize a Teams chat or channel"
+    },
+    {
+      "priority": 340,
+      "match": "prefix",
+      "pattern": "mcp__m365_teams__",
+      "category": "Communication workflows",
+      "friendly_name": "Teams Activity",
+      "confidence": "Inferred",
+      "business_behavior": "Summarize a Teams chat or channel"
+    },
+    {
+      "priority": 400,
+      "match": "exact",
+      "pattern": "word",
+      "category": "Document & content creation",
+      "friendly_name": "Word",
+      "confidence": "Documented",
+      "business_behavior": "Draft general-purpose content"
+    },
+    {
+      "priority": 405,
+      "match": "exact",
+      "pattern": "powerpoint",
+      "category": "Document & content creation",
+      "friendly_name": "PowerPoint",
+      "confidence": "Documented",
+      "business_behavior": "Create a slide deck"
+    },
+    {
+      "priority": 410,
+      "match": "exact",
+      "pattern": "pdf",
+      "category": "Document & content creation",
+      "friendly_name": "PDF",
+      "confidence": "Documented",
+      "business_behavior": "Analyze a PDF or contract"
+    },
+    {
+      "priority": 415,
+      "match": "exact",
+      "pattern": "adaptive cards",
+      "category": "Document & content creation",
+      "friendly_name": "Adaptive Cards",
+      "confidence": "Documented",
+      "business_behavior": "Draft general-purpose content"
+    },
+    {
+      "priority": 420,
+      "match": "contains",
+      "pattern": "createartifact",
+      "category": "Document & content creation",
+      "friendly_name": "Create Document",
+      "confidence": "Inferred",
+      "business_behavior": "Draft general-purpose content"
+    },
+    {
+      "priority": 425,
+      "match": "contains",
+      "pattern": "editartifact",
+      "category": "Document & content creation",
+      "friendly_name": "Edit Document",
+      "confidence": "Inferred",
+      "business_behavior": "Rewrite or improve existing text"
+    },
+    {
+      "priority": 430,
+      "match": "contains",
+      "pattern": "copyartifact",
+      "category": "Document & content creation",
+      "friendly_name": "Save Document",
+      "confidence": "Inferred",
+      "business_behavior": "Rewrite or improve existing text"
+    },
+    {
+      "priority": 435,
+      "match": "contains",
+      "pattern": "getartifactmodel",
+      "category": "Document & content creation",
+      "friendly_name": "Inspect Document",
+      "confidence": "Inferred",
+      "business_behavior": "Rewrite or improve existing text"
+    },
+    {
+      "priority": 440,
+      "match": "contains",
+      "pattern": "deleteartifact",
+      "category": "Document & content creation",
+      "friendly_name": "Remove Document",
+      "confidence": "Inferred",
+      "business_behavior": "Rewrite or improve existing text"
+    },
+    {
+      "priority": 445,
+      "match": "contains",
+      "pattern": "imagegenerate",
+      "category": "Document & content creation",
+      "friendly_name": "Create Image",
+      "confidence": "Inferred",
+      "business_behavior": "Generate an image or visual"
+    },
+    {
+      "priority": 450,
+      "match": "contains",
+      "pattern": "renderslide",
+      "category": "Document & content creation",
+      "friendly_name": "Build Slides",
+      "confidence": "Inferred",
+      "business_behavior": "Rewrite or improve existing text"
+    },
+    {
+      "priority": 455,
+      "match": "contains",
+      "pattern": "renderartifact",
+      "category": "Document & content creation",
+      "friendly_name": "Render Document",
+      "confidence": "Inferred",
+      "business_behavior": "Rewrite or improve existing text"
+    },
+    {
+      "priority": 460,
+      "match": "contains",
+      "pattern": "render_ui",
+      "category": "Document & content creation",
+      "friendly_name": "Build Visual Card",
+      "confidence": "Inferred",
+      "business_behavior": "Rewrite or improve existing text"
+    },
+    {
+      "priority": 465,
+      "match": "contains",
+      "pattern": "podcastgenerate",
+      "category": "Document & content creation",
+      "friendly_name": "Create Audio Summary",
+      "confidence": "Inferred",
+      "business_behavior": "Rewrite or improve existing text"
+    },
+    {
+      "priority": 470,
+      "match": "contains",
+      "pattern": "templatelibrary",
+      "category": "Document & content creation",
+      "friendly_name": "Browse Templates",
+      "confidence": "Inferred",
+      "business_behavior": "Rewrite or improve existing text"
+    },
+    {
+      "priority": 475,
+      "match": "prefix",
+      "pattern": "mcp__sharepoint_onedrive__upload",
+      "category": "Document & content creation",
+      "friendly_name": "Publish File",
+      "confidence": "Inferred",
+      "business_behavior": "Draft general-purpose content"
+    },
+    {
+      "priority": 480,
+      "match": "exact",
+      "pattern": "write",
+      "category": "Document & content creation",
+      "friendly_name": "Write File",
+      "confidence": "Inferred",
+      "business_behavior": "Rewrite or improve existing text"
+    },
+    {
+      "priority": 485,
+      "match": "exact",
+      "pattern": "edit",
+      "category": "Document & content creation",
+      "friendly_name": "Edit File",
+      "confidence": "Inferred",
+      "business_behavior": "Rewrite or improve existing text"
+    },
+    {
+      "priority": 500,
+      "match": "exact",
+      "pattern": "excel",
+      "category": "Analysis & Research",
+      "friendly_name": "Excel",
+      "confidence": "Documented",
+      "business_behavior": "Analyze data and extract insights"
+    },
+    {
+      "priority": 505,
+      "match": "exact",
+      "pattern": "enterprise search",
+      "category": "Analysis & Research",
+      "friendly_name": "Enterprise Search",
+      "confidence": "Documented",
+      "business_behavior": "Search internal documents and sites"
+    },
+    {
+      "priority": 510,
+      "match": "exact",
+      "pattern": "deep research",
+      "category": "Analysis & Research",
+      "friendly_name": "Deep Research",
+      "confidence": "Documented",
+      "business_behavior": "Research a topic and synthesize sources"
+    },
+    {
+      "priority": 515,
+      "match": "prefix",
+      "pattern": "mcp__m365_search__",
+      "category": "Analysis & Research",
+      "friendly_name": "Microsoft 365 Search",
+      "confidence": "Inferred",
+      "business_behavior": "Search internal documents and sites"
+    },
+    {
+      "priority": 520,
+      "match": "contains",
+      "pattern": "web_search",
+      "category": "Analysis & Research",
+      "friendly_name": "Web Search",
+      "confidence": "Inferred",
+      "business_behavior": "Find a document or file"
+    },
+    {
+      "priority": 521,
+      "match": "contains",
+      "pattern": "bing_search",
+      "category": "Analysis & Research",
+      "friendly_name": "Web Search",
+      "confidence": "Inferred",
+      "business_behavior": "Find a document or file"
+    },
+    {
+      "priority": 525,
+      "match": "contains",
+      "pattern": "web_fetch",
+      "category": "Analysis & Research",
+      "friendly_name": "Read Web Page",
+      "confidence": "Inferred",
+      "business_behavior": "Find a document or file"
+    },
+    {
+      "priority": 530,
+      "match": "prefix",
+      "pattern": "mcp__pbi",
+      "category": "Analysis & Research",
+      "friendly_name": "Power BI Analysis",
+      "confidence": "Inferred",
+      "business_behavior": "Query a dataset or report"
+    },
+    {
+      "priority": 535,
+      "match": "prefix",
+      "pattern": "mcp__dataverse__",
+      "category": "Analysis & Research",
+      "friendly_name": "Dataverse Query",
+      "confidence": "Inferred",
+      "business_behavior": "Query a dataset or report"
+    },
+    {
+      "priority": 540,
+      "match": "contains",
+      "pattern": "soql",
+      "category": "Analysis & Research",
+      "friendly_name": "Salesforce Query",
+      "confidence": "Inferred",
+      "business_behavior": "Find a document or file"
+    },
+    {
+      "priority": 545,
+      "match": "prefix",
+      "pattern": "mcp__sf-",
+      "category": "Analysis & Research",
+      "friendly_name": "Salesforce Activity",
+      "confidence": "Inferred",
+      "business_behavior": "Find a document or file"
+    },
+    {
+      "priority": 550,
+      "match": "contains",
+      "pattern": "rovo search",
+      "category": "Analysis & Research",
+      "friendly_name": "Search Jira & Confluence",
+      "confidence": "Inferred",
+      "business_behavior": "Search internal documents and sites"
+    },
+    {
+      "priority": 555,
+      "match": "prefix",
+      "pattern": "mcp__confluence__search",
+      "category": "Analysis & Research",
+      "friendly_name": "Search Confluence",
+      "confidence": "Inferred",
+      "business_behavior": "Search internal documents and sites"
+    },
+    {
+      "priority": 560,
+      "match": "prefix",
+      "pattern": "mcp__confluence__fetch",
+      "category": "Analysis & Research",
+      "friendly_name": "Read Confluence Page",
+      "confidence": "Inferred",
+      "business_behavior": "Find a document or file"
+    },
+    {
+      "priority": 565,
+      "match": "prefix",
+      "pattern": "mcp__confluence__",
+      "category": "Analysis & Research",
+      "friendly_name": "Confluence Activity",
+      "confidence": "Inferred",
+      "business_behavior": "Find a document or file"
+    },
+    {
+      "priority": 570,
+      "match": "prefix",
+      "pattern": "mcp__sharepoint_onedrive__read",
+      "category": "Analysis & Research",
+      "friendly_name": "Read File",
+      "confidence": "Inferred",
+      "business_behavior": "Find a document or file"
+    },
+    {
+      "priority": 575,
+      "match": "prefix",
+      "pattern": "mcp__sharepoint_onedrive__search",
+      "category": "Analysis & Research",
+      "friendly_name": "Search Files",
+      "confidence": "Inferred",
+      "business_behavior": "Search internal documents and sites"
+    },
+    {
+      "priority": 580,
+      "match": "prefix",
+      "pattern": "mcp__me_profile__",
+      "category": "Analysis & Research",
+      "friendly_name": "People Lookup",
+      "confidence": "Inferred",
+      "business_behavior": "Look up a person or expert"
+    },
+    {
+      "priority": 585,
+      "match": "prefix",
+      "pattern": "mcp__graph__",
+      "category": "Analysis & Research",
+      "friendly_name": "Directory Lookup",
+      "confidence": "Inferred",
+      "business_behavior": "Find a document or file"
+    },
+    {
+      "priority": 590,
+      "match": "exact",
+      "pattern": "read",
+      "category": "Analysis & Research",
+      "friendly_name": "Read File Content",
+      "confidence": "Inferred",
+      "business_behavior": "Find a document or file"
+    },
+    {
+      "priority": 592,
+      "match": "exact",
+      "pattern": "grep",
+      "category": "Analysis & Research",
+      "friendly_name": "Search File Contents",
+      "confidence": "Inferred",
+      "business_behavior": "Find a document or file"
+    },
+    {
+      "priority": 594,
+      "match": "exact",
+      "pattern": "getrange",
+      "category": "Analysis & Research",
+      "friendly_name": "Read Spreadsheet Range",
+      "confidence": "Inferred",
+      "business_behavior": "Find a document or file"
+    },
+    {
+      "priority": 600,
+      "match": "exact",
+      "pattern": "bash",
+      "category": "Write or debug code",
+      "friendly_name": "Run Script",
+      "confidence": "Inferred",
+      "business_behavior": "Explain or review existing code"
+    },
+    {
+      "priority": 605,
+      "match": "contains",
+      "pattern": "runscript",
+      "category": "Write or debug code",
+      "friendly_name": "Run Script",
+      "confidence": "Inferred",
+      "business_behavior": "Explain or review existing code"
+    },
+    {
+      "priority": 610,
+      "match": "prefix",
+      "pattern": "mcp__appbuilder__",
+      "category": "Write or debug code",
+      "friendly_name": "Build App",
+      "confidence": "Inferred",
+      "business_behavior": "Explain or review existing code"
+    },
+    {
+      "priority": 700,
+      "match": "contains",
+      "pattern": "ticket",
+      "category": "Specialized workflows",
+      "friendly_name": "Service Ticket Work",
+      "confidence": "Inferred",
+      "business_behavior": "Use an IT or service-desk agent"
+    },
+    {
+      "priority": 705,
+      "match": "contains",
+      "pattern": "incident",
+      "category": "Specialized workflows",
+      "friendly_name": "Incident Management",
+      "confidence": "Inferred",
+      "business_behavior": "Use an IT or service-desk agent"
+    },
+    {
+      "priority": 710,
+      "match": "prefix",
+      "pattern": "mcp__helpdesk",
+      "category": "Specialized workflows",
+      "friendly_name": "Service Desk Activity",
+      "confidence": "Inferred",
+      "business_behavior": "Use an IT or service-desk agent"
+    },
+    {
+      "priority": 715,
+      "match": "prefix",
+      "pattern": "mcp__powerplatform__",
+      "category": "Specialized workflows",
+      "friendly_name": "Power Platform Action",
+      "confidence": "Inferred",
+      "business_behavior": "Trigger a Power Automate flow"
+    },
+    {
+      "priority": 720,
+      "match": "contains",
+      "pattern": "scheduledprompt",
+      "category": "Specialized workflows",
+      "friendly_name": "Scheduled Work",
+      "confidence": "Inferred",
+      "business_behavior": "Build or automate a workflow step"
+    },
+    {
+      "priority": 725,
+      "match": "contains",
+      "pattern": "eventtrigger",
+      "category": "Specialized workflows",
+      "friendly_name": "Automation Trigger",
+      "confidence": "Inferred",
+      "business_behavior": "Trigger a Power Automate flow"
+    },
+    {
+      "priority": 730,
+      "match": "prefix",
+      "pattern": "task",
+      "category": "Specialized workflows",
+      "friendly_name": "Plan & Track Work",
+      "confidence": "Inferred",
+      "business_behavior": "Trigger a Power Automate flow"
+    },
+    {
+      "priority": 735,
+      "match": "exact",
+      "pattern": "glob",
+      "category": "Specialized workflows",
+      "friendly_name": "File Search",
+      "confidence": "Inferred",
+      "business_behavior": "Trigger a Power Automate flow"
+    },
+    {
+      "priority": 740,
+      "match": "prefix",
+      "pattern": "mcp__sharepoint_onedrive__createfolder",
+      "category": "Specialized workflows",
+      "friendly_name": "Organize Files",
+      "confidence": "Inferred",
+      "business_behavior": "Trigger a Power Automate flow"
+    },
+    {
+      "priority": 745,
+      "match": "prefix",
+      "pattern": "mcp__sharepoint_onedrive__",
+      "category": "Specialized workflows",
+      "friendly_name": "Browse Files",
+      "confidence": "Inferred",
+      "business_behavior": "Trigger a Power Automate flow"
+    },
+    {
+      "priority": 750,
+      "match": "prefix",
+      "pattern": "mcp__core__",
+      "category": "Specialized workflows",
+      "friendly_name": "Workspace Action",
+      "confidence": "Inferred",
+      "business_behavior": "Trigger a Power Automate flow"
+    },
+    {
+      "priority": 755,
+      "match": "prefix",
+      "pattern": "mcp__host__",
+      "category": "Specialized workflows",
+      "friendly_name": "Workspace Action",
+      "confidence": "Inferred",
+      "business_behavior": "Trigger a Power Automate flow"
+    },
+    {
+      "priority": 900,
+      "match": "exact",
+      "pattern": "builtin",
+      "category": "General assistance / Other",
+      "friendly_name": "Built-in Capability",
+      "confidence": "Inferred",
+      "business_behavior": "Ask a quick how-to question"
+    },
+    {
+      "priority": 905,
+      "match": "exact",
+      "pattern": "report_intent",
+      "category": "General assistance / Other",
+      "friendly_name": "Understand Request",
+      "confidence": "Inferred",
+      "business_behavior": "Ask a quick how-to question"
+    },
+    {
+      "priority": 910,
+      "match": "exact",
+      "pattern": "",
+      "category": "General assistance / Other",
+      "friendly_name": "Unspecified Skill",
+      "confidence": "Inferred",
+      "business_behavior": "Ask a quick how-to question"
+    }
+  ],
+  "orchestration_skills": [
+    "read_agent",
+    "write_agent",
+    "task",
+    "report_intent",
+    "builtin",
+    "",
+    "tool_search_tool",
+    "skill",
+    "askuserquestion",
+    "read_bash",
+    "stop_bash",
+    "list_agents",
+    "apply_patch",
+    "taskget",
+    "tasklist"
+  ],
+  "categories": [
+    {
+      "key": 1,
+      "category": "Analysis & Research",
+      "low": 30,
+      "mid": 67,
+      "high": 92
+    },
+    {
+      "key": 2,
+      "category": "Document & content creation",
+      "low": 12,
+      "mid": 24,
+      "high": 42
+    },
+    {
+      "key": 3,
+      "category": "Email workflows",
+      "low": 3,
+      "mid": 7,
+      "high": 12
+    },
+    {
+      "key": 4,
+      "category": "Meeting workflows",
+      "low": 12,
+      "mid": 31,
+      "high": 45
+    },
+    {
+      "key": 5,
+      "category": "Communication workflows",
+      "low": 2,
+      "mid": 4,
+      "high": 11
+    },
+    {
+      "key": 6,
+      "category": "Specialized workflows",
+      "low": 10,
+      "mid": 25,
+      "high": 40
+    },
+    {
+      "key": 7,
+      "category": "Write or debug code",
+      "low": 30,
+      "mid": 56,
+      "high": 96
+    },
+    {
+      "key": 8,
+      "category": "General assistance / Other",
+      "low": 2,
+      "mid": 5,
+      "high": 8
+    }
+  ],
+  "human_baselines": {
+    "Summarize a long document": 24,
+    "Draft a first-pass report": 42,
+    "Research a topic and synthesize sources": 67,
+    "Analyze data and extract insights": 67,
+    "Triage and reply to an email": 7,
+    "Catch up on a missed meeting": 31,
+    "Draft a chat or Teams update": 4,
+    "Build or automate a workflow step": 25,
+    "Write or debug a code snippet": 56,
+    "Ask a quick how-to question": 5,
+    "Draft an email reply": 8,
+    "Summarize an email thread": 5,
+    "Summarize a Teams chat or channel": 4,
+    "Prepare for an upcoming meeting": 15,
+    "Review calendar availability": 5,
+    "Schedule or update a meeting": 8,
+    "Extract action items from a meeting": 12,
+    "Summarize a recorded meeting or video": 30,
+    "Rewrite or improve existing text": 15,
+    "Create a slide deck": 90,
+    "Summarize a presentation": 12,
+    "Take and organize notes": 20,
+    "Generate an image or visual": 60,
+    "Translate content": 10,
+    "Search the web for information": 22,
+    "Search internal documents and sites": 18,
+    "Analyze a PDF or contract": 35,
+    "Find a document or file": 15,
+    "Look up a person or expert": 10,
+    "Query a dataset or report": 30,
+    "Review or validate a spreadsheet": 25,
+    "Get Excel formula or analysis help": 30,
+    "Explain or review existing code": 30,
+    "Trigger a Power Automate flow": 15,
+    "Manage tasks or project plan": 20,
+    "Collaborate in real time on a board": 30,
+    "Build a form or survey": 25,
+    "Use a sales or customer agent": 35,
+    "Use an HR or people agent": 35,
+    "Use an IT or service-desk agent": 20,
+    "Use a compliance or policy agent": 25,
+    "Use a coaching or learning agent": 45,
+    "Brainstorm ideas": 20,
+    "Get a quick summary or explanation": 10,
+    "Draft general-purpose content": 15,
+    "Use a data or reporting agent": 35
+  }
+}

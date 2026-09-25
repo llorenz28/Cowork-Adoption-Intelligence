@@ -1,6 +1,6 @@
 # Cowork Adoption Intelligence: interpretation guide
 
-**Template version:** 4.0.0-testing<br>
+**Template version:** 4.1.0-testing<br>
 **Audience:** adoption leads, program owners, enablement teams, analysts, and Power BI owners
 
 This guide explains what each report page answers, how to read it, what to
@@ -13,13 +13,21 @@ benchmark catalogue.
 
 ## Agenda
 
-1. Version 3 changes and the five-minute reading path
+1. Version 4.1 changes and the five-minute reading path
 2. Evidence chain and confidence labels
 3. Page-by-page walkthrough of all ten report pages
 4. Momentum, maturity, champion, and assisted-time methodology
 5. Source requirements, validation checks, and defensible decision language
 
-## What's new in version 3
+## What's new in version 4.1
+
+- Raw Purview parsing and deterministic deduplication now run in the bundled
+  Python preprocessor before Power BI loads the 13 validated entity files.
+- The template prompts only for `PreprocessedOutputPath`.
+- Champion summary and row-level ranking now reconcile exactly under the
+  optimized model.
+
+The version 3 interpretation improvements remain part of this release:
 
 - **Momentum Score Guide** replaces Momentum Settings with a live score,
   component explanations, guardrails, and optional advanced controls.

@@ -1,0 +1,151 @@
+/// Compact Cowork interaction aggregate at user-day-model grain.
+/// Weekly, lifecycle, momentum, and usage-tier calculations use this table to avoid
+/// repeatedly scanning the event-level audit fact while preserving raw provider filters.
+table Fact_CoworkUserDayModel
+	isHidden
+	lineageTag: 73d8ac15-efcb-4221-9376-ea6db01e511f
+
+	measure 'Cowork Aggregate Active Users' =
+			VAR _hasModelFilter = ISFILTERED(Fact_CoworkDetail[ModelProviderName])
+			VAR _models = FILTERS(Fact_CoworkDetail[ModelProviderName])
+			VAR _modelFilter =
+			    FILTER(
+			        ALL(Fact_CoworkUserDayModel[ModelProviderName]),
+			        NOT _hasModelFilter || Fact_CoworkUserDayModel[ModelProviderName] IN _models
+			    )
+			RETURN
+			    CALCULATE(
+			        DISTINCTCOUNT(Fact_CoworkUserDayModel[Audit_UserId]),
+			        _modelFilter
+			    )
+		formatString: #,0
+		lineageTag: adad7e94-8eac-48c7-8dc0-291455c2c205
+
+	measure 'Cowork Aggregate Prompt Count' =
+			VAR _hasModelFilter = ISFILTERED(Fact_CoworkDetail[ModelProviderName])
+			VAR _models = FILTERS(Fact_CoworkDetail[ModelProviderName])
+			VAR _modelFilter =
+			    FILTER(
+			        ALL(Fact_CoworkUserDayModel[ModelProviderName]),
+			        NOT _hasModelFilter || Fact_CoworkUserDayModel[ModelProviderName] IN _models
+			    )
+			RETURN
+			    CALCULATE(
+			        SUM(Fact_CoworkUserDayModel[PromptCount]),
+			        _modelFilter
+			    )
+		formatString: #,0
+		lineageTag: 63795ece-92f1-487b-a4b6-5df7dbc3fe9e
+
+	measure 'Cowork Aggregate Average Active Days per User' =
+			VAR _hasModelFilter = ISFILTERED(Fact_CoworkDetail[ModelProviderName])
+			VAR _models = FILTERS(Fact_CoworkDetail[ModelProviderName])
+			VAR _modelFilter =
+			    FILTER(
+			        ALL(Fact_CoworkUserDayModel[ModelProviderName]),
+			        NOT _hasModelFilter || Fact_CoworkUserDayModel[ModelProviderName] IN _models
+			    )
+			VAR _activeUserDays =
+			    CALCULATE(
+			        DISTINCTCOUNT(Fact_CoworkUserDayModel[UserDateKey]),
+			        _modelFilter
+			    )
+			RETURN
+			    DIVIDE(_activeUserDays, [Cowork Aggregate Active Users])
+		formatString: 0.00
+		lineageTag: 6405f93c-8a1b-4b8f-9187-11f056fb75a7
+
+	column UserKey
+		dataType: int64
+		isHidden
+		lineageTag: ffc0b619-2b80-4379-b9ac-b70515aaf716
+		summarizeBy: none
+		sourceColumn: Staging_ModelData[UserKey]
+
+	column Audit_UserId
+		dataType: string
+		isHidden
+		lineageTag: 03c52dcf-1933-4c18-a13e-e27b7f4434b1
+		summarizeBy: none
+		sourceColumn: Staging_ModelData[Audit_UserId]
+
+	column Audit_UserId_Normalized
+		dataType: string
+		isHidden
+		lineageTag: 1f6ff5ea-cb10-4b58-a309-0576f4d3e505
+		summarizeBy: none
+		sourceColumn: Staging_ModelData[Audit_UserId_Normalized]
+
+	column DateKey
+		dataType: int64
+		isHidden
+		lineageTag: 9d8b97e9-4748-4eb7-97ca-2a85384022d4
+		summarizeBy: none
+		sourceColumn: Staging_ModelData[DateKey]
+
+	column WeekStartDate
+		dataType: dateTime
+		isHidden
+		formatString: General Date
+		lineageTag: b6bde936-5749-4cb3-a667-55ce4f009812
+		summarizeBy: none
+		sourceColumn: Staging_ModelData[WeekStartDate]
+
+	column ModelProviderName
+		dataType: string
+		isHidden
+		lineageTag: 66a160fa-bba1-483d-b4f4-1dcc86511b30
+		summarizeBy: none
+		sourceColumn: Staging_ModelData[ModelProviderName]
+
+	column InteractionCount
+		dataType: int64
+		isHidden
+		formatString: #,0
+		lineageTag: 3418baf3-748d-4c99-9dc4-eac8b7fae5bc
+		summarizeBy: sum
+		sourceColumn: Staging_ModelData[InteractionCount]
+
+	column PromptCount
+		dataType: int64
+		isHidden
+		formatString: #,0
+		lineageTag: 0200ee60-4411-4eef-8b33-85ba7a83ca6b
+		summarizeBy: sum
+		sourceColumn: Staging_ModelData[PromptCount]
+
+	column UserDateKey
+		dataType: string
+		isHidden
+		lineageTag: d57e50da-d0e2-489e-95b2-635a4cafcbbc
+		summarizeBy: none
+		sourceColumn: Staging_ModelData[UserDateKey]
+
+	column _RowId
+		dataType: int64
+		isHidden
+		lineageTag: 3fb111e6-c3fe-4a19-9e47-3d0384d66b82
+		summarizeBy: none
+		sourceColumn: Staging_ModelData[_RowId]
+
+	partition Fact_CoworkUserDayModel = calculated
+		mode: import
+		source =
+				SUMMARIZE(
+					FILTER(
+						Staging_ModelData,
+						Staging_ModelData[_Entity] = "Fact_CoworkUserDayModel"
+					),
+					Staging_ModelData[UserKey],
+					Staging_ModelData[Audit_UserId],
+					Staging_ModelData[Audit_UserId_Normalized],
+					Staging_ModelData[DateKey],
+					Staging_ModelData[WeekStartDate],
+					Staging_ModelData[ModelProviderName],
+					Staging_ModelData[InteractionCount],
+					Staging_ModelData[PromptCount],
+					Staging_ModelData[UserDateKey],
+					Staging_ModelData[_RowId]
+				)
+
+	annotation PBI_ResultType = Exception

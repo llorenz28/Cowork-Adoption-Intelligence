@@ -1,4 +1,5 @@
 /// Maps the stable 'AppHost Group' bucket to the Cowork category taxonomy.
+/// This AppHost-level mapping is separate from the Cowork skill taxonomy owned by CoworkSkillRules.
 /// Category assignments are starting points and should be reviewed against
 /// the connected tenant's emitted hosts and reporting scope.
 /// Any AppHost Group not listed here rolls up to "Other / Unclassified" and

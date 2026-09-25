@@ -9,10 +9,11 @@ Intelligence.
 - Resource URLs use `tenant.example.com`.
 - No tenant export, employee record, credential, or customer content is included.
 
-## Load it
+## Process and load it
 
-Set `DataFolderPath` to this folder, or extract the dedicated ZIP under
-`release/` and select the extraction folder.
+Extract the dedicated ZIP under `release/`, run the versioned preprocessor
+against the extraction folder, then set `PreprocessedOutputPath` to the
+generated output folder.
 
 See [Path A in the setup guide](../SETUP.md#path-a-try-the-report-with-fabricated-data)
 for exact values and verification steps.

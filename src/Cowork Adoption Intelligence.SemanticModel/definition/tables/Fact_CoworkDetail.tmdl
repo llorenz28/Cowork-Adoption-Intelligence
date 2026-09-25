@@ -61,6 +61,13 @@ table Fact_CoworkDetail
 
 	measure 'Cowork Weekly Return Rate' =
 			VAR _axisWeek = SELECTEDVALUE(Dim_Date[WeekStart])
+			VAR _hasModelFilter = ISFILTERED(Fact_CoworkDetail[ModelProviderName])
+			VAR _models = FILTERS(Fact_CoworkDetail[ModelProviderName])
+			VAR _modelFilter =
+			    FILTER(
+			        ALL(Fact_CoworkUserDayModel[ModelProviderName]),
+			        NOT _hasModelFilter || Fact_CoworkUserDayModel[ModelProviderName] IN _models
+			    )
 			VAR _currentWeek =
 			    IF(
 			        NOT ISBLANK(_axisWeek),
@@ -68,7 +75,7 @@ table Fact_CoworkDetail
 			        MAXX(
 			            FILTER(
 			                ALLSELECTED(Dim_Date[WeekStart]),
-			                CALCULATE([Cowork Active Users]) > 0
+			                CALCULATE([Cowork Aggregate Active Users]) > 0
 			            ),
 			            Dim_Date[WeekStart]
 			        )
@@ -76,15 +83,17 @@ table Fact_CoworkDetail
 			VAR _previousWeek = _currentWeek - 7
 			VAR _currentUsers =
 			    CALCULATETABLE(
-			        VALUES(Fact_CoworkDetail[Audit_UserId]),
+			        VALUES(Fact_CoworkUserDayModel[Audit_UserId]),
 			        REMOVEFILTERS(Dim_Date),
-			        Dim_Date[WeekStart] = _currentWeek
+			        Dim_Date[WeekStart] = _currentWeek,
+			        _modelFilter
 			    )
 			VAR _previousUsers =
 			    CALCULATETABLE(
-			        VALUES(Fact_CoworkDetail[Audit_UserId]),
+			        VALUES(Fact_CoworkUserDayModel[Audit_UserId]),
 			        REMOVEFILTERS(Dim_Date),
-			        Dim_Date[WeekStart] = _previousWeek
+			        Dim_Date[WeekStart] = _previousWeek,
+			        _modelFilter
 			    )
 			RETURN
 			    DIVIDE(
@@ -108,14 +117,14 @@ table Fact_CoworkDetail
 			        MAXX(
 			            FILTER(
 			                ALLSELECTED(Dim_Date[WeekStart]),
-			                CALCULATE([Cowork Active Users]) > 0
+			                CALCULATE([Cowork Aggregate Active Users]) > 0
 			            ),
 			            Dim_Date[WeekStart]
 			        )
 			    )
 			RETURN
 			    CALCULATE(
-			        [Cowork Active Users],
+			        [Cowork Aggregate Active Users],
 			        REMOVEFILTERS(Dim_Date),
 			        Dim_Date[WeekStart] = _currentWeek
 			    )
@@ -131,14 +140,14 @@ table Fact_CoworkDetail
 			        MAXX(
 			            FILTER(
 			                ALLSELECTED(Dim_Date[WeekStart]),
-			                CALCULATE([Cowork Active Users]) > 0
+			                CALCULATE([Cowork Aggregate Active Users]) > 0
 			            ),
 			            Dim_Date[WeekStart]
 			        )
 			    )
 			RETURN
 			    CALCULATE(
-			        [Prompts per Active User per Week],
+			        DIVIDE([Cowork Aggregate Prompt Count], [Cowork Aggregate Active Users]),
 			        REMOVEFILTERS(Dim_Date),
 			        Dim_Date[WeekStart] = _currentWeek
 			    )
@@ -154,14 +163,14 @@ table Fact_CoworkDetail
 			        MAXX(
 			            FILTER(
 			                ALLSELECTED(Dim_Date[WeekStart]),
-			                CALCULATE([Cowork Active Users]) > 0
+			                CALCULATE([Cowork Aggregate Active Users]) > 0
 			            ),
 			            Dim_Date[WeekStart]
 			        )
 			    )
 			RETURN
 			    CALCULATE(
-			        [Average Active Days per User per Week],
+			        [Cowork Aggregate Average Active Days per User],
 			        REMOVEFILTERS(Dim_Date),
 			        Dim_Date[WeekStart] = _currentWeek
 			    )
@@ -176,7 +185,7 @@ table Fact_CoworkDetail
 			        FILTER(
 			            ALLSELECTED(Dim_Date[WeekStart]),
 			            CALCULATE(
-			                [Cowork Active Users],
+			                [Cowork Aggregate Active Users],
 			                REMOVEFILTERS(Dim_User[Department])
 			            ) > 0
 			        ),
@@ -188,7 +197,7 @@ table Fact_CoworkDetail
 			        NOT ISBLANK(_lastWeek) &&
 			        _week >= _lastWeek - 77 &&
 			        _week <= _lastWeek,
-			        [Cowork Active Users]
+			        [Cowork Aggregate Active Users]
 			    )
 		formatString: #,0
 		lineageTag: 5761b2cb-5faf-5e1d-a11b-4cc80175dcf0
@@ -216,14 +225,14 @@ table Fact_CoworkDetail
 			        MAXX(
 			            FILTER(
 			                ALLSELECTED(Dim_Date[WeekStart]),
-			                CALCULATE([Cowork Active Users]) > 0
+			                CALCULATE([Cowork Aggregate Active Users]) > 0
 			            ),
 			            Dim_Date[WeekStart]
 			        )
 			    )
 			VAR _activeUsers =
 			    CALCULATE(
-			        [Cowork Active Users],
+			        [Cowork Aggregate Active Users],
 			        REMOVEFILTERS(Dim_Date),
 			        Dim_Date[WeekStart] = _scoreWeek
 			    )
@@ -235,13 +244,13 @@ table Fact_CoworkDetail
 			    )
 			VAR _activeDays =
 			    CALCULATE(
-			        [Average Active Days per User per Week],
+			        [Cowork Aggregate Average Active Days per User],
 			        REMOVEFILTERS(Dim_Date),
 			        Dim_Date[WeekStart] = _scoreWeek
 			    )
 			VAR _promptIntensity =
 			    CALCULATE(
-			        [Prompts per Active User per Week],
+			        DIVIDE([Cowork Aggregate Prompt Count], [Cowork Aggregate Active Users]),
 			        REMOVEFILTERS(Dim_Date),
 			        Dim_Date[WeekStart] = _scoreWeek
 			    )
@@ -292,6 +301,7 @@ table Fact_CoworkDetail
 			        "Weights sum to " & FORMAT(_weightSum, "0%") &
 			            " — adjust so they total 100%"
 			    )
+		lineageTag: 9d36acd1-b699-4818-b119-940509d39f97
 
 	measure 'Cowork Weekly Prompt Change %' =
 			VAR _axisWeek = SELECTEDVALUE(Dim_Date[WeekStart])
@@ -302,20 +312,20 @@ table Fact_CoworkDetail
 			        MAXX(
 			            FILTER(
 			                ALLSELECTED(Dim_Date[WeekStart]),
-			                CALCULATE([Cowork Active Users]) > 0
+			                CALCULATE([Cowork Aggregate Active Users]) > 0
 			            ),
 			            Dim_Date[WeekStart]
 			        )
 			    )
 			VAR _currentPrompts =
 			    CALCULATE(
-			        [Cowork Prompt Count],
+			        [Cowork Aggregate Prompt Count],
 			        REMOVEFILTERS(Dim_Date),
 			        Dim_Date[WeekStart] = _currentWeek
 			    )
 			VAR _previousPrompts =
 			    CALCULATE(
-			        [Cowork Prompt Count],
+			        [Cowork Aggregate Prompt Count],
 			        REMOVEFILTERS(Dim_Date),
 			        Dim_Date[WeekStart] = _currentWeek - 7
 			    )
@@ -330,7 +340,7 @@ table Fact_CoworkDetail
 			        FILTER(
 			            ALLSELECTED(Dim_Date[WeekStart]),
 			            CALCULATE(
-			                [Cowork Active Users],
+			                [Cowork Aggregate Active Users],
 			                REMOVEFILTERS(Dim_User[Department])
 			            ) > 0
 			        ),
@@ -354,7 +364,7 @@ table Fact_CoworkDetail
 			        FILTER(
 			            ALLSELECTED(Dim_Date[WeekStart]),
 			            CALCULATE(
-			                [Cowork Active Users],
+			                [Cowork Aggregate Active Users],
 			                REMOVEFILTERS(Dim_User[Department])
 			            ) > 0
 			        ),
@@ -366,7 +376,7 @@ table Fact_CoworkDetail
 			        NOT ISBLANK(_lastWeek) &&
 			        _week >= _lastWeek - 77 &&
 			        _week <= _lastWeek,
-			        [Prompts per Active User per Week]
+			        DIVIDE([Cowork Aggregate Prompt Count], [Cowork Aggregate Active Users])
 			    )
 		formatString: #,0.0
 		lineageTag: ebd09d11-03ff-5c1e-b9f4-b58510bba3a8
@@ -378,7 +388,7 @@ table Fact_CoworkDetail
 			        FILTER(
 			            ALLSELECTED(Dim_Date[WeekStart]),
 			            CALCULATE(
-			                [Cowork Active Users],
+			                [Cowork Aggregate Active Users],
 			                REMOVEFILTERS(Dim_User[Department])
 			            ) > 0
 			        ),
@@ -390,7 +400,7 @@ table Fact_CoworkDetail
 			        NOT ISBLANK(_lastWeek) &&
 			        _week >= _lastWeek - 77 &&
 			        _week <= _lastWeek,
-			        [Average Active Days per User per Week]
+			        [Cowork Aggregate Average Active Days per User]
 			    )
 		formatString: #,0.0
 		lineageTag: 9b346660-4a9a-575c-baed-0cc5c20d8325
@@ -402,7 +412,7 @@ table Fact_CoworkDetail
 			        FILTER(
 			            ALLSELECTED(Dim_Date[WeekStart]),
 			            CALCULATE(
-			                [Cowork Active Users],
+			                [Cowork Aggregate Active Users],
 			                REMOVEFILTERS(Dim_User[Department])
 			            ) > 0
 			        ),
@@ -422,21 +432,40 @@ table Fact_CoworkDetail
 	/// Percentile rank of prompt volume within the current selected user population.
 	/// Returns blank below the same 20-active-user floor used by Value Percentile.
 	measure 'Cowork User Prompt Percentile' =
-			VAR _pop =
-			    COUNTROWS(
-			        FILTER(
-			            ALLSELECTED(Dim_User[UserKey]),
-			            [Cowork Prompt Count] > 0
-			        )
+			VAR _hasModelFilter = ISFILTERED(Fact_CoworkDetail[ModelProviderName])
+			VAR _models = FILTERS(Fact_CoworkDetail[ModelProviderName])
+			VAR _modelFilter =
+			    FILTER(
+			        ALL(Fact_CoworkUserDayModel[ModelProviderName]),
+			        NOT _hasModelFilter || Fact_CoworkUserDayModel[ModelProviderName] IN _models
 			    )
+			VAR _currentPrompts =
+			    CALCULATE(
+			        SUM(Fact_CoworkUserDayModel[PromptCount]),
+			        _modelFilter
+			    )
+			VAR _population =
+			    FILTER(
+			        CALCULATETABLE(
+			            ADDCOLUMNS(
+			                VALUES(Dim_User[UserKey]),
+			                "__PromptCount",
+			                    CALCULATE(
+			                        SUM(Fact_CoworkUserDayModel[PromptCount]),
+			                        _modelFilter
+			                    )
+			            ),
+			            REMOVEFILTERS(Dim_User[UserKey]),
+			            REMOVEFILTERS(Dim_User[Department])
+			        ),
+			        NOT ISBLANK(Dim_User[UserKey]) && [__PromptCount] > 0
+			    )
+			VAR _pop = COUNTROWS(_population)
 			VAR _rank =
 			    RANKX(
-			        FILTER(
-			            ALLSELECTED(Dim_User[UserKey]),
-			            [Cowork Prompt Count] > 0
-			        ),
-			        [Cowork Prompt Count],
-			        ,
+			        _population,
+			        [__PromptCount],
+			        _currentPrompts,
 			        DESC
 			    )
 			RETURN
@@ -447,6 +476,7 @@ table Fact_CoworkDetail
 
 	/// Rolling 12-week Cowork usage tier, evaluated per user and per week.
 	measure 'Cowork User Usage Tier' =
+			VAR _userKey = SELECTEDVALUE(Dim_User[UserKey])
 			VAR _axisWeek = SELECTEDVALUE(Dim_Date[WeekStart])
 			VAR _endWeek =
 			    IF(
@@ -455,29 +485,37 @@ table Fact_CoworkDetail
 			        MAXX(
 			            FILTER(
 			                ALLSELECTED(Dim_Date[WeekStart]),
-			                CALCULATE([Cowork Active Users]) > 0
+			                CALCULATE(
+			                    [Cowork Aggregate Active Users],
+			                    REMOVEFILTERS(Dim_User[UserKey]),
+			                    REMOVEFILTERS(Dim_User[Department])
+			                ) > 0
 			            ),
 			            Dim_Date[WeekStart]
 			        )
 			    )
 			VAR _startDate = _endWeek - 77
 			VAR _endDate = _endWeek + 6
+			VAR _hasModelFilter = ISFILTERED(Fact_CoworkDetail[ModelProviderName])
+			VAR _models = FILTERS(Fact_CoworkDetail[ModelProviderName])
+			VAR _modelFilter =
+			    FILTER(
+			        ALL(Fact_CoworkUserDayModel[ModelProviderName]),
+			        NOT _hasModelFilter || Fact_CoworkUserDayModel[ModelProviderName] IN _models
+			    )
 			VAR _prompts =
 			    CALCULATE(
-			        [Cowork Prompt Count],
+			        SUM(Fact_CoworkUserDayModel[PromptCount]),
 			        REMOVEFILTERS(Dim_Date),
-			        DATESBETWEEN(Dim_Date[Date], _startDate, _endDate)
+			        DATESBETWEEN(Dim_Date[Date], _startDate, _endDate),
+			        _modelFilter
 			    )
 			VAR _activeWeeks =
-			    COUNTROWS(
-			        FILTER(
-			            CALCULATETABLE(
-			                VALUES(Dim_Date[WeekStart]),
-			                REMOVEFILTERS(Dim_Date),
-			                DATESBETWEEN(Dim_Date[Date], _startDate, _endDate)
-			            ),
-			            CALCULATE([Cowork Prompt Count]) > 0
-			        )
+			    CALCULATE(
+			        DISTINCTCOUNT(Fact_CoworkUserDayModel[WeekStartDate]),
+			        REMOVEFILTERS(Dim_Date),
+			        DATESBETWEEN(Dim_Date[Date], _startDate, _endDate),
+			        _modelFilter
 			    )
 			VAR _p =
 			    CALCULATE(
@@ -487,7 +525,7 @@ table Fact_CoworkDetail
 			    )
 			RETURN
 			    IF(
-			        ISBLANK(_endWeek),
+			        ISBLANK(_userKey) || ISBLANK(_endWeek),
 			        BLANK(),
 			        SWITCH(
 			            TRUE(),
@@ -503,72 +541,430 @@ table Fact_CoworkDetail
 		lineageTag: 094dcc14-e2b4-502a-a275-70d2840d7163
 
 	measure 'Cowork Power Users' =
-			COUNTROWS(
-			    FILTER(
-			        VALUES(Dim_User[UserKey]),
-			        [Cowork User Usage Tier] = "Power users"
+			VAR _axisWeek = SELECTEDVALUE(Dim_Date[WeekStart])
+			VAR _endWeek =
+			    IF(
+			        NOT ISBLANK(_axisWeek),
+			        _axisWeek,
+			        MAXX(
+			            FILTER(
+			                ALLSELECTED(Dim_Date[WeekStart]),
+			                CALCULATE(
+			                    [Cowork Aggregate Active Users],
+			                    REMOVEFILTERS(Dim_User[UserKey]),
+			                    REMOVEFILTERS(Dim_User[Department])
+			                ) > 0
+			            ),
+			            Dim_Date[WeekStart]
+			        )
 			    )
-			)
+			VAR _startDate = _endWeek - 77
+			VAR _endDate = _endWeek + 6
+			VAR _hasModelFilter = ISFILTERED(Fact_CoworkDetail[ModelProviderName])
+			VAR _models = FILTERS(Fact_CoworkDetail[ModelProviderName])
+			VAR _modelFilter =
+			    FILTER(
+			        ALL(Fact_CoworkUserDayModel[ModelProviderName]),
+			        NOT _hasModelFilter || Fact_CoworkUserDayModel[ModelProviderName] IN _models
+			    )
+			VAR _benchmarkStats =
+			    CALCULATETABLE(
+			        ADDCOLUMNS(
+			            VALUES(Dim_User[UserKey]),
+			            "__PromptCount", CALCULATE(SUM(Fact_CoworkUserDayModel[PromptCount]), _modelFilter),
+			            "__ActiveWeeks", CALCULATE(DISTINCTCOUNT(Fact_CoworkUserDayModel[WeekStartDate]), _modelFilter)
+			        ),
+			        REMOVEFILTERS(Dim_User[UserKey]),
+			        REMOVEFILTERS(Dim_User[Department]),
+			        REMOVEFILTERS(Dim_Date),
+			        DATESBETWEEN(Dim_Date[Date], _startDate, _endDate)
+			    )
+			VAR _activePopulation = FILTER(_benchmarkStats, [__PromptCount] > 0)
+			VAR _populationSize = COUNTROWS(_activePopulation)
+			VAR _visibleStats =
+			    ADDCOLUMNS(
+			        FILTER(VALUES(Dim_User[UserKey]), NOT ISBLANK(Dim_User[UserKey])),
+			        "__VisiblePrompts",
+			            VAR _key = Dim_User[UserKey]
+			            RETURN MAXX(FILTER(_benchmarkStats, Dim_User[UserKey] = _key), [__PromptCount]),
+			        "__VisibleWeeks",
+			            VAR _key = Dim_User[UserKey]
+			            RETURN MAXX(FILTER(_benchmarkStats, Dim_User[UserKey] = _key), [__ActiveWeeks])
+			    )
+			VAR _scored =
+			    ADDCOLUMNS(
+			        _visibleStats,
+			        "__Percentile",
+			            VAR _prompts = [__VisiblePrompts]
+			            VAR _rank = RANKX(_activePopulation, [__PromptCount], _prompts, DESC, SKIP)
+			            RETURN IF(_populationSize < 20, BLANK(), DIVIDE(_populationSize - _rank, _populationSize - 1))
+			    )
+			RETURN
+			    IF(
+			        ISBLANK(_endWeek),
+			        BLANK(),
+			        COUNTROWS(
+			            FILTER(
+			                _scored,
+			                [__VisiblePrompts] > 0 &&
+			                [__Percentile] >= 0.90 &&
+			                [__VisibleWeeks] >= 9
+			            )
+			        )
+			    )
 		formatString: #,0
 		lineageTag: 216e4ec8-16c0-5791-9d7d-e253665f6da8
 
 	measure 'Cowork Habitual Users' =
-			COUNTROWS(
-			    FILTER(
-			        VALUES(Dim_User[UserKey]),
-			        [Cowork User Usage Tier] = "Habitual users"
+			VAR _axisWeek = SELECTEDVALUE(Dim_Date[WeekStart])
+			VAR _endWeek =
+			    IF(
+			        NOT ISBLANK(_axisWeek),
+			        _axisWeek,
+			        MAXX(
+			            FILTER(
+			                ALLSELECTED(Dim_Date[WeekStart]),
+			                CALCULATE(
+			                    [Cowork Aggregate Active Users],
+			                    REMOVEFILTERS(Dim_User[UserKey]),
+			                    REMOVEFILTERS(Dim_User[Department])
+			                ) > 0
+			            ),
+			            Dim_Date[WeekStart]
+			        )
 			    )
-			)
+			VAR _startDate = _endWeek - 77
+			VAR _endDate = _endWeek + 6
+			VAR _hasModelFilter = ISFILTERED(Fact_CoworkDetail[ModelProviderName])
+			VAR _models = FILTERS(Fact_CoworkDetail[ModelProviderName])
+			VAR _modelFilter =
+			    FILTER(
+			        ALL(Fact_CoworkUserDayModel[ModelProviderName]),
+			        NOT _hasModelFilter || Fact_CoworkUserDayModel[ModelProviderName] IN _models
+			    )
+			VAR _benchmarkStats =
+			    CALCULATETABLE(
+			        ADDCOLUMNS(
+			            VALUES(Dim_User[UserKey]),
+			            "__PromptCount", CALCULATE(SUM(Fact_CoworkUserDayModel[PromptCount]), _modelFilter),
+			            "__ActiveWeeks", CALCULATE(DISTINCTCOUNT(Fact_CoworkUserDayModel[WeekStartDate]), _modelFilter)
+			        ),
+			        REMOVEFILTERS(Dim_User[UserKey]),
+			        REMOVEFILTERS(Dim_User[Department]),
+			        REMOVEFILTERS(Dim_Date),
+			        DATESBETWEEN(Dim_Date[Date], _startDate, _endDate)
+			    )
+			VAR _activePopulation = FILTER(_benchmarkStats, [__PromptCount] > 0)
+			VAR _populationSize = COUNTROWS(_activePopulation)
+			VAR _visibleStats =
+			    ADDCOLUMNS(
+			        FILTER(VALUES(Dim_User[UserKey]), NOT ISBLANK(Dim_User[UserKey])),
+			        "__VisiblePrompts",
+			            VAR _key = Dim_User[UserKey]
+			            RETURN MAXX(FILTER(_benchmarkStats, Dim_User[UserKey] = _key), [__PromptCount]),
+			        "__VisibleWeeks",
+			            VAR _key = Dim_User[UserKey]
+			            RETURN MAXX(FILTER(_benchmarkStats, Dim_User[UserKey] = _key), [__ActiveWeeks])
+			    )
+			VAR _scored =
+			    ADDCOLUMNS(
+			        _visibleStats,
+			        "__Percentile",
+			            VAR _prompts = [__VisiblePrompts]
+			            VAR _rank = RANKX(_activePopulation, [__PromptCount], _prompts, DESC, SKIP)
+			            RETURN IF(_populationSize < 20, BLANK(), DIVIDE(_populationSize - _rank, _populationSize - 1))
+			    )
+			RETURN
+			    IF(
+			        ISBLANK(_endWeek),
+			        BLANK(),
+			        COUNTROWS(
+			            FILTER(
+			                _scored,
+			                [__VisiblePrompts] > 0 &&
+			                [__Percentile] >= 0.60 &&
+			                [__Percentile] < 0.90 &&
+			                [__VisibleWeeks] >= 9
+			            )
+			        )
+			    )
 		formatString: #,0
 		lineageTag: 89ba9b26-b5fe-554f-8195-a30e156c664a
 
 	measure 'Cowork Novice Users' =
-			COUNTROWS(
-			    FILTER(
-			        VALUES(Dim_User[UserKey]),
-			        [Cowork User Usage Tier] = "Novice users"
+			VAR _axisWeek = SELECTEDVALUE(Dim_Date[WeekStart])
+			VAR _endWeek =
+			    IF(
+			        NOT ISBLANK(_axisWeek),
+			        _axisWeek,
+			        MAXX(
+			            FILTER(
+			                ALLSELECTED(Dim_Date[WeekStart]),
+			                CALCULATE(
+			                    [Cowork Aggregate Active Users],
+			                    REMOVEFILTERS(Dim_User[UserKey]),
+			                    REMOVEFILTERS(Dim_User[Department])
+			                ) > 0
+			            ),
+			            Dim_Date[WeekStart]
+			        )
 			    )
-			)
+			VAR _startDate = _endWeek - 77
+			VAR _endDate = _endWeek + 6
+			VAR _hasModelFilter = ISFILTERED(Fact_CoworkDetail[ModelProviderName])
+			VAR _models = FILTERS(Fact_CoworkDetail[ModelProviderName])
+			VAR _modelFilter =
+			    FILTER(
+			        ALL(Fact_CoworkUserDayModel[ModelProviderName]),
+			        NOT _hasModelFilter || Fact_CoworkUserDayModel[ModelProviderName] IN _models
+			    )
+			VAR _benchmarkStats =
+			    CALCULATETABLE(
+			        ADDCOLUMNS(
+			            VALUES(Dim_User[UserKey]),
+			            "__PromptCount", CALCULATE(SUM(Fact_CoworkUserDayModel[PromptCount]), _modelFilter),
+			            "__ActiveWeeks", CALCULATE(DISTINCTCOUNT(Fact_CoworkUserDayModel[WeekStartDate]), _modelFilter)
+			        ),
+			        REMOVEFILTERS(Dim_User[UserKey]),
+			        REMOVEFILTERS(Dim_User[Department]),
+			        REMOVEFILTERS(Dim_Date),
+			        DATESBETWEEN(Dim_Date[Date], _startDate, _endDate)
+			    )
+			VAR _activePopulation = FILTER(_benchmarkStats, [__PromptCount] > 0)
+			VAR _populationSize = COUNTROWS(_activePopulation)
+			VAR _visibleStats =
+			    ADDCOLUMNS(
+			        FILTER(VALUES(Dim_User[UserKey]), NOT ISBLANK(Dim_User[UserKey])),
+			        "__VisiblePrompts",
+			            VAR _key = Dim_User[UserKey]
+			            RETURN MAXX(FILTER(_benchmarkStats, Dim_User[UserKey] = _key), [__PromptCount]),
+			        "__VisibleWeeks",
+			            VAR _key = Dim_User[UserKey]
+			            RETURN MAXX(FILTER(_benchmarkStats, Dim_User[UserKey] = _key), [__ActiveWeeks])
+			    )
+			VAR _scored =
+			    ADDCOLUMNS(
+			        _visibleStats,
+			        "__Percentile",
+			            VAR _prompts = [__VisiblePrompts]
+			            VAR _rank = RANKX(_activePopulation, [__PromptCount], _prompts, DESC, SKIP)
+			            RETURN IF(_populationSize < 20, BLANK(), DIVIDE(_populationSize - _rank, _populationSize - 1))
+			    )
+			RETURN
+			    IF(
+			        ISBLANK(_endWeek),
+			        BLANK(),
+			        COUNTROWS(
+			            FILTER(
+			                _scored,
+			                [__VisiblePrompts] > 0 &&
+			                [__Percentile] >= 0.20 &&
+			                ([__Percentile] < 0.60 || [__VisibleWeeks] < 9)
+			            )
+			        )
+			    )
 		formatString: #,0
 		lineageTag: 0bd3894e-c747-5bea-94f5-881c1109bd4b
 
 	measure 'Cowork Low Users' =
-			COUNTROWS(
-			    FILTER(
-			        VALUES(Dim_User[UserKey]),
-			        [Cowork User Usage Tier] = "Low users"
+			VAR _axisWeek = SELECTEDVALUE(Dim_Date[WeekStart])
+			VAR _endWeek =
+			    IF(
+			        NOT ISBLANK(_axisWeek),
+			        _axisWeek,
+			        MAXX(
+			            FILTER(
+			                ALLSELECTED(Dim_Date[WeekStart]),
+			                CALCULATE(
+			                    [Cowork Aggregate Active Users],
+			                    REMOVEFILTERS(Dim_User[UserKey]),
+			                    REMOVEFILTERS(Dim_User[Department])
+			                ) > 0
+			            ),
+			            Dim_Date[WeekStart]
+			        )
 			    )
-			)
+			VAR _startDate = _endWeek - 77
+			VAR _endDate = _endWeek + 6
+			VAR _hasModelFilter = ISFILTERED(Fact_CoworkDetail[ModelProviderName])
+			VAR _models = FILTERS(Fact_CoworkDetail[ModelProviderName])
+			VAR _modelFilter =
+			    FILTER(
+			        ALL(Fact_CoworkUserDayModel[ModelProviderName]),
+			        NOT _hasModelFilter || Fact_CoworkUserDayModel[ModelProviderName] IN _models
+			    )
+			VAR _benchmarkStats =
+			    CALCULATETABLE(
+			        ADDCOLUMNS(
+			            VALUES(Dim_User[UserKey]),
+			            "__PromptCount", CALCULATE(SUM(Fact_CoworkUserDayModel[PromptCount]), _modelFilter)
+			        ),
+			        REMOVEFILTERS(Dim_User[UserKey]),
+			        REMOVEFILTERS(Dim_User[Department]),
+			        REMOVEFILTERS(Dim_Date),
+			        DATESBETWEEN(Dim_Date[Date], _startDate, _endDate)
+			    )
+			VAR _activePopulation = FILTER(_benchmarkStats, [__PromptCount] > 0)
+			VAR _populationSize = COUNTROWS(_activePopulation)
+			VAR _visibleStats =
+			    ADDCOLUMNS(
+			        FILTER(VALUES(Dim_User[UserKey]), NOT ISBLANK(Dim_User[UserKey])),
+			        "__VisiblePrompts",
+			            VAR _key = Dim_User[UserKey]
+			            RETURN MAXX(FILTER(_benchmarkStats, Dim_User[UserKey] = _key), [__PromptCount])
+			    )
+			VAR _scored =
+			    ADDCOLUMNS(
+			        _visibleStats,
+			        "__Percentile",
+			            VAR _prompts = [__VisiblePrompts]
+			            VAR _rank = RANKX(_activePopulation, [__PromptCount], _prompts, DESC, SKIP)
+			            RETURN IF(_populationSize < 20, BLANK(), DIVIDE(_populationSize - _rank, _populationSize - 1))
+			    )
+			RETURN
+			    IF(
+			        ISBLANK(_endWeek),
+			        BLANK(),
+			        COUNTROWS(
+			            FILTER(
+			                _scored,
+			                [__VisiblePrompts] > 0 &&
+			                NOT ISBLANK([__Percentile]) &&
+			                [__Percentile] < 0.20
+			            )
+			        )
+			    )
 		formatString: #,0
 		lineageTag: 12d071ce-770e-5f21-982a-0907e2363942
 
 	measure 'Cowork Inactive Users' =
-			COUNTROWS(
-			    FILTER(
-			        VALUES(Dim_User[UserKey]),
-			        [Cowork User Usage Tier] = "Inactive"
+			VAR _axisWeek = SELECTEDVALUE(Dim_Date[WeekStart])
+			VAR _endWeek =
+			    IF(
+			        NOT ISBLANK(_axisWeek),
+			        _axisWeek,
+			        MAXX(
+			            FILTER(
+			                ALLSELECTED(Dim_Date[WeekStart]),
+			                CALCULATE(
+			                    [Cowork Aggregate Active Users],
+			                    REMOVEFILTERS(Dim_User[UserKey]),
+			                    REMOVEFILTERS(Dim_User[Department])
+			                ) > 0
+			            ),
+			            Dim_Date[WeekStart]
+			        )
 			    )
-			)
+			VAR _startDate = _endWeek - 77
+			VAR _endDate = _endWeek + 6
+			VAR _hasModelFilter = ISFILTERED(Fact_CoworkDetail[ModelProviderName])
+			VAR _models = FILTERS(Fact_CoworkDetail[ModelProviderName])
+			VAR _modelFilter =
+			    FILTER(
+			        ALL(Fact_CoworkUserDayModel[ModelProviderName]),
+			        NOT _hasModelFilter || Fact_CoworkUserDayModel[ModelProviderName] IN _models
+			    )
+			VAR _visibleStats =
+			    CALCULATETABLE(
+			        ADDCOLUMNS(
+			            FILTER(VALUES(Dim_User[UserKey]), NOT ISBLANK(Dim_User[UserKey])),
+			            "__PromptCount", CALCULATE(SUM(Fact_CoworkUserDayModel[PromptCount]), _modelFilter)
+			        ),
+			        REMOVEFILTERS(Dim_Date),
+			        DATESBETWEEN(Dim_Date[Date], _startDate, _endDate)
+			    )
+			RETURN
+			    IF(
+			        ISBLANK(_endWeek),
+			        BLANK(),
+			        COUNTROWS(FILTER(_visibleStats, COALESCE([__PromptCount], 0) = 0))
+			    )
 		formatString: #,0
 		lineageTag: 55ee835b-5a09-5401-b25c-1230029f7212
 
 	measure 'Cowork Insufficient Sample Users' =
-			COUNTROWS(
-			    FILTER(
-			        VALUES(Dim_User[UserKey]),
-			        [Cowork User Usage Tier] = "Insufficient sample"
+			VAR _axisWeek = SELECTEDVALUE(Dim_Date[WeekStart])
+			VAR _endWeek =
+			    IF(
+			        NOT ISBLANK(_axisWeek),
+			        _axisWeek,
+			        MAXX(
+			            FILTER(
+			                ALLSELECTED(Dim_Date[WeekStart]),
+			                CALCULATE(
+			                    [Cowork Aggregate Active Users],
+			                    REMOVEFILTERS(Dim_User[UserKey]),
+			                    REMOVEFILTERS(Dim_User[Department])
+			                ) > 0
+			            ),
+			            Dim_Date[WeekStart]
+			        )
 			    )
-			)
+			VAR _startDate = _endWeek - 77
+			VAR _endDate = _endWeek + 6
+			VAR _hasModelFilter = ISFILTERED(Fact_CoworkDetail[ModelProviderName])
+			VAR _models = FILTERS(Fact_CoworkDetail[ModelProviderName])
+			VAR _modelFilter =
+			    FILTER(
+			        ALL(Fact_CoworkUserDayModel[ModelProviderName]),
+			        NOT _hasModelFilter || Fact_CoworkUserDayModel[ModelProviderName] IN _models
+			    )
+			VAR _benchmarkStats =
+			    CALCULATETABLE(
+			        ADDCOLUMNS(
+			            VALUES(Dim_User[UserKey]),
+			            "__PromptCount", CALCULATE(SUM(Fact_CoworkUserDayModel[PromptCount]), _modelFilter)
+			        ),
+			        REMOVEFILTERS(Dim_User[UserKey]),
+			        REMOVEFILTERS(Dim_User[Department]),
+			        REMOVEFILTERS(Dim_Date),
+			        DATESBETWEEN(Dim_Date[Date], _startDate, _endDate)
+			    )
+			VAR _populationSize = COUNTROWS(FILTER(_benchmarkStats, [__PromptCount] > 0))
+			VAR _visibleStats =
+			    ADDCOLUMNS(
+			        FILTER(VALUES(Dim_User[UserKey]), NOT ISBLANK(Dim_User[UserKey])),
+			        "__VisiblePrompts",
+			            VAR _key = Dim_User[UserKey]
+			            RETURN MAXX(FILTER(_benchmarkStats, Dim_User[UserKey] = _key), [__PromptCount])
+			    )
+			RETURN
+			    IF(
+			        ISBLANK(_endWeek),
+			        BLANK(),
+			        IF(
+			            _populationSize < 20,
+			            COUNTROWS(FILTER(_visibleStats, [__VisiblePrompts] > 0)),
+			            0
+			        )
+			    )
 		formatString: #,0
 		lineageTag: 55b3b2cf-77a3-45ec-8f03-eace6798a278
 
 	measure 'Cowork Usage Tier Population' =
-			[Cowork Power Users] +
-			[Cowork Habitual Users] +
-			[Cowork Novice Users] +
-			[Cowork Low Users] +
-			[Cowork Inactive Users] +
-			[Cowork Insufficient Sample Users]
+			VAR _axisWeek = SELECTEDVALUE(Dim_Date[WeekStart])
+			VAR _endWeek =
+			    IF(
+			        NOT ISBLANK(_axisWeek),
+			        _axisWeek,
+			        MAXX(
+			            FILTER(
+			                ALLSELECTED(Dim_Date[WeekStart]),
+			                CALCULATE(
+			                    [Cowork Aggregate Active Users],
+			                    REMOVEFILTERS(Dim_User[UserKey]),
+			                    REMOVEFILTERS(Dim_User[Department])
+			                ) > 0
+			            ),
+			            Dim_Date[WeekStart]
+			        )
+			    )
+			RETURN
+			    IF(
+			        ISBLANK(_endWeek),
+			        BLANK(),
+			        COUNTROWS(FILTER(VALUES(Dim_User[UserKey]), NOT ISBLANK(Dim_User[UserKey])))
+			    )
 		formatString: #,0
 		lineageTag: 84251bee-0f78-5f62-85f9-afefa1325616
 
@@ -583,7 +979,7 @@ table Fact_CoworkDetail
 			        FILTER(
 			            ALLSELECTED(Dim_Date[WeekStart]),
 			            CALCULATE(
-			                [Cowork Active Users],
+			                [Cowork Aggregate Active Users],
 			                REMOVEFILTERS(Dim_User[Department])
 			            ) > 0
 			        ),
@@ -607,7 +1003,7 @@ table Fact_CoworkDetail
 			        FILTER(
 			            ALLSELECTED(Dim_Date[WeekStart]),
 			            CALCULATE(
-			                [Cowork Active Users],
+			                [Cowork Aggregate Active Users],
 			                REMOVEFILTERS(Dim_User[Department])
 			            ) > 0
 			        ),
@@ -631,7 +1027,7 @@ table Fact_CoworkDetail
 			        FILTER(
 			            ALLSELECTED(Dim_Date[WeekStart]),
 			            CALCULATE(
-			                [Cowork Active Users],
+			                [Cowork Aggregate Active Users],
 			                REMOVEFILTERS(Dim_User[Department])
 			            ) > 0
 			        ),
@@ -655,7 +1051,7 @@ table Fact_CoworkDetail
 			        FILTER(
 			            ALLSELECTED(Dim_Date[WeekStart]),
 			            CALCULATE(
-			                [Cowork Active Users],
+			                [Cowork Aggregate Active Users],
 			                REMOVEFILTERS(Dim_User[Department])
 			            ) > 0
 			        ),
@@ -679,7 +1075,7 @@ table Fact_CoworkDetail
 			        FILTER(
 			            ALLSELECTED(Dim_Date[WeekStart]),
 			            CALCULATE(
-			                [Cowork Active Users],
+			                [Cowork Aggregate Active Users],
 			                REMOVEFILTERS(Dim_User[Department])
 			            ) > 0
 			        ),
@@ -703,7 +1099,7 @@ table Fact_CoworkDetail
 			        FILTER(
 			            ALLSELECTED(Dim_Date[WeekStart]),
 			            CALCULATE(
-			                [Cowork Active Users],
+			                [Cowork Aggregate Active Users],
 			                REMOVEFILTERS(Dim_User[Department])
 			            ) > 0
 			        ),
@@ -728,31 +1124,40 @@ table Fact_CoworkDetail
 	/// Users whose first observed Cowork activity occurred in the selected week.
 	measure 'Cowork Weekly New Users (Last 12 Weeks)' =
 			VAR _week = SELECTEDVALUE(Dim_Date[WeekStart])
+			VAR _hasModelFilter = ISFILTERED(Fact_CoworkDetail[ModelProviderName])
+			VAR _models = FILTERS(Fact_CoworkDetail[ModelProviderName])
+			VAR _modelFilter =
+			    FILTER(
+			        ALL(Fact_CoworkUserDayModel[ModelProviderName]),
+			        NOT _hasModelFilter || Fact_CoworkUserDayModel[ModelProviderName] IN _models
+			    )
 			VAR _lastWeek =
 			    MAXX(
 			        FILTER(
 			            ALLSELECTED(Dim_Date[WeekStart]),
-			            CALCULATE([Cowork Active Users]) > 0
+			            CALCULATE([Cowork Aggregate Active Users]) > 0
 			        ),
 			        Dim_Date[WeekStart]
 			    )
 			VAR _currentUsers =
 			    CALCULATETABLE(
 			        FILTER(
-			            VALUES(Fact_CoworkDetail[Audit_UserId]),
-			            NOT ISBLANK(Fact_CoworkDetail[Audit_UserId])
+			            VALUES(Fact_CoworkUserDayModel[Audit_UserId]),
+			            NOT ISBLANK(Fact_CoworkUserDayModel[Audit_UserId])
 			        ),
 			        REMOVEFILTERS(Dim_Date),
-			        Dim_Date[WeekStart] = _week
+			        Dim_Date[WeekStart] = _week,
+			        _modelFilter
 			    )
 			VAR _priorUsers =
 			    CALCULATETABLE(
 			        FILTER(
-			            VALUES(Fact_CoworkDetail[Audit_UserId]),
-			            NOT ISBLANK(Fact_CoworkDetail[Audit_UserId])
+			            VALUES(Fact_CoworkUserDayModel[Audit_UserId]),
+			            NOT ISBLANK(Fact_CoworkUserDayModel[Audit_UserId])
 			        ),
 			        REMOVEFILTERS(Dim_Date),
-			        Dim_Date[WeekStart] < _week
+			        Dim_Date[WeekStart] < _week,
+			        _modelFilter
 			    )
 			RETURN
 			    IF(
@@ -767,31 +1172,40 @@ table Fact_CoworkDetail
 	/// Users active in both the selected week and the immediately preceding week.
 	measure 'Cowork Weekly Retained Users (Last 12 Weeks)' =
 			VAR _week = SELECTEDVALUE(Dim_Date[WeekStart])
+			VAR _hasModelFilter = ISFILTERED(Fact_CoworkDetail[ModelProviderName])
+			VAR _models = FILTERS(Fact_CoworkDetail[ModelProviderName])
+			VAR _modelFilter =
+			    FILTER(
+			        ALL(Fact_CoworkUserDayModel[ModelProviderName]),
+			        NOT _hasModelFilter || Fact_CoworkUserDayModel[ModelProviderName] IN _models
+			    )
 			VAR _lastWeek =
 			    MAXX(
 			        FILTER(
 			            ALLSELECTED(Dim_Date[WeekStart]),
-			            CALCULATE([Cowork Active Users]) > 0
+			            CALCULATE([Cowork Aggregate Active Users]) > 0
 			        ),
 			        Dim_Date[WeekStart]
 			    )
 			VAR _currentUsers =
 			    CALCULATETABLE(
 			        FILTER(
-			            VALUES(Fact_CoworkDetail[Audit_UserId]),
-			            NOT ISBLANK(Fact_CoworkDetail[Audit_UserId])
+			            VALUES(Fact_CoworkUserDayModel[Audit_UserId]),
+			            NOT ISBLANK(Fact_CoworkUserDayModel[Audit_UserId])
 			        ),
 			        REMOVEFILTERS(Dim_Date),
-			        Dim_Date[WeekStart] = _week
+			        Dim_Date[WeekStart] = _week,
+			        _modelFilter
 			    )
 			VAR _previousUsers =
 			    CALCULATETABLE(
 			        FILTER(
-			            VALUES(Fact_CoworkDetail[Audit_UserId]),
-			            NOT ISBLANK(Fact_CoworkDetail[Audit_UserId])
+			            VALUES(Fact_CoworkUserDayModel[Audit_UserId]),
+			            NOT ISBLANK(Fact_CoworkUserDayModel[Audit_UserId])
 			        ),
 			        REMOVEFILTERS(Dim_Date),
-			        Dim_Date[WeekStart] = _week - 7
+			        Dim_Date[WeekStart] = _week - 7,
+			        _modelFilter
 			    )
 			RETURN
 			    IF(
@@ -806,40 +1220,50 @@ table Fact_CoworkDetail
 	/// Users active in the selected week after missing the prior week but having earlier activity.
 	measure 'Cowork Weekly Resurrected Users (Last 12 Weeks)' =
 			VAR _week = SELECTEDVALUE(Dim_Date[WeekStart])
+			VAR _hasModelFilter = ISFILTERED(Fact_CoworkDetail[ModelProviderName])
+			VAR _models = FILTERS(Fact_CoworkDetail[ModelProviderName])
+			VAR _modelFilter =
+			    FILTER(
+			        ALL(Fact_CoworkUserDayModel[ModelProviderName]),
+			        NOT _hasModelFilter || Fact_CoworkUserDayModel[ModelProviderName] IN _models
+			    )
 			VAR _lastWeek =
 			    MAXX(
 			        FILTER(
 			            ALLSELECTED(Dim_Date[WeekStart]),
-			            CALCULATE([Cowork Active Users]) > 0
+			            CALCULATE([Cowork Aggregate Active Users]) > 0
 			        ),
 			        Dim_Date[WeekStart]
 			    )
 			VAR _currentUsers =
 			    CALCULATETABLE(
 			        FILTER(
-			            VALUES(Fact_CoworkDetail[Audit_UserId]),
-			            NOT ISBLANK(Fact_CoworkDetail[Audit_UserId])
+			            VALUES(Fact_CoworkUserDayModel[Audit_UserId]),
+			            NOT ISBLANK(Fact_CoworkUserDayModel[Audit_UserId])
 			        ),
 			        REMOVEFILTERS(Dim_Date),
-			        Dim_Date[WeekStart] = _week
+			        Dim_Date[WeekStart] = _week,
+			        _modelFilter
 			    )
 			VAR _previousUsers =
 			    CALCULATETABLE(
 			        FILTER(
-			            VALUES(Fact_CoworkDetail[Audit_UserId]),
-			            NOT ISBLANK(Fact_CoworkDetail[Audit_UserId])
+			            VALUES(Fact_CoworkUserDayModel[Audit_UserId]),
+			            NOT ISBLANK(Fact_CoworkUserDayModel[Audit_UserId])
 			        ),
 			        REMOVEFILTERS(Dim_Date),
-			        Dim_Date[WeekStart] = _week - 7
+			        Dim_Date[WeekStart] = _week - 7,
+			        _modelFilter
 			    )
 			VAR _earlierUsers =
 			    CALCULATETABLE(
 			        FILTER(
-			            VALUES(Fact_CoworkDetail[Audit_UserId]),
-			            NOT ISBLANK(Fact_CoworkDetail[Audit_UserId])
+			            VALUES(Fact_CoworkUserDayModel[Audit_UserId]),
+			            NOT ISBLANK(Fact_CoworkUserDayModel[Audit_UserId])
 			        ),
 			        REMOVEFILTERS(Dim_Date),
-			        Dim_Date[WeekStart] < _week - 7
+			        Dim_Date[WeekStart] < _week - 7,
+			        _modelFilter
 			    )
 			RETURN
 			    IF(
@@ -862,31 +1286,40 @@ table Fact_CoworkDetail
 	/// Prior-week users who did not return in the selected week, shown below zero.
 	measure 'Cowork Weekly Churned Users (Last 12 Weeks)' =
 			VAR _week = SELECTEDVALUE(Dim_Date[WeekStart])
+			VAR _hasModelFilter = ISFILTERED(Fact_CoworkDetail[ModelProviderName])
+			VAR _models = FILTERS(Fact_CoworkDetail[ModelProviderName])
+			VAR _modelFilter =
+			    FILTER(
+			        ALL(Fact_CoworkUserDayModel[ModelProviderName]),
+			        NOT _hasModelFilter || Fact_CoworkUserDayModel[ModelProviderName] IN _models
+			    )
 			VAR _lastWeek =
 			    MAXX(
 			        FILTER(
 			            ALLSELECTED(Dim_Date[WeekStart]),
-			            CALCULATE([Cowork Active Users]) > 0
+			            CALCULATE([Cowork Aggregate Active Users]) > 0
 			        ),
 			        Dim_Date[WeekStart]
 			    )
 			VAR _currentUsers =
 			    CALCULATETABLE(
 			        FILTER(
-			            VALUES(Fact_CoworkDetail[Audit_UserId]),
-			            NOT ISBLANK(Fact_CoworkDetail[Audit_UserId])
+			            VALUES(Fact_CoworkUserDayModel[Audit_UserId]),
+			            NOT ISBLANK(Fact_CoworkUserDayModel[Audit_UserId])
 			        ),
 			        REMOVEFILTERS(Dim_Date),
-			        Dim_Date[WeekStart] = _week
+			        Dim_Date[WeekStart] = _week,
+			        _modelFilter
 			    )
 			VAR _previousUsers =
 			    CALCULATETABLE(
 			        FILTER(
-			            VALUES(Fact_CoworkDetail[Audit_UserId]),
-			            NOT ISBLANK(Fact_CoworkDetail[Audit_UserId])
+			            VALUES(Fact_CoworkUserDayModel[Audit_UserId]),
+			            NOT ISBLANK(Fact_CoworkUserDayModel[Audit_UserId])
 			        ),
 			        REMOVEFILTERS(Dim_Date),
-			        Dim_Date[WeekStart] = _week - 7
+			        Dim_Date[WeekStart] = _week - 7,
+			        _modelFilter
 			    )
 			RETURN
 			    IF(
@@ -904,9 +1337,13 @@ table Fact_CoworkDetail
 		sourceColumn: Fact_CopilotAuditRaw[RecordId]
 
 	column CreationDateParsed
+		formatString: General Date
 		lineageTag: 5e70841a-6d8b-41cb-ae8f-4abcf3a87bd9
+		summarizeBy: none
 		isNameInferred
 		sourceColumn: Fact_CopilotAuditRaw[CreationDateParsed]
+
+		annotation SummarizationSetBy = Automatic
 
 	column DateKey
 		dataType: int64
@@ -1015,6 +1452,30 @@ table Fact_CoworkDetail
 		isNameInferred
 		sourceColumn: [Category]
 
+	column CategorySignal
+		dataType: string
+		lineageTag: 781b2934-94f3-410d-9347-ec7fd5dab481
+		summarizeBy: none
+		sourceColumn: [CategorySignal]
+
+	column MappingConfidence
+		dataType: string
+		lineageTag: bff1a6cd-1c4a-426b-9c38-118ab3b388f9
+		summarizeBy: none
+		sourceColumn: [MappingConfidence]
+
+	column SkillDisplayName
+		dataType: string
+		lineageTag: 6fd2541e-3466-40d9-a915-4ffe4def80a6
+		summarizeBy: none
+		sourceColumn: [SkillDisplayName]
+
+	column ActivityDetail
+		dataType: string
+		lineageTag: 491d9f23-4009-453c-baaf-e2aac26aaab7
+		summarizeBy: none
+		sourceColumn: [ActivityDetail]
+
 	column IsUnmapped
 		lineageTag: 331ab3b0-4ac6-44bc-9c8e-9b63b91ccbc1
 		isNameInferred
@@ -1025,19 +1486,21 @@ table Fact_CoworkDetail
 		isNameInferred
 		sourceColumn: [CategoryKey]
 
+	column _RowId
+		lineageTag: 1c89ce76-99e3-4164-97b2-38f09c8d507b
+		isNameInferred
+		sourceColumn: Fact_CopilotAuditRaw[_RowId]
+
 	partition Fact_CoworkDetail = calculated
 		mode: import
 		source =
 				ADDCOLUMNS(
-					FILTER('Fact_CopilotAuditRaw', 'Fact_CopilotAuditRaw'[AppHost] = "cowork"),
-					"Category",
-						VAR mappedCategory = LOOKUPVALUE('Cowork Skill Category Map'[Category], 'Cowork Skill Category Map'[Plugin_FirstName], IF(ISBLANK('Fact_CopilotAuditRaw'[Plugin_FirstName]), "", 'Fact_CopilotAuditRaw'[Plugin_FirstName]))
-						RETURN IF(ISBLANK(mappedCategory), "Unmapped", mappedCategory),
-					"IsUnmapped",
-						VAR mappedCategory2 = LOOKUPVALUE('Cowork Skill Category Map'[Category], 'Cowork Skill Category Map'[Plugin_FirstName], IF(ISBLANK('Fact_CopilotAuditRaw'[Plugin_FirstName]), "", 'Fact_CopilotAuditRaw'[Plugin_FirstName]))
-						RETURN ISBLANK(mappedCategory2),
-					"CategoryKey",
-						VAR mappedCategory3 = LOOKUPVALUE('Cowork Skill Category Map'[Category], 'Cowork Skill Category Map'[Plugin_FirstName], IF(ISBLANK('Fact_CopilotAuditRaw'[Plugin_FirstName]), "", 'Fact_CopilotAuditRaw'[Plugin_FirstName]))
-						RETURN IF(ISBLANK(mappedCategory3), 8, LOOKUPVALUE(Dim_TaskCategory[CategoryKey], Dim_TaskCategory[Category], mappedCategory3))
-
+					FILTER('Fact_CopilotAuditRaw', TRIM('Fact_CopilotAuditRaw'[AppHost]) = "cowork"),
+					"Category", COALESCE(LOOKUPVALUE(CoworkClassification[Category], CoworkClassification[RecordId], 'Fact_CopilotAuditRaw'[RecordId]), "General assistance / Other"),
+					"CategorySignal", COALESCE(LOOKUPVALUE(CoworkClassification[CategorySignal], CoworkClassification[RecordId], 'Fact_CopilotAuditRaw'[RecordId]), "No signal"),
+					"MappingConfidence", COALESCE(LOOKUPVALUE(CoworkClassification[MappingConfidence], CoworkClassification[RecordId], 'Fact_CopilotAuditRaw'[RecordId]), "None"),
+					"SkillDisplayName", LOOKUPVALUE(CoworkClassification[SkillDisplayName], CoworkClassification[RecordId], 'Fact_CopilotAuditRaw'[RecordId]),
+					"ActivityDetail", LOOKUPVALUE(CoworkClassification[ActivityDetail], CoworkClassification[RecordId], 'Fact_CopilotAuditRaw'[RecordId]),
+					"IsUnmapped", COALESCE(LOOKUPVALUE(CoworkClassification[CategorySignal], CoworkClassification[RecordId], 'Fact_CopilotAuditRaw'[RecordId]), "No signal") = "No signal",
+					"CategoryKey", COALESCE(LOOKUPVALUE(CoworkClassification[CategoryKey], CoworkClassification[RecordId], 'Fact_CopilotAuditRaw'[RecordId]), 8)
 				)

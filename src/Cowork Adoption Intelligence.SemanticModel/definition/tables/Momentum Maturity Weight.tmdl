@@ -1,12 +1,15 @@
 table 'Momentum Maturity Weight'
+	lineageTag: 0ee1f143-ecb1-4a0d-901e-48062fa95afb
 
 	/// Weight assigned to advanced delegation maturity in the momentum index.
 	measure 'Momentum Maturity Weight Value' = SELECTEDVALUE('Momentum Maturity Weight'[Momentum Maturity Weight], 0.15)
 		formatString: 0%
+		lineageTag: 7835cdff-4a4f-41ab-a541-433b049340c3
 
 	column 'Momentum Maturity Weight'
 		dataType: decimal
 		formatString: 0%
+		lineageTag: bb101c9f-bc10-4fae-820c-713e2328ca6a
 		summarizeBy: none
 		sourceColumn: [Value]
 

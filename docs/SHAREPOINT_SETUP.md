@@ -1,8 +1,16 @@
-# SharePoint setup
+# Archived V4.0 SharePoint setup
 
-Use `Cowork Adoption Intelligence V4 - SharePoint.pbit` when the supported CSV
-exports are stored in a SharePoint document library. It has the same report,
-model, metrics, and file contracts as the local-folder V4 template.
+> **Rollback documentation only.** The V4.0 SharePoint template is archived at
+> [`release/archive/Cowork Adoption Intelligence V4.0.0 - SharePoint.pbit`](../release/archive/Cowork%20Adoption%20Intelligence%20V4.0.0%20-%20SharePoint.pbit).
+> It parses raw Purview data inside Power Query and is not part of the current
+> V4.1 accelerated workflow.
+
+New deployments should use the
+[V4.1 preprocessor bundle](../release/Cowork-Adoption-Intelligence-Preprocessor-v0.1.0.zip).
+The current release writes entity CSVs to a protected output folder and prompts
+only for `PreprocessedOutputPath`.
+
+The remaining instructions document the archived rollback edition.
 
 ## Before you start
 
@@ -27,7 +35,7 @@ document-library path, replace `%20` with spaces, and omit the trailing slash.
 ## Load the template
 
 1. Download
-   [`Cowork Adoption Intelligence V4 - SharePoint.pbit`](../Cowork%20Adoption%20Intelligence%20V4%20-%20SharePoint.pbit).
+   [`Cowork Adoption Intelligence V4.0.0 - SharePoint.pbit`](../release/archive/Cowork%20Adoption%20Intelligence%20V4.0.0%20-%20SharePoint.pbit).
 2. Open the template in Power BI Desktop.
 3. Enter `SharePointSiteUrl` and `SharePointFolderUrl`.
 4. Select **Load**.
@@ -63,14 +71,15 @@ on-premises gateway is not normally required for this edition.
 Apply the sensitivity label, access controls, retention policy, and workspace
 permissions required by your organization before sharing the refreshed report.
 
-## Rebuild the SharePoint edition
+## Rebuild the archived SharePoint edition
 
-Run the checked-in builder whenever the local V4 template is re-exported:
+Do not run this builder against the V4.1 preprocessed template. For historical
+V4.0 maintenance only, run it against the archived raw-Purview template:
 
 ```powershell
 .\tools\New-SharePointPbit.ps1 `
-  -InputTemplate '.\Cowork Adoption Intelligence V4.pbit' `
-  -OutputTemplate '.\Cowork Adoption Intelligence V4 - SharePoint.pbit' `
+  -InputTemplate '.\release\archive\Cowork Adoption Intelligence V4.0.0 - Raw Purview.pbit' `
+  -OutputTemplate '.\tmp\Cowork Adoption Intelligence V4.0.0 - SharePoint.pbit' `
   -Force
 ```
 

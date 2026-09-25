@@ -1,19 +1,42 @@
 table Fact_Tasks
 	lineageTag: ef4b14b7-2139-42d0-a6c4-0db2d3213f82
 
+	measure 'Classified Business Tasks' = CALCULATE(SUM(Fact_Tasks[Tasks]), Fact_Tasks[TaskClassification] = "Business classified")
+		formatString: #,0
+		lineageTag: c31adfcb-82d0-4774-9043-ee5b96291530
+
+	measure 'Unclassified Tasks' = CALCULATE(SUM(Fact_Tasks[Tasks]), Fact_Tasks[TaskClassification] = "Unclassified")
+		formatString: #,0
+		lineageTag: 677111e3-1cba-4b01-a16b-bb13490ca6e7
+
+	measure 'Orchestration-Only Tasks' = CALCULATE(SUM(Fact_Tasks[Tasks]), Fact_Tasks[TaskClassification] = "Orchestration only")
+		formatString: #,0
+		lineageTag: d333882b-cd59-4771-b702-0200c895f138
+
+	measure 'Task Classification Coverage %' = DIVIDE([Classified Business Tasks], SUM(Fact_Tasks[Tasks]))
+		formatString: 0.0%
+		lineageTag: f480fb5c-30e9-4b35-892d-67cd98d4382c
+
+	column ThreadId
+		dataType: string
+		isHidden
+		lineageTag: ff64696f-f76c-46c0-b25d-c8b4abcf395e
+		summarizeBy: none
+		sourceColumn: Staging_ModelData[ThreadId]
+
 	column UserKey
 		dataType: int64
 		isHidden
 		lineageTag: 556b2853-b909-41f6-a3c9-0cee0c750206
 		summarizeBy: none
-		sourceColumn: UserKey
+		sourceColumn: Staging_ModelData[UserKey]
 
 	column CategoryKey
 		dataType: int64
 		isHidden
 		lineageTag: 0c86a7c2-c466-4d7d-acb4-a4de4d0094a6
 		summarizeBy: none
-		sourceColumn: CategoryKey
+		sourceColumn: Staging_ModelData[CategoryKey]
 
 		annotation SummarizationSetBy = Automatic
 
@@ -22,7 +45,7 @@ table Fact_Tasks
 		isHidden
 		lineageTag: 7fd7eb04-4292-4732-a34f-d086ce0cbfc2
 		summarizeBy: none
-		sourceColumn: DateKey
+		sourceColumn: Staging_ModelData[DateKey]
 
 		annotation SummarizationSetBy = Automatic
 
@@ -31,7 +54,7 @@ table Fact_Tasks
 		formatString: #,0
 		lineageTag: 453b1cb4-9634-4d79-b981-13d17bba377c
 		summarizeBy: sum
-		sourceColumn: Tasks
+		sourceColumn: Staging_ModelData[Tasks]
 
 	/// Real Purview signal (Fact_CopilotAuditRaw[ModelProviderName], sourced from
 	/// CopilotEventData.ModelTransparencyDetails[0].ModelProviderName) -- not fabricated.
@@ -49,38 +72,84 @@ table Fact_Tasks
 		isHidden
 		lineageTag: 9d75e073-b801-4d6c-a15c-8bd4927739f8
 		summarizeBy: none
-		sourceColumn: Model
+		sourceColumn: Staging_ModelData[Model]
 
-	partition Fact_Tasks = m
+	column PrimaryBusinessTool
+		dataType: string
+		isHidden
+		lineageTag: 5c2f27f0-e46e-4071-b615-6cca85ddcdfc
+		summarizeBy: none
+		sourceColumn: Staging_ModelData[PrimaryBusinessTool]
+
+	column PrimarySkillDisplayName
+		dataType: string
+		lineageTag: 99d0f095-59fc-409c-8300-36a22fb6d549
+		summarizeBy: none
+		sourceColumn: Staging_ModelData[PrimarySkillDisplayName]
+
+	column BusinessBehavior
+		dataType: string
+		lineageTag: ba4a9854-75e9-4bbd-a8f2-2722f949e5fc
+		summarizeBy: none
+		sourceColumn: Staging_ModelData[BusinessBehavior]
+
+	column TaskClassification
+		dataType: string
+		lineageTag: 524a9346-8c83-4d75-8e96-8cfcf2517b8f
+		summarizeBy: none
+		sourceColumn: Staging_ModelData[TaskClassification]
+
+	column LowMin
+		dataType: int64
+		isHidden
+		lineageTag: b0dae691-f5e1-4ba0-98ff-e7868cebf0fd
+		summarizeBy: none
+		sourceColumn: Staging_ModelData[LowMin]
+
+	column MidMin
+		dataType: int64
+		isHidden
+		lineageTag: 0da2dd6d-1382-4117-9040-9cf6023242b2
+		summarizeBy: none
+		sourceColumn: Staging_ModelData[MidMin]
+
+	column HighMin
+		dataType: int64
+		isHidden
+		lineageTag: 8ca3c0be-cdb7-4d2a-84e5-d7fe7bdb5d43
+		summarizeBy: none
+		sourceColumn: Staging_ModelData[HighMin]
+
+	column _RowId
+		dataType: int64
+		isHidden
+		formatString: 0
+		lineageTag: 4c1a1b0d-b1ec-40d3-9630-870a9d7e6a5c
+		summarizeBy: none
+		sourceColumn: Staging_ModelData[_RowId]
+
+	partition Fact_Tasks = calculated
 		mode: import
 		source =
-				let
-
-					CoworkRows = Table.SelectRows(Fact_CopilotAuditRaw, each Text.Lower(Text.From([AppHost])) = "cowork"),
-					// Fact_CopilotAuditRaw stores no-plugin rows as null; the Category Map keys the
-					// no-plugin case on "" -- normalize so category resolution matches pre-Slice-11 exactly.
-					NormalizePlugin = Table.TransformColumns(CoworkRows, {"Plugin_FirstName", each if _ = null then "" else _, type text}),
-					// Model attribution (gated): real Purview field, empty for Cowork specifically today
-					// (a Cowork-specific gap, not tenant-wide -- see the Model column's own doc comment
-					// above for full context). Never fabricates a model name.
-					AddModel = Table.AddColumn(NormalizePlugin, "Model", each if [ModelProviderName] = null or [ModelProviderName] = "" then "(Model data not available)" else [ModelProviderName], type text),
-
-					MergeCategory = Table.NestedJoin(AddModel, {"Plugin_FirstName"}, #"Cowork Skill Category Map", {"Plugin_FirstName"}, "cm", JoinKind.LeftOuter),
-					ExpandCategory = Table.ExpandTableColumn(MergeCategory, "cm", {"Category"}, {"Category"}),
-					AddCategoryFinal = Table.AddColumn(ExpandCategory, "CategoryFinal", each if [Category] = null then "Unmapped" else [Category], type text),
-
-					MergeCatKey = Table.NestedJoin(AddCategoryFinal, {"CategoryFinal"}, Dim_TaskCategory, {"Category"}, "dtc", JoinKind.LeftOuter),
-					ExpandCatKey = Table.ExpandTableColumn(MergeCatKey, "dtc", {"CategoryKey"}, {"CategoryKey"}),
-
-					FillUnmappedKey = Table.TransformColumns(ExpandCatKey, {{"CategoryKey", each if _ = null then 8 else _, Int64.Type}}),
-
-					AddTasks = Table.AddColumn(FillUnmappedKey, "Tasks", each 1, Int64.Type),
-
-
-					Grouped = Table.Group(AddTasks, {"UserKey", "CategoryKey", "DateKey", "Model"}, {
-						{"Tasks", each List.Sum([Tasks]), Int64.Type}
-					})
-				in
-					Grouped
+				SUMMARIZE(
+					FILTER(
+						Staging_ModelData,
+						Staging_ModelData[_Entity] = "Fact_Tasks"
+					),
+					Staging_ModelData[_RowId],
+					Staging_ModelData[ThreadId],
+					Staging_ModelData[UserKey],
+					Staging_ModelData[CategoryKey],
+					Staging_ModelData[DateKey],
+					Staging_ModelData[Tasks],
+					Staging_ModelData[Model],
+					Staging_ModelData[PrimaryBusinessTool],
+					Staging_ModelData[PrimarySkillDisplayName],
+					Staging_ModelData[BusinessBehavior],
+					Staging_ModelData[TaskClassification],
+					Staging_ModelData[LowMin],
+					Staging_ModelData[MidMin],
+					Staging_ModelData[HighMin]
+				)
 
 	annotation PBI_ResultType = Exception

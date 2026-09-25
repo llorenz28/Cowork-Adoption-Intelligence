@@ -46,6 +46,18 @@ relationship Fact_CoworkDetail_DateKey
 	fromColumn: Fact_CoworkDetail.DateKey
 	toColumn: Dim_Date.DateKey
 
+relationship Fact_CoworkDetail_CategoryKey
+	fromColumn: Fact_CoworkDetail.CategoryKey
+	toColumn: Dim_TaskCategory.CategoryKey
+
+relationship Fact_CoworkUserDayModel_UserKey
+	fromColumn: Fact_CoworkUserDayModel.UserKey
+	toColumn: Dim_User.UserKey
+
+relationship Fact_CoworkUserDayModel_DateKey
+	fromColumn: Fact_CoworkUserDayModel.DateKey
+	toColumn: Dim_Date.DateKey
+
 relationship Bridge_CoworkPlugin_UserKey
 	fromColumn: Bridge_CoworkPlugin.UserKey
 	toColumn: Dim_User.UserKey

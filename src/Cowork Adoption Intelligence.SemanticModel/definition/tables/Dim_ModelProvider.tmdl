@@ -39,7 +39,7 @@ table Dim_ModelProvider
 		dataType: string
 		lineageTag: 7370416e-85ad-4b9e-82cc-595e06c76e07
 		summarizeBy: none
-		sourceColumn: Model
+		sourceColumn: Staging_ModelData[Model]
 
 	/// FALSE for the placeholder row, TRUE for any real observed model name.
 	column HasModelData
@@ -47,16 +47,27 @@ table Dim_ModelProvider
 		isHidden
 		lineageTag: 9233736b-5c38-412b-9676-aab5d7ee9399
 		summarizeBy: none
-		sourceColumn: HasModelData
+		sourceColumn: Staging_ModelData[HasModelData]
 
-	partition Dim_ModelProvider = m
+	column _RowId
+		dataType: int64
+		isHidden
+		formatString: 0
+		lineageTag: 8443da98-5a0b-43c4-9c6b-55e36dac3b85
+		summarizeBy: none
+		sourceColumn: Staging_ModelData[_RowId]
+
+	partition Dim_ModelProvider = calculated
 		mode: import
 		source =
-				let
-					Src = Fact_Tasks,
-					Distinct = Table.Distinct(Table.SelectColumns(Src, {"Model"})),
-					AddFlag = Table.AddColumn(Distinct, "HasModelData", each [Model] <> "(Model data not available)", type logical)
-				in
-					AddFlag
+				SUMMARIZE(
+					FILTER(
+						Staging_ModelData,
+						Staging_ModelData[_Entity] = "Dim_ModelProvider"
+					),
+					Staging_ModelData[_RowId],
+					Staging_ModelData[Model],
+					Staging_ModelData[HasModelData]
+				)
 
 	annotation PBI_ResultType = Exception
