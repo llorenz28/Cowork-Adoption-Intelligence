@@ -124,7 +124,7 @@ run. A successful manifest has `"status": "valid"`.
 - **Deterministic deduplication.** Audit rows are resolved by immutable record
   identity and payload evidence rather than source enumeration order.
 - **Temporary state is removed.** The SQLite working database is deleted after
-  the run unless `--keep-work-db` is explicitly supplied for troubleshooting.
+  every successful or failed run.
 
 Treat both raw inputs and generated outputs as customer data. The entity files
 can contain user principal names, prompts, responses, resource URLs, and
@@ -147,7 +147,7 @@ pipeline, or automation host before the Power BI refresh window.
 
 | Error | Resolution |
 | --- | --- |
-| Contract file not found | Keep `cowork-contract.json` beside the script or pass `--contract` |
+| Contract file not found | Keep `cowork-contract.json` beside the script; re-extract the bundle if it is missing |
 | No Purview audit CSV was found | Confirm a CSV has `AuditData`, `RecordId`, and `CreationDate` |
 | Ambiguous optional source | Remove stale or duplicate schema-compatible files |
 | Malformed `AuditData` JSON | Re-export the affected Purview batch |
