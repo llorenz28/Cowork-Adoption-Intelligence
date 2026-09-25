@@ -20,8 +20,8 @@
     },
     {
       "path": "scripts/Cowork_Purview_Preprocessor_v0.1.0.py",
-      "sha256": "525B84737779988A7541954FABFA1700CCC3E25A321D8344121B5E7AE44C1ED4",
-      "bytes": 59106
+      "sha256": "3C4172B9374F51772F5A3318651AD4F53F4A6E342B15765F2D61B1C299DC1254",
+      "bytes": 59612
     },
     {
       "path": "scripts/cowork-contract.json",
@@ -30,8 +30,8 @@
     },
     {
       "path": "release/Cowork-Adoption-Intelligence-Preprocessor-v0.1.0.zip",
-      "sha256": "CC54DDF8EB4FADF942E22912090915402C1F68971274386EB51FFE507A4B8F41",
-      "bytes": 675078
+      "sha256": "6F227BFAFE1A66BFD84688DF5B46E9E84E967D48B4FC0579F65702ACD40F39D8",
+      "bytes": 675224
     }
   ],
   "package": {
@@ -94,6 +94,10 @@
       "preprocessingSeconds": 200.528,
       "desktopLoadSeconds": 331.107,
       "classification": "scale-and-parity-evidence-not-a-memory-or-performance-sla"
+    },
+    "foreignOutputProtection": {
+      "rejected": true,
+      "sentinelPreserved": true
     }
   },
   "functionalReconciliation": {

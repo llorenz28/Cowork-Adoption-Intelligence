@@ -7,6 +7,9 @@
   `cowork-contract.json`.
 - Added deterministic generation and independent validation of 13 entity CSVs
   plus `manifest.json`.
+- Added an ownership and integrity check that prevents replacement of an
+  existing output folder unless it contains a valid preprocessor manifest and
+  complete entity set.
 - Replaced the primary root PBIT and editable PBIP source with the validated
   preprocessed-ingestion release.
 - Reduced customer template setup to one required parameter:

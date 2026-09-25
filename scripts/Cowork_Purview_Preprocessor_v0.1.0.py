@@ -19,6 +19,7 @@ from pathlib import Path
 from typing import Any, Iterable
 
 VERSION = "0.1.0"
+MANIFEST_FORMAT = "cowork-python-preprocessor-manifest-v1"
 AUDIT_REQUIRED = {"Operation", "AuditData", "UserId", "CreationDate", "RecordId"}
 USAGE_REQUIRED = {
     "UserPrincipalName", "DisplayName", "TotalTasks", "ScheduledTasks",
@@ -490,6 +491,8 @@ def process(
         raise PreprocessorError("Input and output folders must be different.")
     if output_dir.resolve().is_relative_to(input_dir.resolve()):
         raise PreprocessorError("Output folder must not be inside the input folder.")
+    if output_dir.exists():
+        validate_existing(output_dir)
     script_dir = Path(__file__).resolve().parent
     contract_path = script_dir / "cowork-contract.json"
     contract = json.loads(contract_path.read_text(encoding="utf-8"))
@@ -1113,7 +1116,7 @@ def process(
         }
         timings["total_seconds"] = round(time.perf_counter() - overall, 3)
         manifest = {
-            "format": "cowork-python-preprocessor-manifest-v1",
+            "format": MANIFEST_FORMAT,
             "preprocessor_version": VERSION,
             "generated_utc": dt.datetime.now(dt.timezone.utc).isoformat(),
             "input_folder": str(input_dir.resolve()),
@@ -1191,10 +1194,19 @@ def validate_output(folder: Path, manifest: dict[str, Any]) -> None:
 
 
 def validate_existing(output_dir: Path) -> dict[str, Any]:
+    if not output_dir.is_dir():
+        raise PreprocessorError(f"Output path is not a folder: {output_dir}")
     manifest_path = output_dir / "manifest.json"
     if not manifest_path.is_file():
-        raise PreprocessorError(f"Manifest not found: {manifest_path}")
+        raise PreprocessorError(
+            "Existing output folder is not owned by this preprocessor because "
+            f"its manifest is missing: {manifest_path}"
+        )
     manifest = json.loads(manifest_path.read_text(encoding="utf-8"))
+    if manifest.get("format") != MANIFEST_FORMAT:
+        raise PreprocessorError(
+            "Existing output folder has an unsupported or foreign manifest format."
+        )
     validate_output(output_dir, manifest)
     return manifest
 
