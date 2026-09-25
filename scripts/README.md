@@ -109,7 +109,8 @@ manifest.json
 
 `manifest.json` records the preprocessor and contract versions, source files,
 row counts, hashes, duplicate counts, and collision checks used to validate the
-run. A successful manifest has `"status": "valid"`.
+run. The separate `--validate-output` command returns `"status": "valid"` when
+the manifest and all generated entities pass validation.
 
 ## Safety behavior
 
