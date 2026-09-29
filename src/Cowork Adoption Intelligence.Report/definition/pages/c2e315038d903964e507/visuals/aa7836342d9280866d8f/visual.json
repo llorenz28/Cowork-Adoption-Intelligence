@@ -170,7 +170,7 @@
             "text": {
               "expr": {
                 "Literal": {
-                  "Value": "'Momentum index'"
+                  "Value": "'Power users %'"
                 }
               }
             },
@@ -258,7 +258,7 @@
             "altText": {
               "expr": {
                 "Literal": {
-                  "Value": "'Switch to the adoption momentum index.'"
+                  "Value": "'Switch to power-user share by department and week.'"
                 }
               }
             }

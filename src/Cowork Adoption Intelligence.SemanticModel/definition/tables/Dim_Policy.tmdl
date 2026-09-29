@@ -45,7 +45,9 @@ table Dim_Policy
 				let
 					Seed = #table(
 						type table [PolicyKey = Int64.Type, PolicyName = text, Allowance = Int64.Type, Scope = text, PolicyRole = text, AssignedFlag = text],
-						{}
+						{
+							{-1, "No policy data", 0, "Not configured", "Not configured", "No"}
+						}
 					)
 				in
 					Seed

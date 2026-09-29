@@ -1,6 +1,6 @@
 {
   "$schema": "https://developer.microsoft.com/json-schemas/fabric/item/report/definition/bookmark/2.1.0/schema.json",
-  "displayName": "Usage Explorer - User Details - Filters Closed",
+  "displayName": "Cowork Tasks - Filters Closed",
   "name": "a1b2c3d4e5f6000092a2",
   "options": {
     "applyOnlyToTargetVisuals": true,
@@ -14,7 +14,8 @@
       "mv_ud_license_slicer_07userdetail",
       "mv_ud_budget_slicer_07userdetail",
       "mv_ud_rate_slicer_07userdetail",
-      "mv_ud_user_tier_slicer_07userdetail"
+      "mv_ud_user_tier_slicer_07userdetail",
+      "mv_ud_model_slicer_07userdetail"
     ],
     "suppressActiveSection": true,
     "suppressData": true
@@ -104,6 +105,15 @@
             }
           },
           "mv_ud_user_tier_slicer_07userdetail": {
+            "singleVisual": {
+              "visualType": "slicer",
+              "objects": {},
+              "display": {
+                "mode": "hidden"
+              }
+            }
+          },
+          "mv_ud_model_slicer_07userdetail": {
             "singleVisual": {
               "visualType": "slicer",
               "objects": {},

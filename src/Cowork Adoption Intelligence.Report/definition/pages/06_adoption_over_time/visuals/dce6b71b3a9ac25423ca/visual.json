@@ -5,7 +5,7 @@
     "x": 16,
     "y": 8,
     "z": 0,
-    "height": 88,
+    "height": 80,
     "width": 1248,
     "tabOrder": 0
   },
@@ -19,12 +19,12 @@
               {
                 "textRuns": [
                   {
-                    "value": "Cowork Adoption Overview",
+                    "value": "Cowork Adoption Scorecard",
                     "textStyle": {
                       "fontWeight": "semibold",
+                      "fontFamily": "Segoe UI",
                       "fontSize": "18pt",
-                      "color": "#FFFFFF",
-                      "fontFamily": "Segoe UI"
+                      "color": "#FFFFFF"
                     }
                   }
                 ]
@@ -131,7 +131,7 @@
             "right": {
               "expr": {
                 "Literal": {
-                  "Value": "16D"
+                  "Value": "128D"
                 }
               }
             }

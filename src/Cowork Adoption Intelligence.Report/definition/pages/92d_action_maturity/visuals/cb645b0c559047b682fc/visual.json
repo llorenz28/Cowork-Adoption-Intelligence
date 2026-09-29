@@ -6,7 +6,7 @@
     "y": 188,
     "z": 24000,
     "height": 28,
-    "width": 820,
+    "width": 1248,
     "tabOrder": 20500
   },
   "visual": {
@@ -19,7 +19,7 @@
               {
                 "textRuns": [
                   {
-                    "value": "Two views of maturity: how much people use Cowork, and how much work they hand over.",
+                    "value": "Select a department bar to filter this page. Use Open filters for date and organization.",
                     "textStyle": {
                       "fontFamily": "Segoe UI Semibold",
                       "fontSize": "10pt",

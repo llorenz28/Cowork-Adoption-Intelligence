@@ -19,7 +19,7 @@
               {
                 "textRuns": [
                   {
-                    "value": "How the momentum index works",
+                    "value": "How to read power-user share",
                     "textStyle": {
                       "fontWeight": "bold",
                       "fontSize": "13pt",
@@ -31,7 +31,7 @@
               {
                 "textRuns": [
                   {
-                    "value": "Default formula: ",
+                    "value": "Definition: ",
                     "textStyle": {
                       "fontWeight": "bold",
                       "fontSize": "9pt",
@@ -39,7 +39,7 @@
                     }
                   },
                   {
-                    "value": "35% return rate + 25% active-day consistency + 25% prompt intensity + 15% advanced delegation.",
+                    "value": "Power users are the top 10% of users by rolling 12-week prompt volume who were active in at least 9 of those 12 weeks.",
                     "textStyle": {
                       "fontSize": "9pt",
                       "color": "#1B1F27"
@@ -50,7 +50,7 @@
               {
                 "textRuns": [
                   {
-                    "value": "Normalize first: ",
+                    "value": "Minimum evidence: ",
                     "textStyle": {
                       "fontWeight": "bold",
                       "fontSize": "8pt",
@@ -58,7 +58,7 @@
                     }
                   },
                   {
-                    "value": "return rate; active days / 3; prompts per active user / 12; and Rung 3+ users / active users. Each component is capped at 100%, then weighted and rounded to a 0–100 score.",
+                    "value": "At least 20 active users are required for tiering. Smaller populations return Insufficient sample instead of assigning Power, Habitual, Novice, or Low tiers.",
                     "textStyle": {
                       "fontSize": "8pt",
                       "color": "#1B1F27"
@@ -69,7 +69,7 @@
               {
                 "textRuns": [
                   {
-                    "value": "How to read it: ",
+                    "value": "How to use it: ",
                     "textStyle": {
                       "fontWeight": "bold",
                       "fontSize": "8pt",
@@ -77,7 +77,7 @@
                     }
                   },
                   {
-                    "value": "0 means no momentum signals; 100 means all four reach their caps. Compare a department with itself across several weeks—not as a performance grade. Blank = no active users or weights not totaling 100%. Learn more or change defaults on Momentum Score Guide.",
+                    "value": "Use the percentage as an enablement signal for sustained use, not an employee-performance rating. Compare a department with itself over time and read the underlying population size.",
                     "textStyle": {
                       "fontSize": "8pt",
                       "color": "#1B1F27"
@@ -166,7 +166,7 @@
             "altText": {
               "expr": {
                 "Literal": {
-                  "Value": "'Momentum index calculation guide. The default score weights return rate at 35 percent, active-day consistency at 25 percent, prompt intensity at 25 percent, and advanced delegation at 15 percent.'"
+                  "Value": "'Power-user share definition and interpretation guidance.'"
                 }
               }
             }

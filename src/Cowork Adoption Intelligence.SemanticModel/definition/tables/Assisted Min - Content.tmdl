@@ -1,0 +1,18 @@
+table 'Assisted Min - Content'
+	lineageTag: 6496570a-5e54-4faf-b872-c6d431a18124
+
+	/// Customer-defined assisted minutes per Document & content creation task.
+	measure 'Assisted Min - Content Value' = SELECTEDVALUE('Assisted Min - Content'[Assisted Min - Content], 24)
+		formatString: 0
+		lineageTag: bd9ae0de-8fc2-4511-bfd2-af1719014914
+
+	column 'Assisted Min - Content'
+		dataType: int64
+		formatString: 0
+		lineageTag: f72b1c36-dbd2-4d67-8a91-ef0b9382681e
+		summarizeBy: none
+		sourceColumn: [Value]
+
+	partition 'Assisted Min - Content' = calculated
+		mode: import
+		source = GENERATESERIES(0, 240, 1)

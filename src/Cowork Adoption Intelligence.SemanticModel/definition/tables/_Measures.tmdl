@@ -27,25 +27,41 @@ table _Measures
 		lineageTag: 312ec8e8-0ffa-453d-aaa5-9e8607b14c08
 
 	measure 'Adoption Exec Verdict' =
-			VAR _users = [Cowork Active Users]
+			VAR _users = [Cowork Weekly Active Users]
 			RETURN
 			IF(
 			    ISBLANK(_users) || _users = 0,
 			    "No Cowork adoption activity in the current view - widen the date range or clear a filter.",
-			    FORMAT(_users, "#,0") & " active users average " &
-			    FORMAT([Prompts per Active User per Week], "#,0.0") &
-			    " prompts per user per week; " &
+			    FORMAT(_users, "#,0") & " users active in the latest observed week averaged " &
+			    FORMAT([Cowork Weekly Prompts per Active User], "#,0.0") &
+			    " prompts each; " &
 			    FORMAT([Cowork Weekly Return Rate], "0%") &
 			    " returned from the prior week."
 			)
 		lineageTag: 95b4e837-7567-57b0-9320-bef116d710c6
 
 	measure 'Adoption Exec Evidence' =
-			FORMAT([Average Weekly Prompts], "#,0.0") & " prompts per week  -  " &
-			FORMAT([Average Weekly Tasks], "#,0.0") & " tasks per week  -  " &
-			FORMAT([Average Active Days per User per Week], "#,0.0") &
-			" active days per user  -  " &
-			FORMAT([Users on Rung 3+], "#,0") & " users delegating or automating"
+			VAR _latestWeek =
+			    MAXX(
+			        FILTER(
+			            ALLSELECTED(Dim_Date[WeekStart]),
+			            CALCULATE([Cowork Aggregate Active Users]) > 0
+			        ),
+			        Dim_Date[WeekStart]
+			    )
+			VAR _prompts =
+			    CALCULATE(
+			        [Cowork Aggregate Prompt Count],
+			        REMOVEFILTERS(Dim_Date),
+			        Dim_Date[WeekStart] = _latestWeek
+			    )
+			RETURN
+			    FORMAT(_prompts, "#,0") & " prompts in the latest week  -  " &
+			    FORMAT([Cowork Weekly Tasks], "#,0") & " tasks  -  " &
+			    FORMAT([Cowork Weekly Active Days per User], "#,0.0") &
+			    " active days per user  -  " &
+			    FORMAT([Cowork Weekly Users on Rung 3+], "#,0") &
+			    " active users delegating or automating"
 		lineageTag: 1dd4e62e-2b69-5ffd-a2cc-7016618e50b7
 
 	/// Distinct users with a customer-provided Microsoft 365 Copilot license assignment; blank while that source is unavailable.
@@ -256,16 +272,83 @@ table _Measures
 		formatString: $ #,0
 		lineageTag: d0b66ee9-620c-4754-8547-24700092f028
 
-	/// Estimated hours assisted at one row per Cowork thread. The midpoint uses
-	/// the selected primary business behavior; low/high retain the cited category
-	/// envelope. Orchestration calls never multiply task value.
+	/// Customer-selected minutes for the visible task category. Low, midpoint,
+	/// and high are cited defaults; Custom uses the synchronized customer controls.
+	measure 'Assisted Minutes Selected' =
+			VAR _category = SELECTEDVALUE(Dim_TaskCategory[Category])
+			VAR _customMinutes =
+				SWITCH(
+					_category,
+					"Analysis & Research", [Assisted Min - Research Value],
+					"Document & content creation", [Assisted Min - Content Value],
+					"Email workflows", [Assisted Min - Email Value],
+					"Meeting workflows", [Assisted Min - Meetings Value],
+					"Communication workflows", [Assisted Min - Communications Value],
+					"Specialized workflows", [Assisted Min - Specialized Value],
+					"Write or debug code", [Assisted Min - Code Value],
+					"General assistance / Other", [Assisted Min - General Value]
+				)
+			RETURN
+				SWITCH(
+					[Estimate Basis Selected],
+					"Low", SELECTEDVALUE(Dim_TaskCategory[LowMin]),
+					"Mid", SELECTEDVALUE(Dim_TaskCategory[MidMin]),
+					"Custom", _customMinutes,
+					"High", SELECTEDVALUE(Dim_TaskCategory[HighMin])
+				)
+		formatString: #,0
+		lineageTag: 0de232b6-b56a-48f7-896a-0f87409d9d0a
+
+	measure 'Assisted Time Assumption Status' =
+			VAR _basis = [Estimate Basis Selected]
+			RETURN
+				IF(
+					_basis = "Custom",
+					"Custom category minutes are active and synchronized to assisted-time pages.",
+					"Using the cited " & LOWER(_basis) & " estimates. Select Custom to apply your category values."
+				)
+		lineageTag: b1f3d780-9a4c-4eb2-95bf-e7806d638627
+
+	/// Estimated hours assisted at one row per Cowork thread. Category minutes
+	/// come from Dim_TaskCategory or the synchronized Custom controls rather than
+	/// the preprocessor snapshot, so customers can change assumptions at report time.
 	measure 'Assisted Hours' =
 			VAR _basis = [Estimate Basis Selected]
+			VAR _research = [Assisted Min - Research Value]
+			VAR _content = [Assisted Min - Content Value]
+			VAR _email = [Assisted Min - Email Value]
+			VAR _meetings = [Assisted Min - Meetings Value]
+			VAR _communications = [Assisted Min - Communications Value]
+			VAR _specialized = [Assisted Min - Specialized Value]
+			VAR _code = [Assisted Min - Code Value]
+			VAR _general = [Assisted Min - General Value]
 			RETURN
 				SWITCH(
 					_basis,
 					"Low", [Assisted Hours Low],
-					"Mid", DIVIDE(SUMX(Fact_Tasks, Fact_Tasks[Tasks] * Fact_Tasks[MidMin]), 60),
+					"Mid", DIVIDE(SUMX(Fact_Tasks, Fact_Tasks[Tasks] * RELATED(Dim_TaskCategory[MidMin])), 60),
+					"Custom",
+						DIVIDE(
+							SUMX(
+								Fact_Tasks,
+								VAR _category = RELATED(Dim_TaskCategory[Category])
+								VAR _minutes =
+									SWITCH(
+										_category,
+										"Analysis & Research", _research,
+										"Document & content creation", _content,
+										"Email workflows", _email,
+										"Meeting workflows", _meetings,
+										"Communication workflows", _communications,
+										"Specialized workflows", _specialized,
+										"Write or debug code", _code,
+										"General assistance / Other", _general,
+										RELATED(Dim_TaskCategory[MidMin])
+									)
+								RETURN Fact_Tasks[Tasks] * _minutes
+							),
+							60
+						),
 					"High", [Assisted Hours High],
 					BLANK()
 				)
@@ -273,12 +356,12 @@ table _Measures
 		lineageTag: 144462ba-0ad3-4d91-80f3-980ffbc48379
 
 	/// Estimated assisted hours using the conservative (low) time-saved benchmark.
-	measure 'Assisted Hours Low' = DIVIDE(SUMX(Fact_Tasks, Fact_Tasks[Tasks] * Fact_Tasks[LowMin]), 60)
+	measure 'Assisted Hours Low' = DIVIDE(SUMX(Fact_Tasks, Fact_Tasks[Tasks] * RELATED(Dim_TaskCategory[LowMin])), 60)
 		formatString: #,0.0
 		lineageTag: dd5c90e7-5e8e-4230-8d11-1e376f270355
 
 	/// Estimated assisted hours using the optimistic (high) time-saved benchmark.
-	measure 'Assisted Hours High' = DIVIDE(SUMX(Fact_Tasks, Fact_Tasks[Tasks] * Fact_Tasks[HighMin]), 60)
+	measure 'Assisted Hours High' = DIVIDE(SUMX(Fact_Tasks, Fact_Tasks[Tasks] * RELATED(Dim_TaskCategory[HighMin])), 60)
 		formatString: #,0.0
 		lineageTag: 176454ba-709d-4903-9775-d78c0a8f8a43
 
@@ -636,8 +719,180 @@ table _Measures
 	measure 'Population Sufficient' = IF([Cowork Active Users] >= 20, TRUE(), FALSE())
 		lineageTag: 705af29a-80d5-4b70-9d3f-ce11abbe4c83
 
-	measure 'Page Gate - Org' = IF(ISEMPTY(Dim_UserOrg), "Connect your Entra user export to enable this page.", BLANK())
+	measure 'Page Gate - Org' = IF(ISEMPTY(Dim_UserOrg), "Connect your Entra user export to enable this page.", "")
 		lineageTag: 4eb650a0-05f6-4a32-bda7-08160d63aeb8
+
+	/// Active users in the latest common activity month for the selected scope. Department is removed only while selecting the comparison month so every department uses the same baseline.
+	measure 'Attributes Current-Month Active Users' =
+			VAR _lastActiveMonth =
+			    MAXX(
+			        FILTER(
+			            ALLSELECTED(Dim_Date[MonthStart]),
+			            CALCULATE(
+			                [Cowork Active Users],
+			                REMOVEFILTERS(Dim_User[Department])
+			            ) > 0
+			        ),
+			        Dim_Date[MonthStart]
+			    )
+			RETURN
+			    IF(
+			        ISBLANK(_lastActiveMonth),
+			        BLANK(),
+			        CALCULATE(
+			            [Cowork Active Users],
+			            REMOVEFILTERS(Dim_Date),
+			            Dim_Date[MonthStart] = _lastActiveMonth
+			        )
+			    )
+		formatString: #,0
+		displayFolder: Adoption Attributes
+		lineageTag: a6fdd8be-d4b5-4620-98d4-cfd602e40f47
+
+	/// Active users in the month before the latest common activity month for the selected scope.
+	measure 'Attributes Previous-Month Active Users' =
+			VAR _lastActiveMonth =
+			    MAXX(
+			        FILTER(
+			            ALLSELECTED(Dim_Date[MonthStart]),
+			            CALCULATE(
+			                [Cowork Active Users],
+			                REMOVEFILTERS(Dim_User[Department])
+			            ) > 0
+			        ),
+			        Dim_Date[MonthStart]
+			    )
+			VAR _previousMonth = EDATE(_lastActiveMonth, -1)
+			RETURN
+			    IF(
+			        ISBLANK(_lastActiveMonth),
+			        BLANK(),
+			        CALCULATE(
+			            [Cowork Active Users],
+			            REMOVEFILTERS(Dim_Date),
+			            Dim_Date[MonthStart] = _previousMonth
+			        )
+			    )
+		formatString: #,0
+		displayFolder: Adoption Attributes
+		lineageTag: 33ffef4a-86da-4872-b92d-d51eaf5a509a
+
+	/// Month-over-month active-user change at the current organizational grain, anchored to the same activity month for every department.
+	measure 'Attributes Active Users MoM %' =
+			DIVIDE(
+			    [Attributes Current-Month Active Users] - [Attributes Previous-Month Active Users],
+			    [Attributes Previous-Month Active Users]
+			)
+		formatString: +0.0%;-0.0%;0.0%
+		displayFolder: Adoption Attributes
+		lineageTag: d3140db0-d231-4eb3-bf55-8b7779d9616b
+
+	/// Department with the strongest positive monthly active-user change. A minimum of five active users in both months suppresses unstable small-cohort swings.
+	measure 'Attributes Strongest Gain Label' =
+			VAR _departments =
+			    FILTER(
+			        ADDCOLUMNS(
+			            ALLSELECTED(Dim_User[Department]),
+			            "@change", CALCULATE([Attributes Active Users MoM %]),
+			            "@current", CALCULATE([Attributes Current-Month Active Users]),
+			            "@previous", CALCULATE([Attributes Previous-Month Active Users])
+			        ),
+			        NOT ISBLANK(Dim_User[Department]) &&
+			        Dim_User[Department] <> "Unassigned" &&
+			        [@current] >= 5 &&
+			        [@previous] >= 5 &&
+			        [@change] > 0
+			    )
+			VAR _topDepartment =
+			    TOPN(
+			        1,
+			        _departments,
+			        [@change], DESC,
+			        [@current], DESC,
+			        Dim_User[Department], ASC
+			    )
+			VAR _department = CONCATENATEX(_topDepartment, Dim_User[Department], "")
+			VAR _change = MAXX(_topDepartment, [@change])
+			RETURN
+			    IF(
+			        ISBLANK(_department),
+			        "No gains in scope",
+			        _department & " | " & FORMAT(_change, "+0.0%;-0.0%;0.0%")
+			    )
+		displayFolder: Adoption Attributes
+		lineageTag: b931801f-ce95-41ff-b354-7a1680db81fd
+
+	/// Department with the largest negative monthly active-user change. A minimum of five active users in both months suppresses unstable small-cohort swings.
+	measure 'Attributes Largest Decline Label' =
+			VAR _departments =
+			    FILTER(
+			        ADDCOLUMNS(
+			            ALLSELECTED(Dim_User[Department]),
+			            "@change", CALCULATE([Attributes Active Users MoM %]),
+			            "@current", CALCULATE([Attributes Current-Month Active Users]),
+			            "@previous", CALCULATE([Attributes Previous-Month Active Users])
+			        ),
+			        NOT ISBLANK(Dim_User[Department]) &&
+			        Dim_User[Department] <> "Unassigned" &&
+			        [@current] >= 5 &&
+			        [@previous] >= 5 &&
+			        [@change] < 0
+			    )
+			VAR _bottomDepartment =
+			    TOPN(
+			        1,
+			        _departments,
+			        [@change], ASC,
+			        [@current], DESC,
+			        Dim_User[Department], ASC
+			    )
+			VAR _department = CONCATENATEX(_bottomDepartment, Dim_User[Department], "")
+			VAR _change = MINX(_bottomDepartment, [@change])
+			RETURN
+			    IF(
+			        ISBLANK(_department),
+			        "No declines in scope",
+			        _department & " | " & FORMAT(_change, "+0.0%;-0.0%;0.0%")
+			    )
+		displayFolder: Adoption Attributes
+		lineageTag: ab7e7d72-d9f9-4370-b441-e9cc12aaac1c
+
+	/// Department with the highest observed distinct Cowork thread volume under the current report filters.
+	measure 'Attributes Highest Task Demand Label' =
+			VAR _departments =
+			    FILTER(
+			        ADDCOLUMNS(
+			            ALLSELECTED(Dim_User[Department]),
+			            "@tasks", CALCULATE([Cowork Tasks in Filter Context])
+			        ),
+			        NOT ISBLANK(Dim_User[Department]) &&
+			        Dim_User[Department] <> "Unassigned" &&
+			        [@tasks] > 0
+			    )
+			VAR _topDepartment =
+			    TOPN(
+			        1,
+			        _departments,
+			        [@tasks], DESC,
+			        Dim_User[Department], ASC
+			    )
+			VAR _department = CONCATENATEX(_topDepartment, Dim_User[Department], "")
+			VAR _tasks = MAXX(_topDepartment, [@tasks])
+			VAR _taskLabel =
+			    SWITCH(
+			        TRUE(),
+			        _tasks >= 1000000, FORMAT(DIVIDE(_tasks, 1000000), "0.0") & "M",
+			        _tasks >= 1000, FORMAT(DIVIDE(_tasks, 1000), "0.0") & "K",
+			        FORMAT(_tasks, "#,0")
+			    )
+			RETURN
+			    IF(
+			        ISBLANK(_department),
+			        "No task data in scope",
+			        _department & " | " & _taskLabel & " tasks"
+			    )
+		displayFolder: Adoption Attributes
+		lineageTag: 38f0289c-80a9-4678-94f7-edb15ce7cf3f
 
 	measure 'Page Gate - Usage' = IF(ISEMPTY(Fact_CoworkUsage), "Connect the Cowork usage export to enable this page.", BLANK())
 		lineageTag: 37545933-3338-4ab9-a3d9-4cb656f96c97
@@ -2240,6 +2495,82 @@ table _Measures
 			)
 		formatString: 0.0%
 		lineageTag: 287d0fcd-1d98-44a2-b0f4-09bfd18f8639
+
+	/// Latest-week cohort count for the scorecard, directly comparable with Cowork Weekly Active Users.
+	measure 'Cowork Weekly Users on Rung 3+' =
+			VAR _currentWeek =
+			    MAXX(
+			        FILTER(
+			            ALLSELECTED(Dim_Date[WeekStart]),
+			            CALCULATE([Cowork Aggregate Active Users]) > 0
+			        ),
+			        Dim_Date[WeekStart]
+			    )
+			RETURN
+			    CALCULATE(
+			        [Users on Rung 3+],
+			        REMOVEFILTERS(Dim_Date),
+			        Dim_Date[WeekStart] = _currentWeek
+			    )
+		formatString: #,0
+		lineageTag: 6d962941-6e43-49b4-b9d8-6c11a310340a
+
+	/// Latest-week delegation index for the scorecard's active-user cohort.
+	measure 'Cowork Weekly Delegation Ladder Index' =
+			VAR _currentWeek =
+			    MAXX(
+			        FILTER(
+			            ALLSELECTED(Dim_Date[WeekStart]),
+			            CALCULATE([Cowork Aggregate Active Users]) > 0
+			        ),
+			        Dim_Date[WeekStart]
+			    )
+			RETURN
+			    CALCULATE(
+			        [Delegation Ladder Index],
+			        REMOVEFILTERS(Dim_Date),
+			        Dim_Date[WeekStart] = _currentWeek
+			    )
+		formatString: 0%
+		lineageTag: c74a48a2-6d3f-45fa-b0b3-c0a67d5b6dc2
+
+	/// Latest-week trying cohort, directly comparable with the scorecard's weekly active users.
+	measure 'Cowork Weekly Users at Rung 1 (Trying)' =
+			VAR _currentWeek =
+			    MAXX(
+			        FILTER(
+			            ALLSELECTED(Dim_Date[WeekStart]),
+			            CALCULATE([Cowork Aggregate Active Users]) > 0
+			        ),
+			        Dim_Date[WeekStart]
+			    )
+			RETURN
+			    CALCULATE(
+			        [Users at Rung 1 (Trying)],
+			        REMOVEFILTERS(Dim_Date),
+			        Dim_Date[WeekStart] = _currentWeek
+			    )
+		formatString: #,0
+		lineageTag: 2a1a351f-49ea-48cb-846b-3a0d7dbb4781
+
+	/// Latest-week using cohort, directly comparable with the scorecard's weekly active users.
+	measure 'Cowork Weekly Users at Rung 2 (Using)' =
+			VAR _currentWeek =
+			    MAXX(
+			        FILTER(
+			            ALLSELECTED(Dim_Date[WeekStart]),
+			            CALCULATE([Cowork Aggregate Active Users]) > 0
+			        ),
+			        Dim_Date[WeekStart]
+			    )
+			RETURN
+			    CALCULATE(
+			        [Users at Rung 2 (Using)],
+			        REMOVEFILTERS(Dim_Date),
+			        Dim_Date[WeekStart] = _currentWeek
+			    )
+		formatString: #,0
+		lineageTag: 8ef7c164-3f2c-4c48-a94b-36cd4e1298ad
 
 	column Value
 		dataType: string

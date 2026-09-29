@@ -2,11 +2,11 @@
   "$schema": "https://developer.microsoft.com/json-schemas/fabric/item/report/definition/visualContainer/2.12.0/schema.json",
   "name": "91267fc40cfe875e72ce",
   "position": {
-    "x": 16,
-    "y": 572,
+    "x": 1028,
+    "y": 216,
     "z": 23000,
-    "height": 76,
-    "width": 820,
+    "height": 414,
+    "width": 236,
     "tabOrder": 9000
   },
   "visual": {
@@ -19,9 +19,10 @@
               {
                 "textRuns": [
                   {
-                    "value": "Volume tier (rolling 12 weeks), ranked within your own population: Power = top 10% by prompt volume and active in 9 of 12 weeks; Habitual = top 40% and active in 9 of 12; Novice = top 80%; Low = below that; Inactive = no prompts. Tiers need at least 20 active users to compute.",
+                    "value": "How to read this page",
                     "textStyle": {
-                      "fontSize": "8pt",
+                      "fontFamily": "Segoe UI Semibold",
+                      "fontSize": "11pt",
                       "color": "#1B1F27"
                     }
                   }
@@ -30,15 +31,134 @@
               {
                 "textRuns": [
                   {
-                    "value": "Delegation ladder: Automating = any lifetime scheduled-task total; Delegating = 30%+ multi-skill tasks; Using = average task duration 5+ minutes; Trying = shorter single-skill tasks; Not started = no observed tasks. The 5-minute and 30% cuts are template conventions to revisit with tenant evidence.",
+                    "value": "Stages — inferred enablement signals, not ratings.\n\nBreadth — skills used per person.\n\nDepth — skills combined per task.\n\nDelegating — 30%+ multi-skill tasks.\n\nAutomating — scheduled-task activity.\n\nVolume tiers — rolling 12-week groups.\n\nScheduled evidence — lifetime; not date-filtered.",
                     "textStyle": {
-                      "fontSize": "8pt",
+                      "fontFamily": "Segoe UI",
+                      "fontSize": "9pt",
                       "color": "#5A6472"
                     }
                   }
                 ]
               }
             ]
+          }
+        }
+      ]
+    },
+    "visualContainerObjects": {
+      "background": [
+        {
+          "properties": {
+            "show": {
+              "expr": {
+                "Literal": {
+                  "Value": "true"
+                }
+              }
+            },
+            "color": {
+              "solid": {
+                "color": {
+                  "expr": {
+                    "Literal": {
+                      "Value": "'#FFFFFF'"
+                    }
+                  }
+                }
+              }
+            },
+            "transparency": {
+              "expr": {
+                "Literal": {
+                  "Value": "0D"
+                }
+              }
+            }
+          }
+        }
+      ],
+      "border": [
+        {
+          "properties": {
+            "show": {
+              "expr": {
+                "Literal": {
+                  "Value": "true"
+                }
+              }
+            },
+            "color": {
+              "solid": {
+                "color": {
+                  "expr": {
+                    "Literal": {
+                      "Value": "'#E3E6EC'"
+                    }
+                  }
+                }
+              }
+            },
+            "radius": {
+              "expr": {
+                "Literal": {
+                  "Value": "4D"
+                }
+              }
+            },
+            "width": {
+              "expr": {
+                "Literal": {
+                  "Value": "1D"
+                }
+              }
+            }
+          }
+        }
+      ],
+      "padding": [
+        {
+          "properties": {
+            "top": {
+              "expr": {
+                "Literal": {
+                  "Value": "12D"
+                }
+              }
+            },
+            "bottom": {
+              "expr": {
+                "Literal": {
+                  "Value": "12D"
+                }
+              }
+            },
+            "left": {
+              "expr": {
+                "Literal": {
+                  "Value": "12D"
+                }
+              }
+            },
+            "right": {
+              "expr": {
+                "Literal": {
+                  "Value": "12D"
+                }
+              }
+            }
+          }
+        }
+      ],
+      "visualHeader": [
+        {
+          "properties": {
+            "show": {
+              "expr": {
+                "Literal": {
+                  "Value": "false"
+                }
+              }
+            }
           }
         }
       ]

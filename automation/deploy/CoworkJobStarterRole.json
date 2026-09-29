@@ -1,0 +1,18 @@
+{
+  "Name": "Cowork Container Apps Job Starter",
+  "IsCustom": true,
+  "Description": "Read, start, and monitor the Cowork Container Apps Job without the jobs/*/action wildcard.",
+  "Actions": [
+    "Microsoft.App/jobs/read",
+    "Microsoft.App/jobs/start/action",
+    "Microsoft.App/jobs/executions/read",
+    "Microsoft.App/jobs/execution/read",
+    "Microsoft.App/managedEnvironments/read"
+  ],
+  "NotActions": [],
+  "DataActions": [],
+  "NotDataActions": [],
+  "AssignableScopes": [
+    "/subscriptions/<subscription-id>"
+  ]
+}

@@ -1,7 +1,7 @@
 table 'Estimate Basis'
 	lineageTag: 0dad746c-898e-4b84-8e0d-5ca86aa0510c
 
-	/// Customer-selected cited time-saved benchmark. Uses the cited midpoint when no single basis is selected.
+	/// Customer-selected assisted-time basis. Uses the cited midpoint when no single basis is selected.
 	measure 'Estimate Basis Selected' = SELECTEDVALUE('Estimate Basis'[Estimate Basis], "Mid")
 		lineageTag: 0a30e85f-94a3-486a-83f9-058765d38d3a
 
@@ -13,4 +13,4 @@ table 'Estimate Basis'
 
 	partition 'Estimate Basis' = calculated
 		mode: import
-		source = DATATABLE("Value", STRING, {{"Low"}, {"Mid"}, {"High"}})
+		source = DATATABLE("Value", STRING, {{"Low"}, {"Mid"}, {"Custom"}, {"High"}})

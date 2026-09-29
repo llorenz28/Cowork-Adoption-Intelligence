@@ -1,0 +1,33 @@
+{
+  "packageVersion": "0.1.0",
+  "generatedDate": "2026-09-27",
+  "cowork": {
+    "repository": "https://github.com/microsoft/Cowork-Adoption-Intelligence",
+    "commit": "39abf6d8d98f80393a22ae37a1a35ef90a7b3756",
+    "commitRole": "Origin main base used for release integration.",
+    "sourceState": "Base commit plus the validated preprocessing optimization packaged with this release.",
+    "preprocessor": {
+      "path": "container/Cowork_Purview_Preprocessor_v0.1.0.py",
+      "sha256": "dd2cad3cc5b6faf0874feed9537935cc00041df85e04813a786323a80383b500"
+    },
+    "contract": {
+      "path": "container/cowork-contract.json",
+      "sha256": "c96dcb631e582ff6aea9177a693f3f80a897cf7729dc9350ac0b205b3d8c5149"
+    }
+  },
+  "pax": {
+    "repository": "https://github.com/microsoft/PAX",
+    "commit": "945b634705f355ffaada4310de096af47adf44c5",
+    "version": "1.11.15",
+    "releaseAsset": "PAX_Purview_Audit_Log_Processor_v1.11.15.ps1",
+    "sha256": "13a8d41a70c462650207e452eb0ccab274729eb65b0d640bc0a52d6a40ad46c9",
+    "distribution": "Downloaded and SHA-256 verified during the container build."
+  },
+  "designReferences": [
+    {
+      "repository": "https://github.com/microsoft/ValueLens-for-Microsoft-Copilot",
+      "commit": "0193418d8566228be2bef71eabf10fc207c17574",
+      "use": "Async Graph query, bounded polling, paging, retry, and success-only publication patterns."
+    }
+  ]
+}

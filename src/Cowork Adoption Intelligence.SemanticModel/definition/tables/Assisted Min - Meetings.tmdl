@@ -1,0 +1,18 @@
+table 'Assisted Min - Meetings'
+	lineageTag: ab1f9d1c-4c2f-4aae-a7d9-f0ec1b4d8da9
+
+	/// Customer-defined assisted minutes per Meeting workflows task.
+	measure 'Assisted Min - Meetings Value' = SELECTEDVALUE('Assisted Min - Meetings'[Assisted Min - Meetings], 31)
+		formatString: 0
+		lineageTag: 98efcc58-8e91-4f9c-8377-f10c00e38b22
+
+	column 'Assisted Min - Meetings'
+		dataType: int64
+		formatString: 0
+		lineageTag: 03972f9e-c0ba-41f6-b365-a8578718b1cf
+		summarizeBy: none
+		sourceColumn: [Value]
+
+	partition 'Assisted Min - Meetings' = calculated
+		mode: import
+		source = GENERATESERIES(0, 240, 1)

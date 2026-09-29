@@ -1,6 +1,6 @@
 {
   "$schema": "https://developer.microsoft.com/json-schemas/fabric/item/report/definition/bookmark/2.1.0/schema.json",
-  "displayName": "Filters Closed (Executive Summary)",
+  "displayName": "Filters Closed (Cowork Adoption Scorecard)",
   "name": "80eda836274bc8b24ff2",
   "options": {
     "applyOnlyToTargetVisuals": true,

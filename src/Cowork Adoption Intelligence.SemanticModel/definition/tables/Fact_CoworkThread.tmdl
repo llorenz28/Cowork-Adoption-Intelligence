@@ -12,6 +12,8 @@ table Fact_CoworkThread
 		formatString: #,0
 		lineageTag: bccce962-7cbd-41ef-861a-5e8d1cfb3c0c
 
+	/// Average elapsed minutes from the first to last observed audit event in a
+	/// Cowork thread. This is an observed thread span, not human attention time.
 	measure 'Avg Task Duration (min)' = AVERAGE(Fact_CoworkThread[DurationMin])
 		formatString: #,0.0
 		lineageTag: f689edae-101f-448e-a563-d7657a4181e7
@@ -174,6 +176,11 @@ table Fact_CoworkThread
 			    )
 		formatString: #,0
 		lineageTag: 44bbfe66-f17a-5951-a957-8dffef8773df
+
+	/// Distinct weeks with observed Cowork task activity in the current filter context.
+	measure 'Active Weeks' = DISTINCTCOUNT(Fact_CoworkThread[WeekStartDate])
+		formatString: #,0
+		lineageTag: 6e4fd615-7ad0-430e-b7dd-7395e6e04d21
 
 	column ThreadId
 		dataType: string

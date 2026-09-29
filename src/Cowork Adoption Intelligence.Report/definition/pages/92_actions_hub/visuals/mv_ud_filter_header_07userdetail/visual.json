@@ -1,12 +1,12 @@
 {
-  "$schema": "https://developer.microsoft.com/json-schemas/fabric/item/report/definition/visualContainer/2.12.0/schema.json",
+  "$schema": "https://developer.microsoft.com/json-schemas/fabric/item/report/definition/visualContainer/2.13.0/schema.json",
   "name": "mv_ud_filter_header_07userdetail",
   "position": {
-    "x": 856,
-    "y": 56,
+    "x": 827,
+    "y": 53,
     "z": 108000,
-    "height": 52,
-    "width": 424,
+    "height": 49,
+    "width": 397,
     "tabOrder": 108000
   },
   "visual": {

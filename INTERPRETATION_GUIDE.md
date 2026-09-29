@@ -1,666 +1,312 @@
 # Cowork Adoption Intelligence: interpretation guide
 
-**Template version:** 4.1.0-testing<br>
-**Audience:** adoption leads, program owners, enablement teams, analysts, and Power BI owners
+Use this guide to turn the nine-page report into defensible adoption and
+enablement decisions. It separates observed evidence, optional enrichment,
+modeled scenarios, and customer-controlled assumptions.
 
-This guide explains what each report page answers, how to read it, what to
-investigate, and what can be acted on safely. It is an operating guide, not a
-benchmark catalogue.
+## Evidence chain
 
-> The screenshots and packaged sample use deterministic fabricated data. They
-> are not customer findings, targets, or benchmarks. Modeled assisted hours
-> depend on declared assumptions and must not be presented as observed savings.
-
-## Agenda
-
-1. Version 4.1 changes and the five-minute reading path
-2. Evidence chain and confidence labels
-3. Page-by-page walkthrough of all ten report pages
-4. Momentum, maturity, champion, and assisted-time methodology
-5. Source requirements, validation checks, and defensible decision language
-
-## What's new in version 4.1
-
-- Raw Purview parsing and deterministic deduplication now run in the bundled
-  Python preprocessor before Power BI loads the 13 validated entity files.
-- The template prompts only for `PreprocessedOutputPath`.
-- Champion summary and row-level ranking now reconcile exactly under the
-  optimized model.
-
-The version 3 interpretation improvements remain part of this release:
-
-- **Momentum Score Guide** replaces Momentum Settings with a live score,
-  component explanations, guardrails, and optional advanced controls.
-- The **delegation ladder** is standardized on Not started, Trying, Using,
-  Delegating, and Automating with one documented threshold set.
-- **Cowork Champions** again includes delegation maturity in its transparent
-  40/35/25 evidence score.
-- Lifetime scheduled-task grain and date-filter behavior are disclosed.
-- Audit Coverage becomes unavailable when a date filter prevents like-for-like
-  reconciliation.
-- All ten sections of the in-report **Adoption Metric Guide** now document
-  dependencies, thresholds, evidence status, and interpretation boundaries.
-- A separate SharePoint edition uses the same model and interpretation logic.
-
-## Five-minute orientation
-
-If review time is limited, use this sequence:
-
-| Step | Page | Decision supported |
+| Layer | Examples | Interpretation |
 | --- | --- | --- |
-| 1 | **Executive Summary** | Is current adoption broad, recurring, and becoming more mature? |
-| 2 | **Weekly Adoption & Usage** | Is the latest result part of a sustained trend or a one-week change? |
-| 3 | **User Maturity** | Are users only trying Cowork, or are they handing over deeper and repeatable work? |
-| 4 | **What They Use It For** | Which work patterns explain the adoption signal and should inform enablement? |
+| Observed Cowork evidence | Purview `CopilotInteraction` events, threads, skills, resources, timestamps | What the approved audit source recorded |
+| Optional aggregates | Cowork usage details and consumption exports | Reconciliation and context, not event-level evidence |
+| Optional enrichment | Department, role, manager, business unit, geography, display name | Segmentation for authorized users |
+| Derived metrics | Active weeks, repeat activity, maturity, task classifications | Reproducible calculations from the validated entities |
+| Modeled scenarios | Assisted time, demand, capacity, headroom | Observed activity combined with editable assumptions |
 
-Use **Cowork Champions** only when the next decision is enablement outreach. Use
-**Adoption by Attributes** only after organization enrichment and population
-sizes have been checked. Before sharing any result, confirm the definition and
-Data Status on **Adoption Metric Guide**.
+Do not describe a modeled scenario as observed savings, realized ROI, future
+demand, or guaranteed capacity.
 
-## The result-context block
+## Five safeguards
 
-Every quoted result should include:
+1. Confirm the reporting window and source coverage.
+2. Distinguish missing data from zero activity.
+3. Keep organization filters visible when comparing cohorts.
+4. Treat small cohorts and narrow periods as directional.
+5. Record the Capacity Assumptions values used for every exported result.
 
-| Context | What to record |
-| --- | --- |
-| Reporting period | Exact start and end date or the displayed active week |
-| Population | Tenant, department, country, category, or selected users |
-| Filters | Every active report, page, and visual filter |
-| Source status | Purview plus any connected usage, organization, identity, or consumption input |
-| Evidence label | Observed, Derived, Convention, Optional input, Modeled, Allocated estimate, or Unavailable |
-| Assumptions | Momentum weights and caps; Low/Mid/High assisted-time basis when applicable |
+## Page 1: Cowork Adoption Scorecard
 
-Without this context, a numerically correct result can still be unsuitable for a
-decision.
+![Cowork Adoption Scorecard](images/report-pages/01-cowork-adoption-scorecard.png)
 
-## Evidence chain at a glance
+**Purpose:** Provide a decision-ready starting point and route the reader to the
+right evidence page. Start Here guidance is integrated into this page.
 
-| Source | Model role | What it supports | Required? |
-| --- | --- | --- | --- |
-| Purview Audit Search CSV | `Fact_CopilotAuditRaw`, `Fact_CoworkDetail`, `Fact_CoworkThread` | Users, observed records, task threads, prompts, dates, skills, resources, duration, and delegation evidence | **Yes** |
-| Cowork usage details CSV | `Fact_CoworkUsage` | Reported tasks, scheduled/user-initiated split, active days, and independent reconciliation | Recommended |
-| Organization CSV | `Dim_UserOrg` and user attributes | Department, business unit, job family, role, manager, city, country, and cost center | Optional |
-| Identity enrichment CSV | `Dim_User` enrichment | Friendly display names for audit identities | Optional |
-| Consumption CSV | Supporting consumption facts | Supporting consumption context where available | Optional |
-| Template mappings and controls | Skill/category dimensions and disconnected selectors | Category mappings, time assumptions, champion tier, momentum weights, and caps | Included in template |
+**Read in this order:**
 
-Purview is the core event evidence. The usage export is a user-level aggregate;
-it does not create a historical event timeline. Missing optional inputs mean
-**unavailable**, not zero.
+1. Confirm date and organization filters.
+2. Read the adoption and usage headline indicators.
+3. Review the context or evidence statements beside the scorecard.
+4. Use the navigation prompts to move to trend, segmentation, work-pattern,
+   maturity, enablement, scenario, assumption, or metric evidence.
 
-## Evidence confidence
+**Action:** Choose one question to investigate and preserve the filter context
+when moving to the supporting page.
 
-| Label | Meaning | Safe wording |
-| --- | --- | --- |
-| Observed | Counted from a connected source field | "The connected export contains..." |
-| Derived | Calculated from observed fields | "The report calculates..." |
-| Convention | A template-defined threshold, cap, or weight | "The template defines..." |
-| Reference | A definition or interpretation rule | "The guide states..." |
-| Optional input | Requires a separate customer-controlled export | "This is available when..." |
-| Modeled | Observed activity combined with a declared assumption | "Under the selected assumptions..." |
-| Allocated estimate | A modeled total distributed to a lower grain | "The report allocates the estimate..." |
-| Unavailable | Required evidence is absent or the current grain is invalid | "This cannot be calculated from the current inputs or filters." |
+**Guardrail:** A scorecard is a summary, not a diagnosis. Do not present a
+headline without its period, population, and source-coverage context.
 
-## Five safeguards before interpretation
+## Page 2: Weekly Adoption & Usage
 
-1. Confirm the reporting period, population, and every active filter.
-2. Check source availability and read the metric's Data Status.
-3. Separate observed evidence from derived values, conventions, and models.
-4. Compare trends and denominators before interpreting a headline.
-5. Protect user-level data and never use this report as a personnel scorecard.
+![Weekly Adoption & Usage](images/report-pages/02-weekly-adoption-and-usage.png)
 
----
-
-## Page 1: Start Here
-
-### Purpose
-
-Route a business question to the report page that carries the appropriate
-evidence and interpretation boundary.
-
-### Read it in this order
-
-1. Identify the decision: adoption status, weekly momentum, organizational
-   differences, maturity, champion outreach, observed activity, work mix, score
-   methodology, or metric definitions.
-2. Open one destination page.
-3. Confirm the period, filters, and source-status notes on that page.
-4. Use Adoption Metric Guide before quoting a result.
-
-### Diagnostic questions
-
-- Am I answering an adoption, enablement, work-pattern, or modeled-value
-  question?
-- Does the destination require an optional source that is not connected?
-- Is the question about a weekly trend, the current active week, or a lifetime
-  user attribute?
-
-### Action
-
-Use one primary page for the answer and one corroborating page for context.
-Avoid building a conclusion from unrelated headline cards.
-
-### Guardrail
-
-Core adoption pages work from Purview. Organization comparisons, lifetime
-scheduling, and independent reconciliation require optional inputs.
-
-## Page 2: Executive Summary
-
-### Purpose
-
-Summarize the latest active week's reach, recurrence, intensity, and delegation
-maturity.
-
-### Read it in this order
-
-1. **Weekly active users** - distinct users with observed Cowork activity in the
-   latest active week.
-2. **Weekly task threads** - deduplicated observed task threads for that week.
-3. **Prompts per active user** - weekly prompt volume divided by active users.
-4. **Active days per user** - average distinct active dates per user in the
-   week.
-5. **Weekly return rate** - users active in both the current and previous week,
-   divided by users active in the previous week.
-6. **Adoption momentum score** - the weighted 0-100 composite described on
-   Momentum Score Guide.
-
-### Diagnostic questions
-
-- Did weekly active users increase while return rate stayed stable or improved?
-- Is a high activity total broad across users, or concentrated in a small
-  group?
-- Which momentum component is limiting the composite score?
-- Does the displayed week have complete export coverage?
-
-### Action
-
-Open Weekly Adoption & Usage to check whether the result is sustained. If the
-score is being used in a review, include the week, filters, weights, and caps.
-
-### Guardrail
-
-The score is an adoption signal, not a target, grade, or cross-tenant benchmark.
-It becomes blank when the four selected weights do not total 100%.
-
-## Page 3: Weekly Adoption & Usage
-
-### Purpose
-
-Show whether Cowork use is growing, recurring, and distributed across the latest
-12 active weeks.
-
-### Read it in this order
-
-1. Use the metric bookmarks to switch among overview, weekly active users,
-   momentum, prompts per user, active days, and return rate.
-2. Read the trend from left to right; the window ends on the latest week with
-   observed activity.
-3. Read heatmap numbers for precision. Color represents relative intensity in
-   the current visual and filter context.
-4. Compare the same population and filters before and after an inflection.
-
-### Diagnostic questions
-
-- Did reach, recurrence, and intensity move together?
-- Is a change isolated to one department or country?
-- Did a rollout, campaign, holiday, export boundary, or source issue occur at
-  the same time?
-- Are new users expanding the population while prior users are returning?
-
-### Action
-
-Use the component that changed to choose the response:
-
-| Pattern | Likely enablement response |
-| --- | --- |
-| Reach up, return flat or down | Improve onboarding and second-use prompts |
-| Return up, reach flat | Scale proven workflows to additional teams |
-| Prompts up, active days flat | Encourage repeatable use across more days |
-| Active days up, maturity flat | Teach multi-step and skill-based delegation |
-
-### Guardrail
-
-Do not call a trend from one point. Investigate sharp changes against export
-coverage, rollout timing, holidays, and filter changes.
-
-## Page 4: Adoption by Attributes
-
-### Purpose
-
-Show where adoption and delegation patterns differ across available
-organization attributes.
-
-### Read it in this order
-
-1. Confirm organization enrichment is connected and matching audit identities.
-2. Select Department or Country.
-3. Compare observed task volume and the shared delegation ladder.
-4. Check population size before ranking or comparing groups.
-5. Drill to user-level detail only when approved for the decision.
-
-### Diagnostic questions
-
-- Are differences driven by population size or by activity per user?
-- Does a group have enough matched users for a stable comparison?
-- Is the pattern consistent across reach, prompts, and delegation?
-- Could role mix, rollout timing, or work type explain the difference?
-
-### Action
-
-Prioritize groups with sufficient population and a clearly defined enablement
-gap. Validate the proposed action with local role and rollout context.
-
-### Guardrail
-
-A blank organizational breakdown means enrichment is unavailable or unmatched,
-not that activity is zero. Organizational comparisons must not be interpreted
-as employee-performance comparisons.
-
-## Page 5: User Maturity
-
-### Purpose
-
-Describe how deeply people delegate work and how consistently they use Cowork.
-
-### Delegation ladder
-
-The model evaluates users in this order:
-
-| Rung | Rule | Grain |
-| --- | --- | --- |
-| Not started | No observed task threads | Selected period |
-| Trying | Observed tasks, but no higher rule is met | Selected period |
-| Using | Average elapsed task duration is at least 5 minutes | Selected period |
-| Delegating | At least 30% of observed tasks are multi-skill | Selected period |
-| Automating | Any reported scheduled-task total is greater than zero | **Lifetime user total from optional usage export** |
-
-The five-minute and 30% thresholds are template conventions. The ladder index
-assigns rung scores 0 through 4 and divides the summed score by the maximum score
-for active users.
-
-### Rolling 12-week prompt-volume tiers
-
-| Tier | Rule |
-| --- | --- |
-| Power users | Top 10% by prompt volume and active in at least 9 of 12 weeks |
-| Habitual users | Top 40% and active in at least 9 of 12 weeks |
-| Novice users | Top 80% |
-| Low users | Below the top 80% |
-| Inactive | No prompts in the rolling window |
-| Insufficient sample | Fewer than 20 prompt-active users for percentile calculation |
-
-### Read it in this order
-
-1. Read the ladder distribution and rolling prompt-volume tiers together.
-2. Use multi-skill share, elapsed duration, steps per task, skills per task, and
-   skills per user to explain the distributions.
-3. Read the lifetime scheduling disclosure before interpreting Automating.
-4. Use Audit Coverage only in an un-narrowed date context with an independent
-   usage export.
-
-### Diagnostic questions
-
-- Is maturity rising because more users are delegating, or because a few users
-  are doing deeper work?
-- Are usage frequency and delegation depth moving together?
-- Is Automating populated from a current and matched usage export?
-- Do sampled source threads support the interpretation of complex or repeatable
-  work?
-
-### Action
-
-Target enablement by rung: onboarding for Trying, workflow expansion for Using,
-peer sharing for Delegating, and governance review for Automating.
-
-### Guardrail
-
-Task duration is elapsed time between the first and last observed event in a
-thread, not measured human attention. Scheduled totals do not respond to the
-date filter.
-
-## Page 6: Cowork Champions
-
-### Purpose
-
-Identify potential enablement partners and category or department coverage gaps.
-
-### Eligibility and scoring
-
-1. A user must have at least **3 observed task threads across 2 active weeks** in
-   the current date, category, and organization context.
-2. Eligible users receive a 0-100 evidence score:
-   - 40% category task-activity percentile
-   - 35% active-week consistency percentile
-   - 25% normalized delegation rung
-3. The selected Top 5%, Top 10%, or Top 20% tier is applied to the eligible
-   population. Top 10% is the default.
-4. At least one candidate is returned when an eligible population exists; the
-   cutoff is rounded up and deterministic tie-breaking is applied.
-
-### Read it in this order
-
-1. Confirm the selected category and tier.
-2. Check eligible-user count and cohort size.
-3. Review candidate score, tasks, active weeks, maturity stage, and last
-   activity together.
-4. Check department coverage to find eligible groups without a candidate.
-
-### Diagnostic questions
-
-- Is the candidate list stable under a reasonable date range?
-- Are results concentrated in one category or department?
-- Does the cohort contain fewer than ten eligible users?
-- Is organization enrichment available for the coverage view?
-
-### Action
-
-Validate role fit, willingness, manager support, and appropriate data use.
-Invite willing candidates to share repeatable workflows; do not automatically
-publish or contact a ranked list.
-
-### Guardrail
-
-This is comparative engagement evidence for enablement planning. It does not
-measure expertise, influence, aptitude, performance, or promotion readiness.
-
-## Page 7: Activity & Assisted Hours
-
-### Purpose
-
-Connect observed Cowork activity with transparent, assumption-based assisted
+**Purpose:** Show whether adoption is expanding and whether users return over
 time.
 
-### Read it in this order
+**Read in this order:**
 
-1. Read active users, observed activity records, and tasks by category.
-2. Confirm the selected Low, Mid, or High estimate basis.
-3. Read assisted hours as a scenario:
+1. Confirm the weekly window and cohort.
+2. Compare active-user breadth with task or prompt activity.
+3. Look for sustained movement across several weeks rather than one spike.
+4. Check whether activity concentration is changing.
 
-   `Assisted hours = sum(category task count x category minutes for selected basis) / 60`
+**Action:** Investigate material changes by department, role, location, or work
+pattern before selecting an intervention.
 
-4. Treat category-level values as allocated estimates.
-5. Open source citations and category assumptions before presenting the result.
+**Guardrail:** A partial final week, a changed export window, retention limits,
+or collection gaps can look like a decline. Repeat activity is not equivalent to
+business value or quality.
 
-### Diagnostic questions
+## Page 3: Adoption by Attributes
 
-- Which categories contribute most because of task volume, assumed minutes, or
-  both?
-- How wide is the Low-to-High range?
-- Are dominant categories based on mapped skills?
-- Would the decision change under the Low basis?
+![Adoption by Attributes](images/report-pages/03-adoption-by-attributes.png)
 
-### Action
+**Purpose:** Compare available organization cohorts and identify where a shared
+enablement plan may not fit.
 
-Present Low, Mid, and High as a range. Name the selected basis and distinguish
-observed activity from modeled assisted time.
+**Read in this order:**
 
-### Guardrail
+1. Select one organization attribute.
+2. Compare population size before comparing rates.
+3. Review both adoption breadth and usage depth.
+4. Inspect maturity and work-pattern differences.
 
-Assisted hours are not direct per-skill metering, a time study, realized
-savings, employee capacity, or financial-audit evidence. One task thread can
-produce multiple observed action records.
+**Action:** Prioritize cohorts with a meaningful population, adequate evidence,
+and an actionable gap.
 
-## Page 8: What They Use It For
+**Guardrail:** Blank attributes mean enrichment is missing or unmatched. Small
+groups are volatile and can create privacy risk. Do not infer individual
+performance from cohort activity.
 
-### Purpose
+## Page 4: Scalable Work Patterns
 
-Explain what kinds of work users ask Cowork to perform and preserve the records
-behind the category totals.
+![Scalable Work Patterns](images/report-pages/04-scalable-work-patterns.png)
 
-### Read it in this order
+**Purpose:** Identify observed task patterns that repeat across users or periods
+and understand where assisted capacity is concentrated.
 
-1. Review observed skills and mapped work categories.
-2. Use the bookmarks to switch between outcome/action and user detail without
-   clearing the current filters.
-3. Review unmapped skills before interpreting category shares.
-4. Inspect source records for the dominant categories.
-5. Use the discussion prompts as facilitation aids, not measured findings.
+**Read in this order:**
 
-### Category value tiers
+1. Compare category and task activity.
+2. Look for patterns repeated by more than one user and across more than one
+   period.
+3. Review the underlying volume and user breadth.
+4. Compare modeled assisted time only after validating its assumptions.
 
-Value tiers are references based on the category's declared Mid assumption:
+**Action:** Select repeatable, policy-compliant patterns for playbooks,
+demonstrations, training, or further qualitative validation.
 
-| Tier | Mid-band category minutes |
-| --- | --- |
-| High | 30 minutes or more |
-| Mid | 10-29 minutes |
-| Low | Less than 10 minutes |
+**Guardrail:** Classification is an analytical grouping. A frequent pattern is
+not automatically suitable for automation, and modeled time is not measured
+human attention or realized savings.
 
-### Diagnostic questions
+## Page 5: Demand & Capacity Scenario
 
-- Is activity concentrated in one category, skill, or small user group?
-- Are unmapped skills large enough to alter the conclusion?
-- Does the observed detail match the plain-language category definition?
-- Which repeatable workflow is ready for enablement or governance review?
+![Demand & Capacity Scenario](images/report-pages/05-demand-and-capacity-scenario.png)
 
-### Action
+**Purpose:** Compare observed Cowork demand with an adjustable capacity model.
 
-Select a high-volume, well-mapped category; validate examples with the business
-owner; document a repeatable scenario; and test whether it broadens reach,
-return, or maturity.
+**Read in this order:**
 
-### Guardrail
+1. Confirm the observed period and included population.
+2. Review demand volume and distribution.
+3. Confirm the active assumption set.
+4. Compare modeled demand, available capacity, remaining headroom, and constraint
+   indicators.
+5. Test a bounded alternative rather than replacing the baseline immediately.
 
-Action-value tiers are declared category references. They are not measured
-business value, user ratings, or evidence that a particular task saved the
-declared number of minutes.
+**Action:** Use scenarios to identify questions for staffing, enablement,
+prioritization, and workload review.
 
-## Page 9: Momentum Score Guide
+**Guardrail:** This page does not predict future demand. It does not prove cost
+savings, employee capacity, service levels, or financial return.
 
-### Purpose
+## Page 6: Adoption Maturity
 
-Explain the live 0-100 adoption momentum signal and its optional tuning controls.
+![Adoption Maturity](images/report-pages/06-adoption-maturity.png)
 
-### Default formula
+**Purpose:** Show progression from initial activity toward sustained delegation
+and automation evidence.
 
-The latest active week is scored as:
+**Read in this order:**
 
-`100 x (0.35 x return + 0.25 x consistency + 0.25 x intensity + 0.15 x maturity)`
+1. Review the maturity distribution for the selected cohort.
+2. Compare user breadth and evidence volume at each stage.
+3. Check active weeks and task diversity before interpreting progression.
+4. Look for cohorts moving over several periods.
 
-Where:
+**Action:** Match enablement to the evidence: onboarding for first use, repeatable
+work examples for returning users, and governance for advanced patterns.
 
-| Component | Normalization |
-| --- | --- |
-| Return | Weekly return rate, bounded from 0 to 1 |
-| Consistency | Average active days per user divided by the active-day cap; default cap 3 |
-| Intensity | Prompts per active user divided by the prompt cap; default cap 12 |
-| Maturity | Share of active users on Delegating or Automating |
+**Guardrail:** Maturity is an adoption construct, not a judgment of competence,
+productivity, seniority, or job performance. Stage labels depend on the available
+audit window.
 
-All components are bounded from 0 to 1. The score is rounded to a whole number.
-The default weights are 35%, 25%, 25%, and 15%.
+## Page 7: Enablement Partners
 
-### Diagnostic questions
+![Enablement Partners](images/report-pages/07-enablement-partners.png)
 
-- Which component is limiting the score?
-- Did the component change because of the numerator, denominator, or population?
-- Have weights or caps changed since the comparison period?
-- Do the four weights total 100%?
+**Purpose:** Identify people with consistent category-level engagement who may be
+appropriate for enablement outreach.
 
-### Action
+**Read in this order:**
 
-Keep default settings until a documented program rationale exists. If settings
-change, record the owner, date, reason, old values, and new values. Recalculate
-the baseline before comparing trends.
+1. Select the work category and population.
+2. Review eligibility and evidence breadth.
+3. Compare consistency, activity, and maturity evidence.
+4. Check department coverage before selecting outreach candidates.
+5. Review a person's evidence only when authorized.
 
-### Guardrail
+**Action:** Confirm role relevance, willingness, manager support, and training
+needs through human review.
 
-The score is blank when weights do not total 100%. Scores produced under
-different settings or in different tenants are not directly comparable.
+**Guardrail:** Results are not employee ratings and must not be used for
+promotion, compensation, discipline, surveillance, or automated employment
+decisions.
 
-## Page 10: Adoption Metric Guide
+## Page 8: Capacity Assumptions
 
-### Purpose
+![Capacity Assumptions](images/report-pages/08-capacity-assumptions.png)
 
-Define every report metric, threshold, dependency, filter behavior, and
-interpretation boundary.
+**Purpose:** Make the customer-controlled inputs behind demand, capacity, and
+assisted-time scenarios visible and editable.
 
-### Read it in this order
+**Read in this order:**
 
-1. Filter to the report page being discussed.
-2. Find the exact metric name.
-3. Read the definition and Data Status together.
-4. Confirm threshold, time grain, optional dependency, and bookmark behavior.
-5. Carry the definition and context into the decision record.
+1. Review every active task-level assumption.
+2. Confirm units and whether the value is per task, user, week, or other grain.
+3. Identify the source and owner for each changed value.
+4. Test the effect on the scenario pages.
+5. Record the final assumption set with the reporting output.
 
-### Decision-record minimum
+**Action:** Replace defaults only with customer-approved evidence, preserve the
+baseline, and document the rationale.
 
-- Metric name and definition
-- Reporting period and population
-- Active filters
-- Data Status
-- Optional source status
-- Convention or assumption values
-- Report/template version
+**Guardrail:** Defaults are starting assumptions, not Microsoft commitments,
+benchmarks, or measured customer outcomes. Category-wide substitutions should
+not replace the individual task controls.
 
-### Action
+## Page 9: Adoption Metric Guide
 
-Use the in-report guide during reviews to resolve ambiguous language before it
-enters presentations, action plans, or executive summaries.
+![Adoption Metric Guide](images/report-pages/09-adoption-metric-guide.png)
 
-### Guardrail
+**Purpose:** Provide definitions, calculation boundaries, sources, and safe
+interpretation language.
 
-Missing optional evidence means unavailable, not zero. A correct metric can
-still be unsuitable when its period, population, coverage, status, or
-assumptions are unstated.
+**Read in this order:**
 
----
+1. Find the metric used in the decision.
+2. Confirm numerator, denominator, grain, and filter behavior.
+3. Identify whether it is observed, optional, derived, or modeled.
+4. Read the limitation and recommended wording.
 
-## Methodology: adoption momentum
+**Action:** Cite the metric definition and active filters in exported slides,
+emails, and decision records.
 
-The score intentionally balances four different adoption behaviors:
+**Guardrail:** If the metric guide is empty after opening the PBIP source, apply
+pending model changes or refresh before distributing the report.
 
-| Behavior | Why it is included | Common misread |
-| --- | --- | --- |
-| Return | Shows whether previous-week users came back | Not the share of all licensed users |
-| Consistency | Rewards use across multiple days | Not time spent in Cowork |
-| Intensity | Represents prompts per active user | Not task complexity or value |
-| Maturity | Represents users on Delegating or Automating | Automating partly uses a lifetime optional input |
+## Core interpretation rules
 
-Caps prevent a small number of high values from dominating. They are
-conventions, not empirical targets. A score increase is most defensible when
-reach is stable or growing and at least two components improve.
+### Active users and adoption
 
-## Methodology: maturity and time grain
+An active user is supported by qualifying Cowork evidence in the selected
+period. It is not the same as a licensed, assigned, enabled, or trained user.
+Adoption rates require a documented eligible-population denominator.
 
-| Metric or attribute | Responds to date filter? | Source |
-| --- | --- | --- |
-| Task threads, prompts, multi-skill share, elapsed duration | Yes | Purview |
-| Delegation rungs Not started through Delegating | Yes | Purview |
-| Automating rung and Scheduled Share | **No - lifetime user total** | Optional usage export |
-| Prompt-volume tiers | Rolling 12 active weeks | Purview |
-| Audit Coverage | Only in an un-narrowed date context | Purview plus independent usage export |
+### Tasks, prompts, and threads
 
-Never combine lifetime scheduling and period-scoped activity without stating the
-mixed grain.
+Prompts, interactions, and task threads have different grains. Do not compare
+their totals without the metric definition. Thread duration is elapsed time
+between observed events, not continuous human effort.
 
-## Methodology: champion population
+### Usage reconciliation
 
-The champion score is recalculated inside the selected date, category, and
-organization context. Narrow filters change the eligible population,
-percentiles, score, and cutoff.
+The optional Cowork usage export can support scheduled and user-initiated totals
+and reconciliation. It is a user-level aggregate and may use a different
+reporting window from Purview. A mismatch is a reason to investigate coverage,
+not evidence that either source is wrong.
 
-Use this review sequence:
+### Classification
 
-1. Check the evidence floor.
-2. Check eligible cohort size.
-3. Check the category and date range.
-4. Review all score components.
-5. Confirm organization coverage.
-6. Perform a human validation step before outreach.
+Task, category, skill, plugin, and resource classifications are reproducible
+analytical groupings based on the versioned contract. Review uncategorized or
+low-confidence records before drawing category conclusions.
 
-When fewer than ten users are eligible, review all qualifying users instead of
-treating the percentile ranking as stable.
+### Assisted time and capacity
 
-## Methodology: assisted-time allocation
+Modeled assisted time combines observed task activity with task-specific
+assumptions. Capacity scenarios use those outputs with additional adjustable
+inputs. Report them as modeled estimates or scenarios and disclose the active
+assumption set.
 
-The model contains Low, Mid, and High minute assumptions for each work category,
-with source citations. The report multiplies observed category task counts by
-the selected assumption and converts minutes to hours.
+### Enablement partners
 
-This approach supports scenario comparison. It does not establish causal time
-savings. Category detail inherits both mapping uncertainty and assumption
-uncertainty; therefore, lower-grain results are described as allocated
-estimates.
+Engagement evidence can identify people to ask about examples, training, or
+peer-learning needs. It cannot establish quality, expertise, willingness, or
+performance. Human review is mandatory.
 
-## Data pipeline and refresh contract
+## Data quality review
 
-### Required Purview evidence
+Before presenting results, confirm:
 
-- Outer columns: `RecordId`, `CreationDate`, `Operation`, `UserId`, `AuditData`
-- `Operation = CopilotInteraction`
-- `AuditData.CopilotEventData.AppHost` contains `cowork`, case-insensitively
-- Non-overlapping exports for large periods
-- Duplicate `RecordId` values are removed by the model
-
-### Optional inputs
-
-| Input | Preferred filename | Critical join or grain |
-| --- | --- | --- |
-| Cowork usage | `CoworkUserDetails.csv` or `Cowork Usage.csv` | Lowercase UPN; user-level aggregate |
-| Organization | `CoworkUserOrgDetails.csv` or `Cowork User Organization.csv` | Lowercase UPN; user attributes |
-| Identity | Exact filename `cowork_users.csv` | Audit identity to friendly name |
-| Consumption | Supported consumption export | Supporting fields only; not required for core adoption |
-
-The model searches recursively under the configured folder. Keep only one
-current schema-valid optional file of each type; when several files match, the
-model does not select by newest modified date.
-
-### Validation sequence
-
-1. Confirm Purview users, threads, skills, categories, and dates.
-2. Confirm the displayed period matches the intended export period.
-3. Reconcile usage totals only in a compatible, un-narrowed date context.
-4. Check identity and organization match coverage.
-5. Check skill mapping coverage and unmapped records.
-6. Confirm champion counts change predictably with tier and category.
-7. Confirm the Momentum Weight Status says weights total 100%.
-8. Confirm no page or visual displays an error.
+- the processor and compatibility validator succeeded
+- `manifest.json` records the intended source files and reporting period
+- exactly 13 entity files are present
+- no collection gap overlaps the analysis window
+- optional-file joins use the intended UPNs
+- final-week or final-month periods are complete
+- cohort sizes are sufficient and privacy-safe
+- Capacity Assumptions values and owners are recorded
+- Adoption Metric Guide is populated
+- the refreshed report has the sensitivity label required by policy
 
 ## Recommended decision language
 
-| Scenario | Defensible wording |
-| --- | --- |
-| Adoption is broadening | "Weekly active users increased in the selected period while return rate remained stable or improved." |
-| Return is weakening | "A smaller share of previous-week users returned in the latest active week; export coverage and rollout context should be checked." |
-| Use is concentrated | "Observed activity is concentrated among the displayed users or groups; role and rollout context should be checked." |
-| Maturity is increasing | "The report calculates a larger share of users on higher delegation rungs under the documented thresholds." |
-| Champion outreach | "These users meet the report's engagement evidence floor and selected percentile tier; role fit and willingness still require confirmation." |
-| Assisted-time scenario | "Under the selected category assumptions, the report models the displayed assisted-hour range." |
-| Optional data missing | "This breakdown cannot be calculated from the current connected inputs." |
+Prefer:
 
-Avoid wording that claims Cowork caused productivity gains, proves automation,
-measures employee performance, replaces billing or compliance records, or
-establishes a cross-tenant benchmark.
+- "Observed Cowork activity increased across the selected period."
+- "This cohort has lower repeat activity and may benefit from targeted
+  enablement."
+- "These users show category-level engagement evidence and may be appropriate to
+  contact for peer-learning validation."
+- "Under the recorded assumptions, the scenario indicates available capacity."
 
-## Presenter checklist
+Avoid:
 
-Before a review:
+- "Cowork caused productivity to increase."
+- "These employees are the top performers."
+- "The organization saved this many hours."
+- "Demand will reach this level."
+- "The scenario proves ROI."
 
-- Confirm template version, refresh time, reporting period, and filters.
-- Confirm source status and any missing optional inputs.
-- Confirm momentum settings and assisted-time basis.
-- Prepare one corroborating visual for each headline.
-- Remove or protect user-level identifiers as required.
+## Minimum decision record
 
-During a review:
+Record:
 
-- State the evidence label before the conclusion.
-- Separate observed, derived, and modeled statements.
-- Explain denominators and mixed time grains.
-- Treat champion output as an enablement starting point.
-
-After a review:
-
-- Record metric definitions, filters, statuses, assumptions, and owners.
-- Assign validation owners before enablement or governance action.
-- Apply organizational privacy, labor, works-council, security, retention, and
-  sensitivity-label requirements.
+- report and processor version
+- source owner and extraction timestamps
+- analysis period and filters
+- metric definitions used
+- missing or optional sources
+- assumption values and owners
+- known collection or join gaps
+- sensitivity label and audience
+- decision, reviewer, and review date
 
 ## Usage and compliance disclaimer
 
-Coverage depends on licensing, audit settings, retention, product behavior,
-permissions, export completeness, optional source availability, identity
-matching, and template version. Validate the report against approved source
-records before production decisions.
+This template is technical and analytical guidance, not legal, compliance, HR,
+financial, or records-management advice. Customers are responsible for lawful
+collection, access control, retention, employee consultation, metric approval,
+labeling, and use of Microsoft 365 and Power BI data.

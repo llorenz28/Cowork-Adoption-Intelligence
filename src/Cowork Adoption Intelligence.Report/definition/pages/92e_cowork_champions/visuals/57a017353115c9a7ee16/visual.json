@@ -53,36 +53,6 @@
                       "Entity": "_Measures"
                     }
                   },
-                  "Property": "Champion Candidate Rank"
-                }
-              },
-              "queryRef": "_Measures.Champion Candidate Rank",
-              "nativeQueryRef": "Rank",
-              "displayName": "Rank"
-            },
-            {
-              "field": {
-                "Measure": {
-                  "Expression": {
-                    "SourceRef": {
-                      "Entity": "_Measures"
-                    }
-                  },
-                  "Property": "Champion Candidate Score"
-                }
-              },
-              "queryRef": "_Measures.Champion Candidate Score",
-              "nativeQueryRef": "Score",
-              "displayName": "Score"
-            },
-            {
-              "field": {
-                "Measure": {
-                  "Expression": {
-                    "SourceRef": {
-                      "Entity": "_Measures"
-                    }
-                  },
                   "Property": "Champion Candidate Tasks"
                 }
               },
@@ -117,8 +87,8 @@
                 }
               },
               "queryRef": "_Measures.Champion Candidate Stage",
-              "nativeQueryRef": "Delegation stage",
-              "displayName": "Delegation stage"
+              "nativeQueryRef": "Usage maturity stage",
+              "displayName": "Usage maturity stage"
             },
             {
               "field": {
@@ -148,10 +118,10 @@
                     "Entity": "_Measures"
                   }
                 },
-                "Property": "Champion Candidate Rank"
+                "Property": "Champion Candidate Tasks"
               }
             },
-            "direction": "Ascending"
+            "direction": "Descending"
           }
         ]
       }
@@ -288,60 +258,6 @@
                 }
               }
             }
-          }
-        },
-        {
-          "properties": {
-            "backColor": {
-              "solid": {
-                "color": {
-                  "expr": {
-                    "FillRule": {
-                      "Input": {
-                        "SelectRef": {
-                          "ExpressionName": "_Measures.Champion Candidate Score"
-                        }
-                      },
-                      "FillRule": {
-                        "linearGradient2": {
-                          "min": {
-                            "color": {
-                              "Literal": {
-                                "Value": "'#F3EFF8'"
-                              }
-                            }
-                          },
-                          "max": {
-                            "color": {
-                              "Literal": {
-                                "Value": "'#8B72B1'"
-                              }
-                            }
-                          },
-                          "nullColoringStrategy": {
-                            "strategy": {
-                              "Literal": {
-                                "Value": "'noColor'"
-                              }
-                            }
-                          }
-                        }
-                      }
-                    }
-                  }
-                }
-              }
-            }
-          },
-          "selector": {
-            "data": [
-              {
-                "dataViewWildcard": {
-                  "matchingOption": 1
-                }
-              }
-            ],
-            "metadata": "_Measures.Champion Candidate Score"
           }
         }
       ],
@@ -480,7 +396,7 @@
             "altText": {
               "expr": {
                 "Literal": {
-                  "Value": "'Ranked potential champion table with department, score, tasks, active weeks, delegation stage, and last activity.'"
+                  "Value": "'Potential enablement partners with department, observed tasks, active weeks, usage maturity stage, and last activity. Composite rank and score are intentionally omitted from the default view.'"
                 }
               }
             }
@@ -547,7 +463,7 @@
             "text": {
               "expr": {
                 "Literal": {
-                  "Value": "'Potential champions - ranked evidence'"
+                  "Value": "'Potential enablement partners - transparent evidence'"
                 }
               }
             },

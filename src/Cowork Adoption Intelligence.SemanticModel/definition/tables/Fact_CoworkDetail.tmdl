@@ -202,107 +202,6 @@ table Fact_CoworkDetail
 		formatString: #,0
 		lineageTag: 5761b2cb-5faf-5e1d-a11b-4cc80175dcf0
 
-	/// Composite 0-100 adoption momentum index using customer-adjustable component
-	/// weights and normalization caps. The default selections preserve the original
-	/// 35/25/25/15 weighting and 3-day/12-prompt conventions.
-	measure 'Cowork Adoption Momentum Score' =
-			VAR _returnWeight = [Momentum Return Weight Value]
-			VAR _consistencyWeight = [Momentum Consistency Weight Value]
-			VAR _intensityWeight = [Momentum Intensity Weight Value]
-			VAR _maturityWeight = [Momentum Maturity Weight Value]
-			VAR _activeDayCap = [Momentum Active-Day Cap Value]
-			VAR _promptCap = [Momentum Prompt Cap Value]
-			VAR _weightSum =
-			    _returnWeight +
-			    _consistencyWeight +
-			    _intensityWeight +
-			    _maturityWeight
-			VAR _axisWeek = SELECTEDVALUE(Dim_Date[WeekStart])
-			VAR _scoreWeek =
-			    IF(
-			        NOT ISBLANK(_axisWeek),
-			        _axisWeek,
-			        MAXX(
-			            FILTER(
-			                ALLSELECTED(Dim_Date[WeekStart]),
-			                CALCULATE([Cowork Aggregate Active Users]) > 0
-			            ),
-			            Dim_Date[WeekStart]
-			        )
-			    )
-			VAR _activeUsers =
-			    CALCULATE(
-			        [Cowork Aggregate Active Users],
-			        REMOVEFILTERS(Dim_Date),
-			        Dim_Date[WeekStart] = _scoreWeek
-			    )
-			VAR _returnRate =
-			    CALCULATE(
-			        [Cowork Weekly Return Rate],
-			        REMOVEFILTERS(Dim_Date),
-			        Dim_Date[WeekStart] = _scoreWeek
-			    )
-			VAR _activeDays =
-			    CALCULATE(
-			        [Cowork Aggregate Average Active Days per User],
-			        REMOVEFILTERS(Dim_Date),
-			        Dim_Date[WeekStart] = _scoreWeek
-			    )
-			VAR _promptIntensity =
-			    CALCULATE(
-			        DIVIDE([Cowork Aggregate Prompt Count], [Cowork Aggregate Active Users]),
-			        REMOVEFILTERS(Dim_Date),
-			        Dim_Date[WeekStart] = _scoreWeek
-			    )
-			VAR _advancedUsers =
-			    CALCULATE(
-			        [Users on Rung 3+],
-			        REMOVEFILTERS(Dim_Date),
-			        Dim_Date[WeekStart] = _scoreWeek
-			    )
-			VAR _returnComponent =
-			    MIN(1.0, MAX(0.0, COALESCE(_returnRate, 0.0)))
-			VAR _consistencyComponent =
-			    MIN(1.0, MAX(0.0, DIVIDE(COALESCE(_activeDays, 0.0), _activeDayCap)))
-			VAR _intensityComponent =
-			    MIN(1.0, MAX(0.0, DIVIDE(COALESCE(_promptIntensity, 0.0), _promptCap)))
-			VAR _maturityComponent =
-			    MIN(1.0, MAX(0.0, DIVIDE(COALESCE(_advancedUsers, 0.0), _activeUsers)))
-			RETURN
-			    IF(
-			        ISBLANK(_activeUsers) ||
-			        _activeUsers = 0 ||
-			        ABS(_weightSum - 1.0) > 0.0001,
-			        BLANK(),
-			        ROUND(
-			            100.0 * (
-			                _returnWeight * _returnComponent +
-			                _consistencyWeight * _consistencyComponent +
-			                _intensityWeight * _intensityComponent +
-			                _maturityWeight * _maturityComponent
-			            ),
-			            0
-			        )
-			    )
-		formatString: 0
-		lineageTag: fe91b202-e663-5d95-9226-320d217d6e94
-
-	/// Confirms whether the four selected momentum weights total 100 percent.
-	measure 'Momentum Weight Status' =
-			VAR _weightSum =
-			    [Momentum Return Weight Value] +
-			    [Momentum Consistency Weight Value] +
-			    [Momentum Intensity Weight Value] +
-			    [Momentum Maturity Weight Value]
-			RETURN
-			    IF(
-			        ABS(_weightSum - 1.0) <= 0.0001,
-			        "Weights total 100% — momentum index is enabled.",
-			        "Weights sum to " & FORMAT(_weightSum, "0%") &
-			            " — adjust so they total 100%"
-			    )
-		lineageTag: 9d36acd1-b699-4818-b119-940509d39f97
-
 	measure 'Cowork Weekly Prompt Change %' =
 			VAR _axisWeek = SELECTEDVALUE(Dim_Date[WeekStart])
 			VAR _currentWeek =
@@ -332,30 +231,6 @@ table Fact_CoworkDetail
 			RETURN DIVIDE(_currentPrompts - _previousPrompts, _previousPrompts)
 		formatString: +0.0%;-0.0%;0.0%
 		lineageTag: 297bba53-8bc3-5b97-a13c-79fc330b7964
-
-	measure 'Cowork Adoption Momentum Score (Last 12 Weeks)' =
-			VAR _week = SELECTEDVALUE(Dim_Date[WeekStart])
-			VAR _lastWeek =
-			    MAXX(
-			        FILTER(
-			            ALLSELECTED(Dim_Date[WeekStart]),
-			            CALCULATE(
-			                [Cowork Aggregate Active Users],
-			                REMOVEFILTERS(Dim_User[Department])
-			            ) > 0
-			        ),
-			        Dim_Date[WeekStart]
-			    )
-			RETURN
-			    IF(
-			        NOT ISBLANK(_week) &&
-			        NOT ISBLANK(_lastWeek) &&
-			        _week >= _lastWeek - 77 &&
-			        _week <= _lastWeek,
-			        [Cowork Adoption Momentum Score]
-			    )
-		formatString: 0
-		lineageTag: 7a3ac396-eef1-55d0-b7c8-4a6b27f50434
 
 	measure 'Cowork Prompts per Active User (Last 12 Weeks)' =
 			VAR _week = SELECTEDVALUE(Dim_Date[WeekStart])

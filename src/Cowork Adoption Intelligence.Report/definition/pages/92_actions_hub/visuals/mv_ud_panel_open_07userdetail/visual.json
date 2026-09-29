@@ -1,12 +1,12 @@
 {
-  "$schema": "https://developer.microsoft.com/json-schemas/fabric/item/report/definition/visualContainer/2.12.0/schema.json",
+  "$schema": "https://developer.microsoft.com/json-schemas/fabric/item/report/definition/visualContainer/2.13.0/schema.json",
   "name": "mv_ud_panel_open_07userdetail",
   "position": {
-    "x": 1020.9403994338733,
-    "y": 11.272212612045919,
+    "x": 1082,
+    "y": 17,
     "z": 120000,
-    "height": 36,
-    "width": 152,
+    "height": 34,
+    "width": 142,
     "tabOrder": 120000
   },
   "visual": {
@@ -258,7 +258,7 @@
             "altText": {
               "expr": {
                 "Literal": {
-                  "Value": "'Filters. Activates Actions — user filters open'"
+                  "Value": "'Open Cowork Tasks filters'"
                 }
               }
             }
