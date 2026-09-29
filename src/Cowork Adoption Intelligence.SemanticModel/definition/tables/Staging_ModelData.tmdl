@@ -860,4 +860,5 @@ table Staging_ModelData
 					Typed = Table.TransformColumnTypes(ValidatedCombined, ExistingTypeMap, "en-US")
 				in
 					Typed
+
 	annotation PBI_ResultType = Table

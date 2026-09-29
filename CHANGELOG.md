@@ -1,5 +1,34 @@
 # Changelog
 
+## 5.0.0-testing - 2026-09-29
+
+- Replaced the ten-page V4.1 report with the validated nine-page recommended
+  layout: Cowork Adoption Scorecard, Weekly Adoption & Usage, Adoption by
+  Attributes, Scalable Work Patterns, Demand & Capacity Scenario, Adoption
+  Maturity, Enablement Partners, Capacity Assumptions, and Adoption Metric Guide.
+- Integrated Start Here guidance into Cowork Adoption Scorecard instead of
+  shipping a separate navigation page.
+- Synchronized the editable PBIP source with the 284-visual, 27-bookmark report
+  validated in Power BI Desktop.
+- Consolidated the repeated heatmap guidance into one short line and enlarged the
+  heatmap evidence matrix.
+- Published the customer template as `Cowork Adoption V3.pbit`, applied the
+  Public sensitivity label, reopened the exported file, and confirmed that the
+  label persisted.
+- Added the complete automation package for Power Automate, Azure Container Apps
+  Jobs, PAX v1.11.15, the validated Cowork Python processor, compatibility
+  validation, Azure deployment, and least-privilege job-start access.
+- Added the exact cloud-flow build guide and machine-readable orchestration map;
+  the map is documentation and is not an importable Power Automate solution ZIP.
+- Made the validated preprocessed entity path the only current ingestion route
+  and retained prior V4.0 templates only as archived rollback artifacts.
+- Replaced the obsolete ten-page screenshots, video, storyboard, SharePoint
+  builder, and standalone preprocessor bundle with the nine-page release assets
+  and combined automation bundle.
+- Updated setup, interpretation, security, and release evidence for the
+  recommended layout, customer-controlled capacity assumptions, and the
+  verified label-related `SecurityBindings` stream.
+
 ## 4.1.0-testing - 2026-09-25
 
 - Added the standard-library

@@ -1,12 +1,12 @@
 {
-  "$schema": "https://developer.microsoft.com/json-schemas/fabric/item/report/definition/visualContainer/2.12.0/schema.json",
+  "$schema": "https://developer.microsoft.com/json-schemas/fabric/item/report/definition/visualContainer/2.13.0/schema.json",
   "name": "mv_ud_user_tier_slicer_07userdetail",
   "position": {
-    "x": 872,
-    "y": 396,
+    "x": 842,
+    "y": 371,
     "z": 104000,
-    "height": 64,
-    "width": 392,
+    "height": 60,
+    "width": 367,
     "tabOrder": 104000
   },
   "visual": {
@@ -28,8 +28,8 @@
               },
               "queryRef": "Dim_User.Manager",
               "nativeQueryRef": "Manager",
-              "displayName": "Manager",
-              "active": true
+              "active": true,
+              "displayName": "Manager"
             }
           ]
         }

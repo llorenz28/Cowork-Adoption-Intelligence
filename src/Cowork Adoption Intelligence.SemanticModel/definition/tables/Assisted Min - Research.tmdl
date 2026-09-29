@@ -1,0 +1,18 @@
+table 'Assisted Min - Research'
+	lineageTag: 85ef104c-a33a-4d84-95e8-a768ac68b63b
+
+	/// Customer-defined assisted minutes per Analysis & Research task.
+	measure 'Assisted Min - Research Value' = SELECTEDVALUE('Assisted Min - Research'[Assisted Min - Research], 67)
+		formatString: 0
+		lineageTag: aa5e0f5e-e1fa-4764-a489-e53427641d2c
+
+	column 'Assisted Min - Research'
+		dataType: int64
+		formatString: 0
+		lineageTag: f52392e1-7fd3-413f-8367-1b844c4db731
+		summarizeBy: none
+		sourceColumn: [Value]
+
+	partition 'Assisted Min - Research' = calculated
+		mode: import
+		source = GENERATESERIES(0, 240, 1)

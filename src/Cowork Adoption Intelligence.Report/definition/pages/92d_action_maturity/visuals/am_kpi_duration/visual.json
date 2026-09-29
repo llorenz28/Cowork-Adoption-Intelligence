@@ -20,14 +20,15 @@
                 "Measure": {
                   "Expression": {
                     "SourceRef": {
-                      "Entity": "Fact_CoworkThread"
+                      "Entity": "Fact_CoworkDetail"
                     }
                   },
-                  "Property": "Avg Task Duration (min)"
+                  "Property": "Cowork Weekly Active Users"
                 }
               },
-              "queryRef": "Fact_CoworkThread.Avg Task Duration (min)",
-              "nativeQueryRef": "Avg Task Duration (min)"
+              "queryRef": "Fact_CoworkDetail.Cowork Weekly Active Users",
+              "nativeQueryRef": "Cowork Weekly Active Users",
+              "displayName": "Latest weekly active users"
             }
           ]
         }
@@ -42,7 +43,7 @@
                 "color": {
                   "expr": {
                     "Literal": {
-                      "Value": "'#0099BC'"
+                      "Value": "'#4B2D83'"
                     }
                   }
                 }
@@ -180,7 +181,7 @@
             "altText": {
               "expr": {
                 "Literal": {
-                  "Value": "'Avg Task Duration (min). Shows Avg Task Duration (min) and updates with current report filters.'"
+                  "Value": "'Distinct Cowork users active in the latest selected week.'"
                 }
               }
             }

@@ -1,0 +1,18 @@
+table 'Assisted Min - Specialized'
+	lineageTag: 544c226a-f5a0-4480-a53f-f3652282129e
+
+	/// Customer-defined assisted minutes per Specialized workflows task.
+	measure 'Assisted Min - Specialized Value' = SELECTEDVALUE('Assisted Min - Specialized'[Assisted Min - Specialized], 25)
+		formatString: 0
+		lineageTag: e46f69f5-bfc8-44fd-9809-fc53af4ae0ad
+
+	column 'Assisted Min - Specialized'
+		dataType: int64
+		formatString: 0
+		lineageTag: 404a83db-d28f-4895-9bf9-9ad590ca8da6
+		summarizeBy: none
+		sourceColumn: [Value]
+
+	partition 'Assisted Min - Specialized' = calculated
+		mode: import
+		source = GENERATESERIES(0, 240, 1)

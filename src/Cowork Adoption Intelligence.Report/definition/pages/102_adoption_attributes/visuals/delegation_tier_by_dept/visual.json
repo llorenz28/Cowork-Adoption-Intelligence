@@ -3,11 +3,11 @@
   "name": "delegation_tier_by_dept",
   "position": {
     "x": 640,
-    "y": 360,
+    "y": 416,
     "z": 4000,
-    "height": 328,
+    "height": 272,
     "width": 624,
-    "tabOrder": 4000
+    "tabOrder": 9000
   },
   "visual": {
     "visualType": "hundredPercentStackedBarChart",
@@ -288,7 +288,7 @@
                 "color": {
                   "expr": {
                     "Literal": {
-                      "Value": "'#5B8EC7'"
+                      "Value": "'#6F91B8'"
                     }
                   }
                 }
@@ -303,7 +303,7 @@
                 "color": {
                   "expr": {
                     "Literal": {
-                      "Value": "'#DCE5F0'"
+                      "Value": "'#C9CFD8'"
                     }
                   }
                 }
@@ -321,7 +321,7 @@
                 "color": {
                   "expr": {
                     "Literal": {
-                      "Value": "'#B7C9E2'"
+                      "Value": "'#B88A55'"
                     }
                   }
                 }
@@ -339,7 +339,7 @@
                 "color": {
                   "expr": {
                     "Literal": {
-                      "Value": "'#7F9DC4'"
+                      "Value": "'#6F91B8'"
                     }
                   }
                 }
@@ -357,7 +357,7 @@
                 "color": {
                   "expr": {
                     "Literal": {
-                      "Value": "'#506FA8'"
+                      "Value": "'#78679A'"
                     }
                   }
                 }
@@ -375,7 +375,7 @@
                 "color": {
                   "expr": {
                     "Literal": {
-                      "Value": "'#2F5597'"
+                      "Value": "'#4F8176'"
                     }
                   }
                 }

@@ -1,0 +1,18 @@
+table 'Assisted Min - Communications'
+	lineageTag: 0fd00d9c-35a6-4fc6-b8d7-12662b52c5cf
+
+	/// Customer-defined assisted minutes per Communication workflows task.
+	measure 'Assisted Min - Communications Value' = SELECTEDVALUE('Assisted Min - Communications'[Assisted Min - Communications], 4)
+		formatString: 0
+		lineageTag: 2fb72106-ad2d-4581-b870-dd3be651ce26
+
+	column 'Assisted Min - Communications'
+		dataType: int64
+		formatString: 0
+		lineageTag: 51a8d401-ad59-4861-a8ad-f35768cf4d17
+		summarizeBy: none
+		sourceColumn: [Value]
+
+	partition 'Assisted Min - Communications' = calculated
+		mode: import
+		source = GENERATESERIES(0, 240, 1)

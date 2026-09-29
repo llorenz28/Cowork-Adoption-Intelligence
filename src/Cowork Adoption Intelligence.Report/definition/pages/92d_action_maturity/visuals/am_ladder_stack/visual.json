@@ -3,10 +3,10 @@
   "name": "am_ladder_stack",
   "position": {
     "x": 16,
-    "y": 224,
+    "y": 216,
     "z": 5000,
-    "height": 340,
-    "width": 404,
+    "height": 280,
+    "width": 624,
     "tabOrder": 21000
   },
   "visual": {
@@ -271,7 +271,7 @@
                 "color": {
                   "expr": {
                     "Literal": {
-                      "Value": "'#5B8EC7'"
+                      "Value": "'#6F91B8'"
                     }
                   }
                 }
@@ -286,7 +286,7 @@
                 "color": {
                   "expr": {
                     "Literal": {
-                      "Value": "'#DCE5F0'"
+                      "Value": "'#C9CFD8'"
                     }
                   }
                 }
@@ -304,7 +304,7 @@
                 "color": {
                   "expr": {
                     "Literal": {
-                      "Value": "'#B7C9E2'"
+                      "Value": "'#B88A55'"
                     }
                   }
                 }
@@ -322,7 +322,7 @@
                 "color": {
                   "expr": {
                     "Literal": {
-                      "Value": "'#7F9DC4'"
+                      "Value": "'#6F91B8'"
                     }
                   }
                 }
@@ -340,7 +340,7 @@
                 "color": {
                   "expr": {
                     "Literal": {
-                      "Value": "'#506FA8'"
+                      "Value": "'#78679A'"
                     }
                   }
                 }
@@ -358,7 +358,7 @@
                 "color": {
                   "expr": {
                     "Literal": {
-                      "Value": "'#2F5597'"
+                      "Value": "'#4F8176'"
                     }
                   }
                 }
@@ -385,7 +385,7 @@
             "text": {
               "expr": {
                 "Literal": {
-                  "Value": "'Delegation depth tier'"
+                  "Value": "'Usage maturity stage'"
                 }
               }
             },
@@ -537,7 +537,7 @@
             "altText": {
               "expr": {
                 "Literal": {
-                  "Value": "'Delegation depth tier. Monthly 100 percent stacked distribution across Not started, Trying, Using, Delegating, and Automating. Updates with current report filters.'"
+                  "Value": "'Inferred usage maturity stage. Monthly distribution across Not started, Trying, Using, Delegating, and Automating; this is an enablement convention, not a performance rating.'"
                 }
               }
             }

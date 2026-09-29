@@ -1,0 +1,7 @@
+*
+!Dockerfile
+!Invoke-CoworkPipeline.ps1
+!Validate-CoworkCompatibility.py
+!Cowork_Purview_Preprocessor_v0.1.0.py
+!cowork-contract.json
+!Cowork-LICENSE

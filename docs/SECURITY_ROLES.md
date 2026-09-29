@@ -4,14 +4,20 @@ This page defines the least-privilege access needed to collect CSV inputs for
 Cowork Adoption Intelligence. Data export, tenant configuration, and Power BI
 publication are separate responsibilities.
 
-## What this release does not require
+## Manual export path
 
-Do not request these solely for the template:
+Do not request these solely for a manual, file-fed template refresh:
 
 - an app registration, client secret, or certificate
 - Microsoft Graph application permissions
 - Defender Advanced Hunting permissions
 - Global Administrator for routine collection
+
+The scheduled PAX and Azure Container Apps path is different. Its user-assigned
+managed identity requires the Microsoft Graph application permissions documented
+in [`automation/README.md`](../automation/README.md), including tenant admin
+consent. Do not grant those permissions to the Power BI operator or use them for
+the manual export path.
 
 ## Least-privilege matrix
 
@@ -23,6 +29,8 @@ Do not request these solely for the template:
 | Open and refresh in Power BI Desktop | No tenant role | Approved local file access is sufficient |
 | Publish to a Power BI workspace | Pro/PPU unless qualifying capacity applies, plus workspace `Contributor` | Use `Member` or `Admin` only for app or access management |
 | Schedule refresh from local or UNC files | Workspace write role plus gateway connection access | Gateway permissions are separate from workspace roles |
+| Run automated PAX collection | User-assigned managed identity with the documented Graph application permissions | Scope the identity to the collection job and review tenant consent |
+| Start the ACA Job from Power Automate | Custom role from `automation/deploy/CoworkJobStarterRole.json` at the job scope | Do not grant broad job-operator access when the custom role is sufficient |
 
 ## Why these roles
 
@@ -83,7 +91,8 @@ Please provide these CSV exports for the agreed reporting period:
    - Deliverable: only the approved fields documented in SETUP.md
 
 No app registration, secret, Graph application permission, Defender permission,
-or Global Administrator assignment is requested for routine report operation.
+or Global Administrator assignment is requested for this manual export path.
+The optional automated PAX path uses a separately governed managed identity.
 ```
 
 ## Assignment and review controls
@@ -110,4 +119,3 @@ or Global Administrator assignment is requested for routine report operation.
 Role names, navigation, licensing, and export schemas can change. Confirm the
 linked Microsoft guidance, actual CSV headers, and tenant policy before each
 production collection.
-

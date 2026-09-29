@@ -1,0 +1,78 @@
+{
+  "format": "cowork-power-automate-implementation-map-v1",
+  "name": "Cowork Adoption Intelligence Refresh Orchestrator",
+  "importable": false,
+  "reason": "Power Automate solution packages require environment-specific connection references and IDs. Build this solution-aware flow from BUILD.md.",
+  "apiVersion": "2026-07-01",
+  "trigger": {
+    "type": "Recurrence",
+    "frequency": "Day",
+    "interval": 1,
+    "concurrency": 1
+  },
+  "environmentVariables": [
+    "CoworkAzureSubscriptionId",
+    "CoworkAzureResourceGroup",
+    "CoworkContainerAppsJobName",
+    "CoworkPowerBIWorkspaceId",
+    "CoworkPowerBISemanticModelId"
+  ],
+  "actions": [
+    {
+      "name": "Start_Cowork_ACA_Job",
+      "connector": "HTTP with Microsoft Entra ID",
+      "method": "POST",
+      "uriTemplate": "https://management.azure.com/subscriptions/{subscriptionId}/resourceGroups/{resourceGroup}/providers/Microsoft.App/jobs/{jobName}/start?api-version=2026-07-01",
+      "requestBody": null,
+      "secureInputs": true,
+      "secureOutputs": true
+    },
+    {
+      "name": "Discover_Cowork_execution",
+      "type": "DoUntil",
+      "interval": "PT15S",
+      "timeout": "PT10M",
+      "maxIterations": 20,
+      "listUriTemplate": "https://management.azure.com/subscriptions/{subscriptionId}/resourceGroups/{resourceGroup}/providers/Microsoft.App/jobs/{jobName}/executions?api-version=2026-07-01",
+      "match": "properties.startTime >= RunStartedUtc"
+    },
+    {
+      "name": "Wait_for_Cowork_job",
+      "type": "DoUntil",
+      "interval": "PT1M",
+      "timeout": "PT12H",
+      "maxIterations": 720,
+      "terminalStates": [
+        "Succeeded",
+        "Failed",
+        "Stopped",
+        "Degraded"
+      ],
+      "successState": "Succeeded"
+    },
+    {
+      "name": "Refresh_Power_BI_semantic_model",
+      "connector": "Power BI",
+      "condition": "ExecutionStatus == Succeeded"
+    },
+    {
+      "name": "Wait_for_Power_BI_refresh",
+      "type": "DoUntil",
+      "interval": "PT1M",
+      "timeout": "PT2H",
+      "maxIterations": 120,
+      "terminalStates": [
+        "Completed",
+        "Failed",
+        "Cancelled",
+        "Disabled"
+      ],
+      "successState": "Completed"
+    }
+  ],
+  "failureNotification": {
+    "optional": true,
+    "content": "Cowork Adoption Intelligence refresh failed. Review the protected ACA Job logs and Power BI refresh history.",
+    "containsPrivateData": false
+  }
+}

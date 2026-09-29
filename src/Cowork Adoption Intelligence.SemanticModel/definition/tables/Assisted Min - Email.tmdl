@@ -1,0 +1,18 @@
+table 'Assisted Min - Email'
+	lineageTag: 3f8e6e5b-1f2e-4362-b75f-a54de7170211
+
+	/// Customer-defined assisted minutes per Email workflows task.
+	measure 'Assisted Min - Email Value' = SELECTEDVALUE('Assisted Min - Email'[Assisted Min - Email], 7)
+		formatString: 0
+		lineageTag: 40524b8a-cf49-4b16-be4f-82a816ef1bbf
+
+	column 'Assisted Min - Email'
+		dataType: int64
+		formatString: 0
+		lineageTag: b9677ff8-e419-4133-bcd0-cdd4640f78d1
+		summarizeBy: none
+		sourceColumn: [Value]
+
+	partition 'Assisted Min - Email' = calculated
+		mode: import
+		source = GENERATESERIES(0, 240, 1)

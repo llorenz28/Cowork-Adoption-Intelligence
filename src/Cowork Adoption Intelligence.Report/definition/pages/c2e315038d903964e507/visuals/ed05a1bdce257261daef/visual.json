@@ -63,12 +63,12 @@
                       "Entity": "Fact_CoworkDetail"
                     }
                   },
-                  "Property": "Cowork Adoption Momentum Score (Last 12 Weeks)"
+                  "Property": "Cowork Power Users %"
                 }
               },
-              "queryRef": "Fact_CoworkDetail.Cowork Adoption Momentum Score (Last 12 Weeks)",
-              "nativeQueryRef": "Adoption momentum index (0–100)",
-              "displayName": "Adoption momentum index (0–100)"
+              "queryRef": "Fact_CoworkDetail.Cowork Power Users %",
+              "nativeQueryRef": "Power users %",
+              "displayName": "Power users %"
             }
           ]
         }
@@ -164,7 +164,7 @@
                     "FillRule": {
                       "Input": {
                         "SelectRef": {
-                          "ExpressionName": "Fact_CoworkDetail.Cowork Adoption Momentum Score (Last 12 Weeks)"
+                          "ExpressionName": "Fact_CoworkDetail.Cowork Power Users %"
                         }
                       },
                       "FillRule": {
@@ -213,7 +213,7 @@
                 }
               }
             ],
-            "metadata": "Fact_CoworkDetail.Cowork Adoption Momentum Score (Last 12 Weeks)"
+            "metadata": "Fact_CoworkDetail.Cowork Power Users %"
           }
         }
       ],
@@ -504,7 +504,7 @@
             "altText": {
               "expr": {
                 "Literal": {
-                  "Value": "'Adoption momentum index by department. Darker cells indicate a higher value.'"
+                  "Value": "'Power-user share by department and week. Darker cells indicate a higher share.'"
                 }
               }
             }
@@ -571,7 +571,7 @@
             "text": {
               "expr": {
                 "Literal": {
-                  "Value": "'Adoption momentum index (0–100) by department'"
+                  "Value": "'Power users % by department'"
                 }
               }
             },

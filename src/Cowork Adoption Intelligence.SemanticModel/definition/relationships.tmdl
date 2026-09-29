@@ -83,6 +83,7 @@ relationship Fact_CoworkThread_DateKey
 	toColumn: Dim_Date.DateKey
 
 relationship Fact_CoworkThread_PrimarySkill
+	isActive: false
 	fromColumn: Fact_CoworkThread.PrimarySkill
 	toColumn: Dim_CoworkSkill.PluginName
 
@@ -105,3 +106,7 @@ relationship Dim_UserOrg_UserKey
 relationship Fact_Tasks_Model
 	fromColumn: Fact_Tasks.Model
 	toColumn: Dim_ModelProvider.Model
+
+relationship Fact_CoworkThread_ThreadCategoryKey
+	fromColumn: Fact_CoworkThread.ThreadCategoryKey
+	toColumn: Dim_TaskCategory.CategoryKey

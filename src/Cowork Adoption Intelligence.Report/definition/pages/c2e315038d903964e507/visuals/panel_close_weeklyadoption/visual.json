@@ -206,6 +206,5 @@
     },
     "drillFilterOtherVisuals": true
   },
-  "howCreated": "InsertVisualButton",
-  "isHidden": true
+  "howCreated": "InsertVisualButton"
 }

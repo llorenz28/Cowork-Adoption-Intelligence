@@ -2,10 +2,10 @@
   "$schema": "https://developer.microsoft.com/json-schemas/fabric/item/report/definition/visualContainer/2.12.0/schema.json",
   "name": "am_subtitle",
   "position": {
-    "x": 14.438728882157871,
-    "y": 63.771052562863929,
+    "x": 16,
+    "y": 68,
     "z": 7000,
-    "height": 40,
+    "height": 28,
     "width": 1248,
     "tabOrder": 13000
   },
@@ -71,7 +71,7 @@
             "fontFamily": {
               "expr": {
                 "Literal": {
-                  "Value": "'Segoe UI Semibold'"
+                  "Value": "'Segoe UI'"
                 }
               }
             }

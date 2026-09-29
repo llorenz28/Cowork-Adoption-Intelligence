@@ -2,10 +2,10 @@
   "$schema": "https://developer.microsoft.com/json-schemas/fabric/gitIntegration/platformProperties/2.0.0/schema.json",
   "metadata": {
     "type": "SemanticModel",
-    "displayName": "Cowork Adoption Intelligence V4"
+    "displayName": "Cowork Adoption Intelligence - Recommended Layout"
   },
   "config": {
     "version": "2.0",
-    "logicalId": "ac11d247-5610-4cd0-b541-912d5d7812f6"
+    "logicalId": "da326b93-c040-40ee-9c39-70ee1ab14daa"
   }
 }

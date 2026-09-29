@@ -1,5 +1,5 @@
 /// Compact Cowork interaction aggregate at user-day-model grain.
-/// Weekly, lifecycle, momentum, and usage-tier calculations use this table to avoid
+/// Weekly, lifecycle, rolling-tier, and usage calculations use this table to avoid
 /// repeatedly scanning the event-level audit fact while preserving raw provider filters.
 table Fact_CoworkUserDayModel
 	isHidden

@@ -1,8 +1,8 @@
 table 'Loaded Labor Rate'
 	lineageTag: 5293c893-0ded-4179-ad7c-95e580d2be53
 
-	/// Customer-entered fully loaded labor rate per hour. Blank until explicitly selected.
-	measure 'Loaded Rate Value' = SELECTEDVALUE('Loaded Labor Rate'[Loaded Labor Rate])
+	/// Customer-entered fully loaded labor rate per hour, defaulting to $72 when no single rate is selected.
+	measure 'Loaded Rate Value' = SELECTEDVALUE('Loaded Labor Rate'[Loaded Labor Rate], 72)
 		formatString: $ #,0
 		lineageTag: 4d46008d-ca7e-4459-bfb2-d522cd6f0619
 

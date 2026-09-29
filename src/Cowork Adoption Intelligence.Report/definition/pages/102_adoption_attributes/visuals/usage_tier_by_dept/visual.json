@@ -3,11 +3,11 @@
   "name": "usage_tier_by_dept",
   "position": {
     "x": 16,
-    "y": 360,
+    "y": 416,
     "z": 3000,
-    "height": 328,
+    "height": 272,
     "width": 608,
-    "tabOrder": 3000
+    "tabOrder": 8000
   },
   "visual": {
     "visualType": "hundredPercentStackedBarChart",
@@ -303,7 +303,7 @@
                 "color": {
                   "expr": {
                     "Literal": {
-                      "Value": "'#5B8EC7'"
+                      "Value": "'#6F91B8'"
                     }
                   }
                 }
@@ -318,7 +318,7 @@
                 "color": {
                   "expr": {
                     "Literal": {
-                      "Value": "'#2F5597'"
+                      "Value": "'#4F8176'"
                     }
                   }
                 }
@@ -336,7 +336,7 @@
                 "color": {
                   "expr": {
                     "Literal": {
-                      "Value": "'#506FA8'"
+                      "Value": "'#78679A'"
                     }
                   }
                 }
@@ -354,7 +354,7 @@
                 "color": {
                   "expr": {
                     "Literal": {
-                      "Value": "'#7F9DC4'"
+                      "Value": "'#6F91B8'"
                     }
                   }
                 }
@@ -372,7 +372,7 @@
                 "color": {
                   "expr": {
                     "Literal": {
-                      "Value": "'#B7C9E2'"
+                      "Value": "'#B88A55'"
                     }
                   }
                 }
@@ -390,7 +390,7 @@
                 "color": {
                   "expr": {
                     "Literal": {
-                      "Value": "'#D6CBE3'"
+                      "Value": "'#AEA3BA'"
                     }
                   }
                 }
@@ -408,7 +408,7 @@
                 "color": {
                   "expr": {
                     "Literal": {
-                      "Value": "'#E6E6E6'"
+                      "Value": "'#9CA3AD'"
                     }
                   }
                 }

@@ -1,12 +1,12 @@
 {
-  "$schema": "https://developer.microsoft.com/json-schemas/fabric/item/report/definition/visualContainer/2.12.0/schema.json",
+  "$schema": "https://developer.microsoft.com/json-schemas/fabric/item/report/definition/visualContainer/2.13.0/schema.json",
   "name": "mv_ud_panel_bg_07userdetail",
   "position": {
-    "x": 856,
-    "y": 56,
+    "x": 827,
+    "y": 53,
     "z": 100000,
-    "height": 664,
-    "width": 424,
+    "height": 623,
+    "width": 397,
     "tabOrder": 100000
   },
   "visual": {
@@ -171,6 +171,6 @@
     },
     "drillFilterOtherVisuals": true
   },
-  "isHidden": true,
-  "howCreated": "InsertVisualButton"
+  "howCreated": "InsertVisualButton",
+  "isHidden": true
 }

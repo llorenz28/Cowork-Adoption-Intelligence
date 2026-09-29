@@ -3,9 +3,9 @@
   "name": "am_trend_duration",
   "position": {
     "x": 848,
-    "y": 444,
+    "y": 426,
     "z": 12000,
-    "height": 232,
+    "height": 228,
     "width": 204,
     "tabOrder": 24000
   },
@@ -78,7 +78,7 @@
             "fontSize": {
               "expr": {
                 "Literal": {
-                  "Value": "9D"
+                  "Value": "8D"
                 }
               }
             },
@@ -159,6 +159,58 @@
             }
           }
         }
+      ],
+      "labels": [
+        {
+          "properties": {
+            "show": {
+              "expr": {
+                "Literal": {
+                  "Value": "true"
+                }
+              }
+            },
+            "labelPosition": {
+              "expr": {
+                "Literal": {
+                  "Value": "'Above'"
+                }
+              }
+            },
+            "fontFamily": {
+              "expr": {
+                "Literal": {
+                  "Value": "'Segoe UI'"
+                }
+              }
+            },
+            "fontSize": {
+              "expr": {
+                "Literal": {
+                  "Value": "8D"
+                }
+              }
+            },
+            "color": {
+              "solid": {
+                "color": {
+                  "expr": {
+                    "Literal": {
+                      "Value": "'#1B1F27'"
+                    }
+                  }
+                }
+              }
+            },
+            "enableBackground": {
+              "expr": {
+                "Literal": {
+                  "Value": "false"
+                }
+              }
+            }
+          }
+        }
       ]
     },
     "visualContainerObjects": {
@@ -175,7 +227,7 @@
             "text": {
               "expr": {
                 "Literal": {
-                  "Value": "'Duration: avg task length'"
+                  "Value": "'Avg observed span (min)'"
                 }
               }
             },
@@ -189,7 +241,7 @@
             "fontSize": {
               "expr": {
                 "Literal": {
-                  "Value": "11D"
+                  "Value": "10D"
                 }
               }
             },
@@ -289,7 +341,7 @@
             "altText": {
               "expr": {
                 "Literal": {
-                  "Value": "'Duration: avg task length. Line chart comparing Avg Task Duration (min) by MonthStart. The time grain is MonthStart. Updates with current report filters.'"
+                  "Value": "'Average observed thread span by month, measured from the first to last audit event in each Cowork thread. This is not human attention time. Updates with current report filters.'"
                 }
               }
             }
@@ -310,5 +362,6 @@
         }
       ]
     }
-  }
+  },
+  "isHidden": true
 }

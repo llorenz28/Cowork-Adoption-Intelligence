@@ -53,11 +53,13 @@ ref table Dim_UserOrg
 ref table 'Estimate Basis'
 ref table Dim_ModelProvider
 ref table 'Champion Tier'
-ref table 'Momentum Return Weight'
-ref table 'Momentum Consistency Weight'
-ref table 'Momentum Intensity Weight'
-ref table 'Momentum Maturity Weight'
-ref table 'Momentum Active-Day Cap'
-ref table 'Momentum Prompt Cap'
+ref table 'Assisted Min - Research'
+ref table 'Assisted Min - Content'
+ref table 'Assisted Min - Email'
+ref table 'Assisted Min - Meetings'
+ref table 'Assisted Min - Communications'
+ref table 'Assisted Min - Specialized'
+ref table 'Assisted Min - Code'
+ref table 'Assisted Min - General'
 
 ref cultureInfo en-US

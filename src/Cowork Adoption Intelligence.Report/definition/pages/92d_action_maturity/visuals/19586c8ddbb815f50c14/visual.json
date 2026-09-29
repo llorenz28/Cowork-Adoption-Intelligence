@@ -23,12 +23,12 @@
                       "Entity": "Fact_CoworkDetail"
                     }
                   },
-                  "Property": "Cowork Adoption Momentum Score"
+                  "Property": "Cowork Weekly Active Days per User"
                 }
               },
-              "queryRef": "Fact_CoworkDetail.Cowork Adoption Momentum Score",
-              "nativeQueryRef": "Adoption momentum index (0–100)",
-              "displayName": "Adoption momentum index (0–100)"
+              "queryRef": "Fact_CoworkDetail.Cowork Weekly Active Days per User",
+              "nativeQueryRef": "Active days per user",
+              "displayName": "Active days per user"
             }
           ]
         }
@@ -96,7 +96,7 @@
             "text": {
               "expr": {
                 "Literal": {
-                  "Value": "'Adoption momentum index (0–100)'"
+                  "Value": "'Active days per user'"
                 }
               }
             },
@@ -272,7 +272,7 @@
             "altText": {
               "expr": {
                 "Literal": {
-                  "Value": "'Adoption momentum index from 0 to 100. Weights and caps are template conventions.'"
+                  "Value": "'Average distinct active days per user in the latest active week.'"
                 }
               }
             }

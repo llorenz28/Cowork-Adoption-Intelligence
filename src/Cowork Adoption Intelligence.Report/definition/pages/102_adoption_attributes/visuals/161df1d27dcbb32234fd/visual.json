@@ -3,11 +3,11 @@
   "name": "161df1d27dcbb32234fd",
   "position": {
     "x": 16,
-    "y": 128,
+    "y": 232,
     "z": 14000,
-    "height": 216,
+    "height": 168,
     "width": 608,
-    "tabOrder": 16000
+    "tabOrder": 6000
   },
   "visual": {
     "visualType": "barChart",
@@ -43,12 +43,12 @@
                       "Entity": "Fact_CoworkDetail"
                     }
                   },
-                  "Property": "Cowork Tasks in Filter Context"
+                  "Property": "Cowork Weekly Active Users"
                 }
               },
-              "queryRef": "Fact_CoworkDetail.Cowork Tasks in Filter Context",
-              "nativeQueryRef": "Cowork tasks",
-              "displayName": "Cowork tasks"
+              "queryRef": "Fact_CoworkDetail.Cowork Weekly Active Users",
+              "nativeQueryRef": "Latest weekly active users",
+              "displayName": "Latest weekly active users"
             }
           ]
         }
@@ -63,7 +63,7 @@
                     "Entity": "Fact_CoworkDetail"
                   }
                 },
-                "Property": "Cowork Tasks in Filter Context"
+                "Property": "Cowork Weekly Active Users"
               }
             },
             "direction": "Descending"
@@ -203,7 +203,7 @@
                               "Entity": "Fact_CoworkDetail"
                             }
                           },
-                          "Property": "Cowork Tasks in Filter Context"
+                          "Property": "Cowork Weekly Active Users"
                         }
                       },
                       "FillRule": {
@@ -325,7 +325,7 @@
             "altText": {
               "expr": {
                 "Literal": {
-                  "Value": "'Ranked Cowork task volume by department.'"
+                  "Value": "'Latest-week active users by department. This is population context; interpret it with the normalized maturity distributions below.'"
                 }
               }
             }
@@ -392,7 +392,7 @@
             "text": {
               "expr": {
                 "Literal": {
-                  "Value": "'Cowork tasks by department'"
+                  "Value": "'Latest-week active users by department'"
                 }
               }
             },

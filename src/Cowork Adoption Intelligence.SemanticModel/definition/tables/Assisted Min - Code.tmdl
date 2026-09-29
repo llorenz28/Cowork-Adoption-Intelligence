@@ -1,0 +1,18 @@
+table 'Assisted Min - Code'
+	lineageTag: 5e4f2320-6ef5-437a-97bd-258136831754
+
+	/// Customer-defined assisted minutes per Write or debug code task.
+	measure 'Assisted Min - Code Value' = SELECTEDVALUE('Assisted Min - Code'[Assisted Min - Code], 56)
+		formatString: 0
+		lineageTag: 4c88d7d5-a236-4a61-bdd9-eb80c82a5ef7
+
+	column 'Assisted Min - Code'
+		dataType: int64
+		formatString: 0
+		lineageTag: 9d104f49-dd8f-4a44-8af8-9d3742dc882e
+		summarizeBy: none
+		sourceColumn: [Value]
+
+	partition 'Assisted Min - Code' = calculated
+		mode: import
+		source = GENERATESERIES(0, 240, 1)

@@ -98,7 +98,10 @@
           "am_trend_duration": {
             "singleVisual": {
               "visualType": "lineChart",
-              "objects": {}
+              "objects": {},
+              "display": {
+                "mode": "hidden"
+              }
             }
           },
           "am_trend_automation": {
@@ -122,7 +125,10 @@
           "fd8d45e5149c4882b401": {
             "singleVisual": {
               "visualType": "cardVisual",
-              "objects": {}
+              "objects": {},
+              "display": {
+                "mode": "hidden"
+              }
             }
           },
           "0b632baa7fb0d8e9b7e3": {
@@ -181,11 +187,8 @@
           },
           "7226a453bfed643e8d62": {
             "singleVisual": {
-              "visualType": "tableEx",
-              "objects": {},
-              "display": {
-                "mode": "hidden"
-              }
+              "visualType": "barChart",
+              "objects": {}
             }
           },
           "a267a7a9e8ea8c0613f6": {

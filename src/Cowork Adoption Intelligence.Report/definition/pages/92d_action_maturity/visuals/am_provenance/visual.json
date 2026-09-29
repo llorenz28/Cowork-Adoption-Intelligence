@@ -2,11 +2,11 @@
   "$schema": "https://developer.microsoft.com/json-schemas/fabric/item/report/definition/visualContainer/2.12.0/schema.json",
   "name": "am_provenance",
   "position": {
-    "x": 16,
-    "y": 688,
+    "x": 1028,
+    "y": 638,
     "z": 6000,
-    "height": 28,
-    "width": 1248,
+    "height": 38,
+    "width": 236,
     "tabOrder": 26000
   },
   "visual": {
@@ -19,10 +19,10 @@
               {
                 "textRuns": [
                   {
-                    "value": "Measured from Purview audit: task counts, duration, skills, and multi-skill rate involve no value modeling. The Automating rung uses lifetime Scheduled Share % from the optional Microsoft admin center usage export; it is excluded from the monthly trend, which shows period-scoped Delegating users.",
+                    "value": "Source: Purview audit data; scheduled activity uses the optional admin export.",
                     "textStyle": {
                       "fontFamily": "Segoe UI",
-                      "fontSize": "9pt",
+                      "fontSize": "8pt",
                       "color": "#5A6472"
                     }
                   }

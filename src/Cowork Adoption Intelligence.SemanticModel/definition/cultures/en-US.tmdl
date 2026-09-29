@@ -954,6 +954,16 @@ cultureInfo en-US
 			            },
 			            "Weight": 0.762
 			          }
+			        },
+			        {
+			          "Estimated value": {
+			            "State": "Suggested",
+			            "Source": {
+			              "Type": "External",
+			              "Agent": "PowerBI.VisualColumnRename"
+			            },
+			            "Weight": 0.9
+			          }
 			        }
 			      ]
 			    },
@@ -1768,16 +1778,6 @@ cultureInfo en-US
 			            },
 			            "Weight": 0.739
 			          }
-			        },
-			        {
-			          "Scheduled share": {
-			            "State": "Suggested",
-			            "Source": {
-			              "Type": "External",
-			              "Agent": "PowerBI.VisualColumnRename"
-			            },
-			            "Weight": 0.9
-			          }
 			        }
 			      ]
 			    },
@@ -1796,7 +1796,7 @@ cultureInfo en-US
 			          }
 			        },
 			        {
-			          "Tasks": {
+			          "Observed tasks": {
 			            "State": "Suggested",
 			            "Source": {
 			              "Type": "External",
@@ -1885,6 +1885,16 @@ cultureInfo en-US
 			              "Agent": "Thesaurus"
 			            },
 			            "Weight": 0.485
+			          }
+			        },
+			        {
+			          "Avg duration (min)": {
+			            "State": "Suggested",
+			            "Source": {
+			              "Type": "External",
+			              "Agent": "PowerBI.VisualColumnRename"
+			            },
+			            "Weight": 0.9
 			          }
 			        }
 			      ],
@@ -2006,16 +2016,6 @@ cultureInfo en-US
 			            },
 			            "Weight": 0.489
 			          }
-			        },
-			        {
-			          "Avg skills / task": {
-			            "State": "Suggested",
-			            "Source": {
-			              "Type": "External",
-			              "Agent": "PowerBI.VisualColumnRename"
-			            },
-			            "Weight": 0.9
-			          }
 			        }
 			      ]
 			    },
@@ -2131,16 +2131,6 @@ cultureInfo en-US
 			              "Agent": "Thesaurus"
 			            },
 			            "Weight": 0.482
-			          }
-			        },
-			        {
-			          "Active users": {
-			            "State": "Suggested",
-			            "Source": {
-			              "Type": "External",
-			              "Agent": "PowerBI.VisualColumnRename"
-			            },
-			            "Weight": 0.9
 			          }
 			        }
 			      ]
@@ -3069,6 +3059,16 @@ cultureInfo en-US
 			            },
 			            "Weight": 0.475
 			          }
+			        },
+			        {
+			          "Default evidence": {
+			            "State": "Suggested",
+			            "Source": {
+			              "Type": "External",
+			              "Agent": "PowerBI.VisualColumnRename"
+			            },
+			            "Weight": 0.9
+			          }
 			        }
 			      ]
 			    },
@@ -3624,6 +3624,16 @@ cultureInfo en-US
 			            },
 			            "Weight": 0.491
 			          }
+			        },
+			        {
+			          "Latest-week decision signal": {
+			            "State": "Suggested",
+			            "Source": {
+			              "Type": "External",
+			              "Agent": "PowerBI.VisualColumnRename"
+			            },
+			            "Weight": 0.9
+			          }
 			        }
 			      ]
 			    },
@@ -3682,7 +3692,17 @@ cultureInfo en-US
 			          }
 			        },
 			        {
-			          "Estimated hours saved": {
+			          "Modeled hours": {
+			            "State": "Suggested",
+			            "Source": {
+			              "Type": "External",
+			              "Agent": "PowerBI.VisualColumnRename"
+			            },
+			            "Weight": 0.9
+			          }
+			        },
+			        {
+			          "Modeled assisted hours": {
 			            "State": "Suggested",
 			            "Source": {
 			              "Type": "External",
@@ -3715,16 +3735,6 @@ cultureInfo en-US
 			              "Agent": "Thesaurus"
 			            },
 			            "Weight": 0.599
-			          }
-			        },
-			        {
-			          "Activity records per user": {
-			            "State": "Suggested",
-			            "Source": {
-			              "Type": "External",
-			              "Agent": "PowerBI.VisualColumnRename"
-			            },
-			            "Weight": 0.9
 			          }
 			        }
 			      ]
@@ -3782,16 +3792,6 @@ cultureInfo en-US
 			            },
 			            "Weight": 0.468
 			          }
-			        },
-			        {
-			          "Estimated hours saved": {
-			            "State": "Suggested",
-			            "Source": {
-			              "Type": "External",
-			              "Agent": "PowerBI.VisualColumnRename"
-			            },
-			            "Weight": 0.9
-			          }
 			        }
 			      ]
 			    },
@@ -3833,16 +3833,6 @@ cultureInfo en-US
 			              "Agent": "Thesaurus"
 			            },
 			            "Weight": 0.582
-			          }
-			        },
-			        {
-			          "Observed activity records": {
-			            "State": "Suggested",
-			            "Source": {
-			              "Type": "External",
-			              "Agent": "PowerBI.VisualColumnRename"
-			            },
-			            "Weight": 0.9
 			          }
 			        }
 			      ]
@@ -3982,16 +3972,6 @@ cultureInfo en-US
 			            },
 			            "Weight": 0.491
 			          }
-			        },
-			        {
-			          "Active users": {
-			            "State": "Suggested",
-			            "Source": {
-			              "Type": "External",
-			              "Agent": "PowerBI.VisualColumnRename"
-			            },
-			            "Weight": 0.9
-			          }
 			        }
 			      ]
 			    },
@@ -4103,16 +4083,6 @@ cultureInfo en-US
 			              "Agent": "Thesaurus"
 			            },
 			            "Weight": 0.475
-			          }
-			        },
-			        {
-			          "Business behaviors": {
-			            "State": "Suggested",
-			            "Source": {
-			              "Type": "External",
-			              "Agent": "PowerBI.VisualColumnRename"
-			            },
-			            "Weight": 0.9
 			          }
 			        }
 			      ]
@@ -4351,16 +4321,6 @@ cultureInfo en-US
 			              "Agent": "Thesaurus"
 			            },
 			            "Weight": 0.492
-			          }
-			        },
-			        {
-			          "Credits used": {
-			            "State": "Suggested",
-			            "Source": {
-			              "Type": "External",
-			              "Agent": "PowerBI.VisualColumnRename"
-			            },
-			            "Weight": 0.9
 			          }
 			        }
 			      ]
@@ -4618,6 +4578,16 @@ cultureInfo en-US
 			          }
 			        },
 			        {
+			          "Return rate (latest week)": {
+			            "State": "Suggested",
+			            "Source": {
+			              "Type": "External",
+			              "Agent": "PowerBI.VisualColumnRename"
+			            },
+			            "Weight": 0.9
+			          }
+			        },
+			        {
 			          "Weekly return rate": {
 			            "State": "Suggested",
 			            "Source": {
@@ -4641,16 +4611,6 @@ cultureInfo en-US
 			        {
 			          "prompts per active user per week": {
 			            "State": "Generated"
-			          }
-			        },
-			        {
-			          "Prompts per active user": {
-			            "State": "Suggested",
-			            "Source": {
-			              "Type": "External",
-			              "Agent": "PowerBI.VisualColumnRename"
-			            },
-			            "Weight": 0.9
 			          }
 			        }
 			      ]
@@ -4687,6 +4647,16 @@ cultureInfo en-US
 			              "Agent": "Thesaurus"
 			            },
 			            "Weight": 0.748
+			          }
+			        },
+			        {
+			          "Licensed active (period)": {
+			            "State": "Suggested",
+			            "Source": {
+			              "Type": "External",
+			              "Agent": "PowerBI.VisualColumnRename"
+			            },
+			            "Weight": 0.9
 			          }
 			        }
 			      ]
@@ -4828,7 +4798,7 @@ cultureInfo en-US
 			          }
 			        },
 			        {
-			          "Tasks per active user": {
+			          "Tasks / active (period avg)": {
 			            "State": "Suggested",
 			            "Source": {
 			              "Type": "External",
@@ -5202,6 +5172,16 @@ cultureInfo en-US
 			        },
 			        {
 			          "Work category": {
+			            "State": "Suggested",
+			            "Source": {
+			              "Type": "External",
+			              "Agent": "PowerBI.VisualColumnRename"
+			            },
+			            "Weight": 0.9
+			          }
+			        },
+			        {
+			          "Task category": {
 			            "State": "Suggested",
 			            "Source": {
 			              "Type": "External",
@@ -19592,6 +19572,16 @@ cultureInfo en-US
 			          }
 			        },
 			        {
+			          "Observed tasks": {
+			            "State": "Suggested",
+			            "Source": {
+			              "Type": "External",
+			              "Agent": "PowerBI.VisualColumnRename"
+			            },
+			            "Weight": 0.9
+			          }
+			        },
+			        {
 			          "Cowork tasks": {
 			            "State": "Suggested",
 			            "Source": {
@@ -19602,7 +19592,7 @@ cultureInfo en-US
 			          }
 			        },
 			        {
-			          "Tasks": {
+			          "Observed Cowork tasks": {
 			            "State": "Suggested",
 			            "Source": {
 			              "Type": "External",
@@ -21349,6 +21339,16 @@ cultureInfo en-US
 			              "Agent": "Thesaurus"
 			            },
 			            "Weight": 0.491
+			          }
+			        },
+			        {
+			          "Participating users": {
+			            "State": "Suggested",
+			            "Source": {
+			              "Type": "External",
+			              "Agent": "PowerBI.VisualColumnRename"
+			            },
+			            "Weight": 0.9
 			          }
 			        }
 			      ]
@@ -40206,16 +40206,6 @@ cultureInfo en-US
 			            },
 			            "Weight": 0.739
 			          }
-			        },
-			        {
-			          "Observed action records": {
-			            "State": "Suggested",
-			            "Source": {
-			              "Type": "External",
-			              "Agent": "PowerBI.VisualColumnRename"
-			            },
-			            "Weight": 0.9
-			          }
 			        }
 			      ]
 			    },
@@ -47232,6 +47222,36 @@ cultureInfo en-US
 			            },
 			            "Weight": 0.748
 			          }
+			        },
+			        {
+			          "Multi-skill tasks (period)": {
+			            "State": "Suggested",
+			            "Source": {
+			              "Type": "External",
+			              "Agent": "PowerBI.VisualColumnRename"
+			            },
+			            "Weight": 0.9
+			          }
+			        },
+			        {
+			          "Multi-skill task share": {
+			            "State": "Suggested",
+			            "Source": {
+			              "Type": "External",
+			              "Agent": "PowerBI.VisualColumnRename"
+			            },
+			            "Weight": 0.9
+			          }
+			        },
+			        {
+			          "Multi-skill share": {
+			            "State": "Suggested",
+			            "Source": {
+			              "Type": "External",
+			              "Agent": "PowerBI.VisualColumnRename"
+			            },
+			            "Weight": 0.9
+			          }
 			        }
 			      ]
 			    },
@@ -47381,6 +47401,16 @@ cultureInfo en-US
 			              "Agent": "Thesaurus"
 			            },
 			            "Weight": 0.461
+			          }
+			        },
+			        {
+			          "Observed thread hours": {
+			            "State": "Suggested",
+			            "Source": {
+			              "Type": "External",
+			              "Agent": "PowerBI.VisualColumnRename"
+			            },
+			            "Weight": 0.9
 			          }
 			        }
 			      ]
@@ -51797,6 +51827,16 @@ cultureInfo en-US
 			            },
 			            "Weight": 0.452
 			          }
+			        },
+			        {
+			          "Copilot model": {
+			            "State": "Suggested",
+			            "Source": {
+			              "Type": "External",
+			              "Agent": "PowerBI.VisualColumnRename"
+			            },
+			            "Weight": 0.9
+			          }
 			        }
 			      ]
 			    },
@@ -52413,48 +52453,27 @@ cultureInfo en-US
 			      "State": "Generated",
 			      "Terms": [
 			        {
+			          "Active users (latest week)": {
+			            "State": "Suggested",
+			            "Source": {
+			              "Type": "External",
+			              "Agent": "PowerBI.VisualColumnRename"
+			            },
+			            "Weight": 0.9
+			          }
+			        },
+			        {
+			          "Latest weekly active users": {
+			            "State": "Suggested",
+			            "Source": {
+			              "Type": "External",
+			              "Agent": "PowerBI.VisualColumnRename"
+			            },
+			            "Weight": 0.9
+			          }
+			        },
+			        {
 			          "Weekly active users": {
-			            "State": "Suggested",
-			            "Source": {
-			              "Type": "External",
-			              "Agent": "PowerBI.VisualColumnRename"
-			            },
-			            "Weight": 0.9
-			          }
-			        },
-			        {
-			          "WAU": {
-			            "State": "Suggested",
-			            "Source": {
-			              "Type": "External",
-			              "Agent": "PowerBI.VisualColumnRename"
-			            },
-			            "Weight": 0.9
-			          }
-			        }
-			      ]
-			    },
-			    "fact_coworkdetail.cowork_adoption_momentum_score": {
-			      "Definition": {
-			        "Binding": {
-			          "ConceptualEntity": "Fact_CoworkDetail",
-			          "ConceptualProperty": "Cowork Adoption Momentum Score"
-			        }
-			      },
-			      "State": "Generated",
-			      "Terms": [
-			        {
-			          "Adoption momentum index (0–100)": {
-			            "State": "Suggested",
-			            "Source": {
-			              "Type": "External",
-			              "Agent": "PowerBI.VisualColumnRename"
-			            },
-			            "Weight": 0.9
-			          }
-			        },
-			        {
-			          "Current momentum score": {
 			            "State": "Suggested",
 			            "Source": {
 			              "Type": "External",
@@ -52475,7 +52494,7 @@ cultureInfo en-US
 			      "State": "Generated",
 			      "Terms": [
 			        {
-			          "Prompts per user / week": {
+			          "Prompts / active (latest)": {
 			            "State": "Suggested",
 			            "Source": {
 			              "Type": "External",
@@ -52503,7 +52522,29 @@ cultureInfo en-US
 			          "ConceptualProperty": "Cowork Weekly Active Days per User"
 			        }
 			      },
-			      "State": "Generated"
+			      "State": "Generated",
+			      "Terms": [
+			        {
+			          "Active days / user (latest)": {
+			            "State": "Suggested",
+			            "Source": {
+			              "Type": "External",
+			              "Agent": "PowerBI.VisualColumnRename"
+			            },
+			            "Weight": 0.9
+			          }
+			        },
+			        {
+			          "Active days per user": {
+			            "State": "Suggested",
+			            "Source": {
+			              "Type": "External",
+			              "Agent": "PowerBI.VisualColumnRename"
+			            },
+			            "Weight": 0.9
+			          }
+			        }
+			      ]
 			    },
 			    "fact_coworkdetail.cowork_weekly_active_users_last_12_weeks": {
 			      "Definition": {
@@ -52596,6 +52637,16 @@ cultureInfo en-US
 			            },
 			            "Weight": 0.9
 			          }
+			        },
+			        {
+			          "Power users %": {
+			            "State": "Suggested",
+			            "Source": {
+			              "Type": "External",
+			              "Agent": "PowerBI.VisualColumnRename"
+			            },
+			            "Weight": 0.9
+			          }
 			        }
 			      ]
 			    },
@@ -52610,27 +52661,6 @@ cultureInfo en-US
 			      "Terms": [
 			        {
 			          "Active days": {
-			            "State": "Suggested",
-			            "Source": {
-			              "Type": "External",
-			              "Agent": "PowerBI.VisualColumnRename"
-			            },
-			            "Weight": 0.9
-			          }
-			        }
-			      ]
-			    },
-			    "fact_coworkdetail.cowork_adoption_momentum_score_last_12_weeks": {
-			      "Definition": {
-			        "Binding": {
-			          "ConceptualEntity": "Fact_CoworkDetail",
-			          "ConceptualProperty": "Cowork Adoption Momentum Score (Last 12 Weeks)"
-			        }
-			      },
-			      "State": "Generated",
-			      "Terms": [
-			        {
-			          "Adoption momentum index (0–100)": {
 			            "State": "Suggested",
 			            "Source": {
 			              "Type": "External",
@@ -53098,19 +53128,7 @@ cultureInfo en-US
 			          "ConceptualProperty": "Champion Candidate Rank"
 			        }
 			      },
-			      "State": "Generated",
-			      "Terms": [
-			        {
-			          "Rank": {
-			            "State": "Suggested",
-			            "Source": {
-			              "Type": "External",
-			              "Agent": "PowerBI.VisualColumnRename"
-			            },
-			            "Weight": 0.9
-			          }
-			        }
-			      ]
+			      "State": "Generated"
 			    },
 			    "table_measures.champion_candidate_score": {
 			      "Definition": {
@@ -53119,19 +53137,7 @@ cultureInfo en-US
 			          "ConceptualProperty": "Champion Candidate Score"
 			        }
 			      },
-			      "State": "Generated",
-			      "Terms": [
-			        {
-			          "Score": {
-			            "State": "Suggested",
-			            "Source": {
-			              "Type": "External",
-			              "Agent": "PowerBI.VisualColumnRename"
-			            },
-			            "Weight": 0.9
-			          }
-			        }
-			      ]
+			      "State": "Generated"
 			    },
 			    "table_measures.champion_candidate_tasks": {
 			      "Definition": {
@@ -53185,7 +53191,7 @@ cultureInfo en-US
 			      "State": "Generated",
 			      "Terms": [
 			        {
-			          "Delegation stage": {
+			          "Usage maturity stage": {
 			            "State": "Suggested",
 			            "Source": {
 			              "Type": "External",
@@ -53287,19 +53293,7 @@ cultureInfo en-US
 			          "ConceptualProperty": "Scheduled Data Health"
 			        }
 			      },
-			      "State": "Generated",
-			      "Terms": [
-			        {
-			          "Scheduled Data Health": {
-			            "State": "Suggested",
-			            "Source": {
-			              "Type": "External",
-			              "Agent": "PowerBI.VisualColumnRename"
-			            },
-			            "Weight": 0.9
-			          }
-			        }
-			      ]
+			      "State": "Generated"
 			    },
 			    "fact_coworkusage.scheduled_data_grain_note": {
 			      "Definition": {
@@ -53434,19 +53428,7 @@ cultureInfo en-US
 			          "ConceptualProperty": "User Last Activity"
 			        }
 			      },
-			      "State": "Generated",
-			      "Terms": [
-			        {
-			          "Last activity": {
-			            "State": "Suggested",
-			            "Source": {
-			              "Type": "External",
-			              "Agent": "PowerBI.VisualColumnRename"
-			            },
-			            "Weight": 0.9
-			          }
-			        }
-			      ]
+			      "State": "Generated"
 			    },
 			    "fact_coworkdetail.cowork_power_users": {
 			      "Definition": {
@@ -53595,153 +53577,6 @@ cultureInfo en-US
 			        }
 			      ]
 			    },
-			    "fact_coworkdetail.momentum_weight_status": {
-			      "Definition": {
-			        "Binding": {
-			          "ConceptualEntity": "Fact_CoworkDetail",
-			          "ConceptualProperty": "Momentum Weight Status"
-			        }
-			      },
-			      "State": "Generated",
-			      "Terms": [
-			        {
-			          "Momentum Weight Status": {
-			            "State": "Suggested",
-			            "Source": {
-			              "Type": "External",
-			              "Agent": "PowerBI.VisualColumnRename"
-			            },
-			            "Weight": 0.9
-			          }
-			        }
-			      ]
-			    },
-			    "momentum_activeday_cap.momentum_activeday_cap": {
-			      "Definition": {
-			        "Binding": {
-			          "ConceptualEntity": "Momentum Active-Day Cap",
-			          "ConceptualProperty": "Momentum Active-Day Cap"
-			        }
-			      },
-			      "State": "Generated",
-			      "Terms": [
-			        {
-			          "Active-day cap": {
-			            "State": "Suggested",
-			            "Source": {
-			              "Type": "External",
-			              "Agent": "PowerBI.VisualColumnRename"
-			            },
-			            "Weight": 0.9
-			          }
-			        }
-			      ]
-			    },
-			    "momentum_consistency_weight.momentum_consistency_weight": {
-			      "Definition": {
-			        "Binding": {
-			          "ConceptualEntity": "Momentum Consistency Weight",
-			          "ConceptualProperty": "Momentum Consistency Weight"
-			        }
-			      },
-			      "State": "Generated",
-			      "Terms": [
-			        {
-			          "Consistency weight": {
-			            "State": "Suggested",
-			            "Source": {
-			              "Type": "External",
-			              "Agent": "PowerBI.VisualColumnRename"
-			            },
-			            "Weight": 0.9
-			          }
-			        }
-			      ]
-			    },
-			    "momentum_intensity_weight.momentum_intensity_weight": {
-			      "Definition": {
-			        "Binding": {
-			          "ConceptualEntity": "Momentum Intensity Weight",
-			          "ConceptualProperty": "Momentum Intensity Weight"
-			        }
-			      },
-			      "State": "Generated",
-			      "Terms": [
-			        {
-			          "Intensity weight": {
-			            "State": "Suggested",
-			            "Source": {
-			              "Type": "External",
-			              "Agent": "PowerBI.VisualColumnRename"
-			            },
-			            "Weight": 0.9
-			          }
-			        }
-			      ]
-			    },
-			    "momentum_maturity_weight.momentum_maturity_weight": {
-			      "Definition": {
-			        "Binding": {
-			          "ConceptualEntity": "Momentum Maturity Weight",
-			          "ConceptualProperty": "Momentum Maturity Weight"
-			        }
-			      },
-			      "State": "Generated",
-			      "Terms": [
-			        {
-			          "Maturity weight": {
-			            "State": "Suggested",
-			            "Source": {
-			              "Type": "External",
-			              "Agent": "PowerBI.VisualColumnRename"
-			            },
-			            "Weight": 0.9
-			          }
-			        }
-			      ]
-			    },
-			    "momentum_prompt_cap.momentum_prompt_cap": {
-			      "Definition": {
-			        "Binding": {
-			          "ConceptualEntity": "Momentum Prompt Cap",
-			          "ConceptualProperty": "Momentum Prompt Cap"
-			        }
-			      },
-			      "State": "Generated",
-			      "Terms": [
-			        {
-			          "Prompt cap": {
-			            "State": "Suggested",
-			            "Source": {
-			              "Type": "External",
-			              "Agent": "PowerBI.VisualColumnRename"
-			            },
-			            "Weight": 0.9
-			          }
-			        }
-			      ]
-			    },
-			    "momentum_return_weight.momentum_return_weight": {
-			      "Definition": {
-			        "Binding": {
-			          "ConceptualEntity": "Momentum Return Weight",
-			          "ConceptualProperty": "Momentum Return Weight"
-			        }
-			      },
-			      "State": "Generated",
-			      "Terms": [
-			        {
-			          "Return weight": {
-			            "State": "Suggested",
-			            "Source": {
-			              "Type": "External",
-			              "Agent": "PowerBI.VisualColumnRename"
-			            },
-			            "Weight": 0.9
-			          }
-			        }
-			      ]
-			    },
 			    "fact_tasks.task_classification_coverage_": {
 			      "Definition": {
 			        "Binding": {
@@ -53752,7 +53587,7 @@ cultureInfo en-US
 			      "State": "Generated",
 			      "Terms": [
 			        {
-			          "Task classification coverage": {
+			          "Classification coverage": {
 			            "State": "Suggested",
 			            "Source": {
 			              "Type": "External",
@@ -53770,19 +53605,7 @@ cultureInfo en-US
 			          "ConceptualProperty": "PrimarySkillDisplayName"
 			        }
 			      },
-			      "State": "Generated",
-			      "Terms": [
-			        {
-			          "Primary outcome": {
-			            "State": "Suggested",
-			            "Source": {
-			              "Type": "External",
-			              "Agent": "PowerBI.VisualColumnRename"
-			            },
-			            "Weight": 0.9
-			          }
-			        }
-			      ]
+			      "State": "Generated"
 			    },
 			    "fact_tasks.businessbehavior": {
 			      "Definition": {
@@ -53793,6 +53616,16 @@ cultureInfo en-US
 			      },
 			      "State": "Generated",
 			      "Terms": [
+			        {
+			          "Observed task": {
+			            "State": "Suggested",
+			            "Source": {
+			              "Type": "External",
+			              "Agent": "PowerBI.VisualColumnRename"
+			            },
+			            "Weight": 0.9
+			          }
+			        },
 			        {
 			          "Business behavior": {
 			            "State": "Suggested",
@@ -53815,7 +53648,383 @@ cultureInfo en-US
 			      "State": "Generated",
 			      "Terms": [
 			        {
+			          "Task classification": {
+			            "State": "Suggested",
+			            "Source": {
+			              "Type": "External",
+			              "Agent": "PowerBI.VisualColumnRename"
+			            },
+			            "Weight": 0.9
+			          }
+			        },
+			        {
 			          "Classification": {
+			            "State": "Suggested",
+			            "Source": {
+			              "Type": "External",
+			              "Agent": "PowerBI.VisualColumnRename"
+			            },
+			            "Weight": 0.9
+			          }
+			        }
+			      ]
+			    },
+			    "dim_taskcategory.sourceurl": {
+			      "Definition": {
+			        "Binding": {
+			          "ConceptualEntity": "Dim_TaskCategory",
+			          "ConceptualProperty": "SourceURL"
+			        }
+			      },
+			      "State": "Generated",
+			      "Terms": [
+			        {
+			          "Open source": {
+			            "State": "Suggested",
+			            "Source": {
+			              "Type": "External",
+			              "Agent": "PowerBI.VisualColumnRename"
+			            },
+			            "Weight": 0.9
+			          }
+			        }
+			      ]
+			    },
+			    "table_measures.assisted_minutes_selected": {
+			      "Definition": {
+			        "Binding": {
+			          "ConceptualEntity": "_Measures",
+			          "ConceptualProperty": "Assisted Minutes Selected"
+			        }
+			      },
+			      "State": "Generated",
+			      "Terms": [
+			        {
+			          "Selected minutes": {
+			            "State": "Suggested",
+			            "Source": {
+			              "Type": "External",
+			              "Agent": "PowerBI.VisualColumnRename"
+			            },
+			            "Weight": 0.9
+			          }
+			        }
+			      ]
+			    },
+			    "table_measures.assisted_time_assumption_status": {
+			      "Definition": {
+			        "Binding": {
+			          "ConceptualEntity": "_Measures",
+			          "ConceptualProperty": "Assisted Time Assumption Status"
+			        }
+			      },
+			      "State": "Generated",
+			      "Terms": [
+			        {
+			          "Assisted Time Assumption Status": {
+			            "State": "Suggested",
+			            "Source": {
+			              "Type": "External",
+			              "Agent": "PowerBI.VisualColumnRename"
+			            },
+			            "Weight": 0.9
+			          }
+			        }
+			      ]
+			    },
+			    "assisted_min__code.assisted_min__code": {
+			      "Definition": {
+			        "Binding": {
+			          "ConceptualEntity": "Assisted Min - Code",
+			          "ConceptualProperty": "Assisted Min - Code"
+			        }
+			      },
+			      "State": "Generated",
+			      "Terms": [
+			        {
+			          "Write or debug code": {
+			            "State": "Suggested",
+			            "Source": {
+			              "Type": "External",
+			              "Agent": "PowerBI.VisualColumnRename"
+			            },
+			            "Weight": 0.9
+			          }
+			        }
+			      ]
+			    },
+			    "assisted_min__communications.assisted_min__communications": {
+			      "Definition": {
+			        "Binding": {
+			          "ConceptualEntity": "Assisted Min - Communications",
+			          "ConceptualProperty": "Assisted Min - Communications"
+			        }
+			      },
+			      "State": "Generated",
+			      "Terms": [
+			        {
+			          "Communication workflows": {
+			            "State": "Suggested",
+			            "Source": {
+			              "Type": "External",
+			              "Agent": "PowerBI.VisualColumnRename"
+			            },
+			            "Weight": 0.9
+			          }
+			        }
+			      ]
+			    },
+			    "assisted_min__content.assisted_min__content": {
+			      "Definition": {
+			        "Binding": {
+			          "ConceptualEntity": "Assisted Min - Content",
+			          "ConceptualProperty": "Assisted Min - Content"
+			        }
+			      },
+			      "State": "Generated",
+			      "Terms": [
+			        {
+			          "Document & content": {
+			            "State": "Suggested",
+			            "Source": {
+			              "Type": "External",
+			              "Agent": "PowerBI.VisualColumnRename"
+			            },
+			            "Weight": 0.9
+			          }
+			        }
+			      ]
+			    },
+			    "assisted_min__email.assisted_min__email": {
+			      "Definition": {
+			        "Binding": {
+			          "ConceptualEntity": "Assisted Min - Email",
+			          "ConceptualProperty": "Assisted Min - Email"
+			        }
+			      },
+			      "State": "Generated",
+			      "Terms": [
+			        {
+			          "Email workflows": {
+			            "State": "Suggested",
+			            "Source": {
+			              "Type": "External",
+			              "Agent": "PowerBI.VisualColumnRename"
+			            },
+			            "Weight": 0.9
+			          }
+			        }
+			      ]
+			    },
+			    "assisted_min__general.assisted_min__general": {
+			      "Definition": {
+			        "Binding": {
+			          "ConceptualEntity": "Assisted Min - General",
+			          "ConceptualProperty": "Assisted Min - General"
+			        }
+			      },
+			      "State": "Generated",
+			      "Terms": [
+			        {
+			          "General assistance / Other": {
+			            "State": "Suggested",
+			            "Source": {
+			              "Type": "External",
+			              "Agent": "PowerBI.VisualColumnRename"
+			            },
+			            "Weight": 0.9
+			          }
+			        }
+			      ]
+			    },
+			    "assisted_min__meetings.assisted_min__meetings": {
+			      "Definition": {
+			        "Binding": {
+			          "ConceptualEntity": "Assisted Min - Meetings",
+			          "ConceptualProperty": "Assisted Min - Meetings"
+			        }
+			      },
+			      "State": "Generated",
+			      "Terms": [
+			        {
+			          "Meeting workflows": {
+			            "State": "Suggested",
+			            "Source": {
+			              "Type": "External",
+			              "Agent": "PowerBI.VisualColumnRename"
+			            },
+			            "Weight": 0.9
+			          }
+			        }
+			      ]
+			    },
+			    "assisted_min__research.assisted_min__research": {
+			      "Definition": {
+			        "Binding": {
+			          "ConceptualEntity": "Assisted Min - Research",
+			          "ConceptualProperty": "Assisted Min - Research"
+			        }
+			      },
+			      "State": "Generated",
+			      "Terms": [
+			        {
+			          "Analysis & Research": {
+			            "State": "Suggested",
+			            "Source": {
+			              "Type": "External",
+			              "Agent": "PowerBI.VisualColumnRename"
+			            },
+			            "Weight": 0.9
+			          }
+			        }
+			      ]
+			    },
+			    "assisted_min__specialized.assisted_min__specialized": {
+			      "Definition": {
+			        "Binding": {
+			          "ConceptualEntity": "Assisted Min - Specialized",
+			          "ConceptualProperty": "Assisted Min - Specialized"
+			        }
+			      },
+			      "State": "Generated",
+			      "Terms": [
+			        {
+			          "Specialized workflows": {
+			            "State": "Suggested",
+			            "Source": {
+			              "Type": "External",
+			              "Agent": "PowerBI.VisualColumnRename"
+			            },
+			            "Weight": 0.9
+			          }
+			        }
+			      ]
+			    },
+			    "fact_tasks.primarybusinesstool": {
+			      "Definition": {
+			        "Binding": {
+			          "ConceptualEntity": "Fact_Tasks",
+			          "ConceptualProperty": "PrimaryBusinessTool"
+			        }
+			      },
+			      "State": "Generated",
+			      "Terms": [
+			        {
+			          "Primary tool": {
+			            "State": "Suggested",
+			            "Source": {
+			              "Type": "External",
+			              "Agent": "PowerBI.VisualColumnRename"
+			            },
+			            "Weight": 0.9
+			          }
+			        }
+			      ]
+			    },
+			    "table_measures.cowork_weekly_users_on_rung_3": {
+			      "Definition": {
+			        "Binding": {
+			          "ConceptualEntity": "_Measures",
+			          "ConceptualProperty": "Cowork Weekly Users on Rung 3+"
+			        }
+			      },
+			      "State": "Generated",
+			      "Terms": [
+			        {
+			          "Delegating+ (latest week)": {
+			            "State": "Suggested",
+			            "Source": {
+			              "Type": "External",
+			              "Agent": "PowerBI.VisualColumnRename"
+			            },
+			            "Weight": 0.9
+			          }
+			        }
+			      ]
+			    },
+			    "table_measures.cowork_weekly_users_at_rung_1_trying": {
+			      "Definition": {
+			        "Binding": {
+			          "ConceptualEntity": "_Measures",
+			          "ConceptualProperty": "Cowork Weekly Users at Rung 1 (Trying)"
+			        }
+			      },
+			      "State": "Generated",
+			      "Terms": [
+			        {
+			          "Trying (latest week)": {
+			            "State": "Suggested",
+			            "Source": {
+			              "Type": "External",
+			              "Agent": "PowerBI.VisualColumnRename"
+			            },
+			            "Weight": 0.9
+			          }
+			        }
+			      ]
+			    },
+			    "table_measures.cowork_weekly_users_at_rung_2_using": {
+			      "Definition": {
+			        "Binding": {
+			          "ConceptualEntity": "_Measures",
+			          "ConceptualProperty": "Cowork Weekly Users at Rung 2 (Using)"
+			        }
+			      },
+			      "State": "Generated",
+			      "Terms": [
+			        {
+			          "Using (latest week)": {
+			            "State": "Suggested",
+			            "Source": {
+			              "Type": "External",
+			              "Agent": "PowerBI.VisualColumnRename"
+			            },
+			            "Weight": 0.9
+			          }
+			        }
+			      ]
+			    },
+			    "table_measures.cowork_weekly_delegation_ladder_index": {
+			      "Definition": {
+			        "Binding": {
+			          "ConceptualEntity": "_Measures",
+			          "ConceptualProperty": "Cowork Weekly Delegation Ladder Index"
+			        }
+			      },
+			      "State": "Generated"
+			    },
+			    "table_measures.champion_active_weeks": {
+			      "Definition": {
+			        "Binding": {
+			          "ConceptualEntity": "_Measures",
+			          "ConceptualProperty": "Champion Active Weeks"
+			        }
+			      },
+			      "State": "Generated",
+			      "Terms": [
+			        {
+			          "Active weeks": {
+			            "State": "Suggested",
+			            "Source": {
+			              "Type": "External",
+			              "Agent": "PowerBI.VisualColumnRename"
+			            },
+			            "Weight": 0.9
+			          }
+			        }
+			      ]
+			    },
+			    "fact_coworkthread.active_weeks": {
+			      "Definition": {
+			        "Binding": {
+			          "ConceptualEntity": "Fact_CoworkThread",
+			          "ConceptualProperty": "Active Weeks"
+			        }
+			      },
+			      "State": "Generated",
+			      "Terms": [
+			        {
+			          "Active weeks": {
 			            "State": "Suggested",
 			            "Source": {
 			              "Type": "External",

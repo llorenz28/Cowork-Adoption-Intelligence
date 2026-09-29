@@ -1,0 +1,18 @@
+table 'Assisted Min - General'
+	lineageTag: 97904a13-0d9f-45f2-b7fb-f4f46e29c640
+
+	/// Customer-defined assisted minutes per General assistance / Other task.
+	measure 'Assisted Min - General Value' = SELECTEDVALUE('Assisted Min - General'[Assisted Min - General], 5)
+		formatString: 0
+		lineageTag: 8bd96bdf-3d91-42eb-bc7e-0045971a6ac7
+
+	column 'Assisted Min - General'
+		dataType: int64
+		formatString: 0
+		lineageTag: 8a3e2b84-d1eb-44fa-af8d-23a075e4cfd5
+		summarizeBy: none
+		sourceColumn: [Value]
+
+	partition 'Assisted Min - General' = calculated
+		mode: import
+		source = GENERATESERIES(0, 240, 1)
