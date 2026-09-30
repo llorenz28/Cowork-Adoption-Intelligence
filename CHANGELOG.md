@@ -12,6 +12,8 @@
   validated in Power BI Desktop.
 - Consolidated the repeated heatmap guidance into one short line and enlarged the
   heatmap evidence matrix.
+- Rebuilt the nine-page README carousel from clean report-only captures without
+  Power BI Desktop recovery, refresh, or update banners.
 - Published the customer template as `Cowork Adoption V3.pbit`, applied the
   Public sensitivity label, reopened the exported file, and confirmed that the
   label persisted.

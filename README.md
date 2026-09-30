@@ -22,7 +22,11 @@ The recommended release has **9 pages, 284 visuals, and 27 bookmarks**. Start He
 guidance is intentionally integrated into **Cowork Adoption Scorecard** rather
 than implemented as a separate page.
 
-![Cowork Adoption Scorecard populated with fabricated sample data](images/report-pages/01-cowork-adoption-scorecard.png)
+<div align="center">
+  <img src="images/report-preview.gif"
+       alt="Animated preview of all nine Cowork Adoption Intelligence pages using fabricated sample data"
+       width="900">
+</div>
 
 ## Start in three steps
 
