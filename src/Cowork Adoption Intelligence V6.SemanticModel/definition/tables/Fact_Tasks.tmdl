@@ -1,0 +1,221 @@
+table Fact_Tasks
+	lineageTag: ef4b14b7-2139-42d0-a6c4-0db2d3213f82
+
+	measure 'Classified Business Tasks' = CALCULATE(SUM(Fact_Tasks[Tasks]), Fact_Tasks[TaskClassification] = "Business classified")
+		formatString: #,0
+		lineageTag: c31adfcb-82d0-4774-9043-ee5b96291530
+
+	measure 'Unclassified Tasks' = CALCULATE(SUM(Fact_Tasks[Tasks]), Fact_Tasks[TaskClassification] = "Unclassified")
+		formatString: #,0
+		lineageTag: 677111e3-1cba-4b01-a16b-bb13490ca6e7
+
+	measure 'Orchestration-Only Tasks' = CALCULATE(SUM(Fact_Tasks[Tasks]), Fact_Tasks[TaskClassification] = "Orchestration only")
+		formatString: #,0
+		lineageTag: d333882b-cd59-4771-b702-0200c895f138
+
+	measure 'Task Classification Coverage %' = DIVIDE([Classified Business Tasks], SUM(Fact_Tasks[Tasks]))
+		formatString: 0.0%
+		lineageTag: f480fb5c-30e9-4b35-892d-67cd98d4382c
+
+	column ThreadId
+		dataType: string
+		isHidden
+		lineageTag: ff64696f-f76c-46c0-b25d-c8b4abcf395e
+		summarizeBy: none
+		sourceColumn: Staging_ModelData[ThreadId]
+
+	column UserKey
+		dataType: int64
+		isHidden
+		lineageTag: 556b2853-b909-41f6-a3c9-0cee0c750206
+		summarizeBy: none
+		sourceColumn: Staging_ModelData[UserKey]
+
+	column CategoryKey
+		dataType: int64
+		isHidden
+		lineageTag: 0c86a7c2-c466-4d7d-acb4-a4de4d0094a6
+		summarizeBy: none
+		sourceColumn: Staging_ModelData[CategoryKey]
+
+		annotation SummarizationSetBy = Automatic
+
+	column DateKey
+		dataType: int64
+		isHidden
+		lineageTag: 7fd7eb04-4292-4732-a34f-d086ce0cbfc2
+		summarizeBy: none
+		sourceColumn: Staging_ModelData[DateKey]
+
+		annotation SummarizationSetBy = Automatic
+
+	column Tasks
+		dataType: int64
+		formatString: #,0
+		lineageTag: 453b1cb4-9634-4d79-b981-13d17bba377c
+		summarizeBy: sum
+		sourceColumn: Staging_ModelData[Tasks]
+
+	/// Real Purview signal (Fact_CopilotAuditRaw[ModelProviderName], sourced from
+	/// CopilotEventData.ModelTransparencyDetails[0].ModelProviderName) -- not fabricated.
+	/// A Cowork-specific gap, not tenant-wide: empty on all 21 real Cowork audit rows (confirmed
+	/// via a full scan of the raw export), even though the same export populates this field on
+	/// 487 of 977 rows for other surfaces (Office, Edge, SharePoint, Teams, and others) -- and
+	/// Microsoft's own ValueLens reference template independently reports never observing a
+	/// literal "cowork" AppHost value either. So today every row here reads the placeholder
+	/// "(Model data not available)" rather than a real model name. Wired end-to-end (this
+	/// column, Dim_ModelProvider, and the 'Est. * (by Model)' measures) so a per-model
+	/// cost/efficiency breakdown activates automatically, with zero further model changes,
+	/// the moment a tenant/product configuration starts populating this field.
+	column Model
+		dataType: string
+		isHidden
+		lineageTag: 9d75e073-b801-4d6c-a15c-8bd4927739f8
+		summarizeBy: none
+		sourceColumn: Staging_ModelData[Model]
+
+	column PrimaryBusinessTool
+		dataType: string
+		isHidden
+		lineageTag: 5c2f27f0-e46e-4071-b615-6cca85ddcdfc
+		summarizeBy: none
+		sourceColumn: Staging_ModelData[PrimaryBusinessTool]
+
+	column PrimarySkillDisplayName
+		dataType: string
+		lineageTag: 99d0f095-59fc-409c-8300-36a22fb6d549
+		summarizeBy: none
+		sourceColumn: Staging_ModelData[PrimarySkillDisplayName]
+
+	column BusinessBehavior
+		dataType: string
+		lineageTag: ba4a9854-75e9-4bbd-a8f2-2722f949e5fc
+		summarizeBy: none
+		sourceColumn: Staging_ModelData[BusinessBehavior]
+
+	column TaskClassification
+		dataType: string
+		lineageTag: 524a9346-8c83-4d75-8e96-8cfcf2517b8f
+		summarizeBy: none
+		sourceColumn: Staging_ModelData[TaskClassification]
+
+	column LowMin
+		dataType: int64
+		isHidden
+		lineageTag: b0dae691-f5e1-4ba0-98ff-e7868cebf0fd
+		summarizeBy: none
+		sourceColumn: Staging_ModelData[LowMin]
+
+	column MidMin
+		dataType: int64
+		isHidden
+		lineageTag: 0da2dd6d-1382-4117-9040-9cf6023242b2
+		summarizeBy: none
+		sourceColumn: Staging_ModelData[MidMin]
+
+	column HighMin
+		dataType: int64
+		isHidden
+		lineageTag: 8ca3c0be-cdb7-4d2a-84e5-d7fe7bdb5d43
+		summarizeBy: none
+		sourceColumn: Staging_ModelData[HighMin]
+
+	column _RowId
+		dataType: int64
+		isHidden
+		formatString: 0
+		lineageTag: 4c1a1b0d-b1ec-40d3-9630-870a9d7e6a5c
+		summarizeBy: none
+		sourceColumn: Staging_ModelData[_RowId]
+
+	column 'Work Timing' =
+			LOOKUPVALUE(
+				Fact_CoworkThread[Work Timing],
+				Fact_CoworkThread[ThreadId], Fact_Tasks[ThreadId]
+			)
+		dataType: string
+		lineageTag: fc2ca6eb-63d6-4017-8b06-a4926fa7f18a
+		summarizeBy: none
+
+	/// Customer-facing product or application inferred from observed resource
+	/// MIME evidence first, then the existing friendly skill classification.
+	column 'Primary Tool' =
+			VAR _threadId = Fact_Tasks[ThreadId]
+			VAR _resourceType =
+				MAXX(
+					TOPN(
+						1,
+						FILTER(
+							ALL(Bridge_CoworkResource),
+							Bridge_CoworkResource[ThreadId] = _threadId &&
+							NOT ISBLANK(Bridge_CoworkResource[ResType])
+						),
+						SWITCH(
+							TRUE(),
+							CONTAINSSTRING(LOWER(Bridge_CoworkResource[ResType]), "pdf"), 1,
+							CONTAINSSTRING(LOWER(Bridge_CoworkResource[ResType]), "wordprocessingml"), 2,
+							CONTAINSSTRING(LOWER(Bridge_CoworkResource[ResType]), "presentationml"), 3,
+							CONTAINSSTRING(LOWER(Bridge_CoworkResource[ResType]), "spreadsheetml"), 4,
+							CONTAINSSTRING(LOWER(Bridge_CoworkResource[ResType]), "image/"), 5,
+							99
+						), ASC,
+						Bridge_CoworkResource[ResType], ASC
+					),
+					Bridge_CoworkResource[ResType]
+				)
+			VAR _resource = LOWER(COALESCE(_resourceType, ""))
+			VAR _friendly = Fact_Tasks[PrimarySkillDisplayName]
+			RETURN
+				SWITCH(
+					TRUE(),
+					CONTAINSSTRING(_resource, "pdf"), "PDF",
+					CONTAINSSTRING(_resource, "wordprocessingml"), "Word",
+					CONTAINSSTRING(_resource, "presentationml"), "PowerPoint",
+					CONTAINSSTRING(_resource, "spreadsheetml"), "Excel",
+					CONTAINSSTRING(_resource, "image/"), "Image",
+					_friendly IN {"Draft Email", "Review Inbox", "Read Email", "Send Email"}, "Outlook",
+					_friendly IN {"Check Calendar", "Schedule Meeting"}, "Calendar",
+					_friendly = "Build Slides", "PowerPoint",
+					_friendly IN {"Create Document", "Save Document", "Write File", "Edit Document", "Edit File"}, "Word",
+					CONTAINSSTRING(_friendly, "Confluence"), "Confluence",
+					_friendly = "Search Jira & Confluence", "Jira / Confluence",
+					_friendly = "Microsoft 365 Search", "Microsoft 365 Search",
+					_friendly = "Directory Lookup", "Microsoft Graph",
+					_friendly = "Run Script", "Code",
+					_friendly = "Publish File", "SharePoint / OneDrive",
+					_friendly = "Plan & Track Work", "Tasks",
+					_friendly = "Scheduled Work", "Scheduled task",
+					_friendly = "General request", "Cowork",
+					_friendly = "Read File Content", "File",
+					_friendly = "Power BI Analysis", "Power BI",
+					COALESCE(_friendly, "Other")
+				)
+		dataType: string
+		lineageTag: 3e8741d0-7e23-401c-a9c6-b0b44d2c7f89
+		summarizeBy: none
+
+	partition Fact_Tasks = calculated
+		mode: import
+		source =
+				SUMMARIZE(
+					FILTER(
+						Staging_ModelData,
+						Staging_ModelData[_Entity] = "Fact_Tasks"
+					),
+					Staging_ModelData[_RowId],
+					Staging_ModelData[ThreadId],
+					Staging_ModelData[UserKey],
+					Staging_ModelData[CategoryKey],
+					Staging_ModelData[DateKey],
+					Staging_ModelData[Tasks],
+					Staging_ModelData[Model],
+					Staging_ModelData[PrimaryBusinessTool],
+					Staging_ModelData[PrimarySkillDisplayName],
+					Staging_ModelData[BusinessBehavior],
+					Staging_ModelData[TaskClassification],
+					Staging_ModelData[LowMin],
+					Staging_ModelData[MidMin],
+					Staging_ModelData[HighMin]
+				)
+
+	annotation PBI_ResultType = Exception

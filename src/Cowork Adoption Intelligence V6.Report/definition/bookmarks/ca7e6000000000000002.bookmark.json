@@ -1,0 +1,463 @@
+{
+  "$schema": "https://developer.microsoft.com/json-schemas/fabric/item/report/definition/bookmark/2.1.0/schema.json",
+  "name": "ca7e6000000000000002",
+  "displayName": "Category view - Category evidence",
+  "explorationState": {
+    "version": "1.0",
+    "activeSection": "92_activity_value",
+    "sections": {
+      "92_activity_value": {
+        "visualContainers": {
+          "ast_code_s_cat": {
+            "singleVisual": {
+              "visualType": "slicer",
+              "objects": {},
+              "display": {
+                "mode": "hidden"
+              }
+            }
+          },
+          "ast_communications_s_cat": {
+            "singleVisual": {
+              "visualType": "slicer",
+              "objects": {},
+              "display": {
+                "mode": "hidden"
+              }
+            }
+          },
+          "ast_content_s_cat": {
+            "singleVisual": {
+              "visualType": "slicer",
+              "objects": {},
+              "display": {
+                "mode": "hidden"
+              }
+            }
+          },
+          "ast_email_s_cat": {
+            "singleVisual": {
+              "visualType": "slicer",
+              "objects": {},
+              "display": {
+                "mode": "hidden"
+              }
+            }
+          },
+          "ast_general_s_cat": {
+            "singleVisual": {
+              "visualType": "slicer",
+              "objects": {},
+              "display": {
+                "mode": "hidden"
+              }
+            }
+          },
+          "ast_meetings_s_cat": {
+            "singleVisual": {
+              "visualType": "slicer",
+              "objects": {},
+              "display": {
+                "mode": "hidden"
+              }
+            }
+          },
+          "ast_research_s_cat": {
+            "singleVisual": {
+              "visualType": "slicer",
+              "objects": {},
+              "display": {
+                "mode": "hidden"
+              }
+            }
+          },
+          "ast_specialized_s_cat": {
+            "singleVisual": {
+              "visualType": "slicer",
+              "objects": {},
+              "display": {
+                "mode": "hidden"
+              }
+            }
+          },
+          "mv_tc_budget_slicer_96task": {
+            "singleVisual": {
+              "visualType": "slicer",
+              "objects": {},
+              "display": {
+                "mode": "hidden"
+              }
+            }
+          },
+          "mv_tc_date_slicer_96task": {
+            "singleVisual": {
+              "visualType": "slicer",
+              "objects": {},
+              "display": {
+                "mode": "hidden"
+              }
+            }
+          },
+          "mv_tc_dept_slicer_96task": {
+            "singleVisual": {
+              "visualType": "slicer",
+              "objects": {},
+              "display": {
+                "mode": "hidden"
+              }
+            }
+          },
+          "mv_tc_ed88fb0534a2de50cc32": {
+            "singleVisual": {
+              "visualType": "scatterChart",
+              "objects": {},
+              "display": {
+                "mode": "hidden"
+              }
+            }
+          },
+          "mv_tc_filter_header_96task": {
+            "singleVisual": {
+              "visualType": "textbox",
+              "objects": {},
+              "display": {
+                "mode": "hidden"
+              }
+            }
+          },
+          "mv_tc_model_slicer_96task": {
+            "singleVisual": {
+              "visualType": "slicer",
+              "objects": {},
+              "display": {
+                "mode": "hidden"
+              }
+            }
+          },
+          "mv_tc_panel_bg_96task": {
+            "singleVisual": {
+              "visualType": "actionButton",
+              "objects": {},
+              "display": {
+                "mode": "hidden"
+              }
+            }
+          },
+          "mv_tc_panel_close_96task": {
+            "singleVisual": {
+              "visualType": "actionButton",
+              "objects": {},
+              "display": {
+                "mode": "hidden"
+              }
+            }
+          },
+          "mv_tc_panel_open_96task": {
+            "singleVisual": {
+              "visualType": "actionButton",
+              "objects": {}
+            }
+          },
+          "mv_tc_rate_slicer_96task": {
+            "singleVisual": {
+              "visualType": "slicer",
+              "objects": {},
+              "display": {
+                "mode": "hidden"
+              }
+            }
+          },
+          "mv_tc_tc_card_permonth": {
+            "singleVisual": {
+              "visualType": "cardVisual",
+              "objects": {},
+              "display": {
+                "mode": "hidden"
+              }
+            }
+          },
+          "mv_tc_tc_card_return": {
+            "singleVisual": {
+              "visualType": "cardVisual",
+              "objects": {},
+              "display": {
+                "mode": "hidden"
+              }
+            }
+          },
+          "mv_tc_tc_card_sched": {
+            "singleVisual": {
+              "visualType": "cardVisual",
+              "objects": {},
+              "display": {
+                "mode": "hidden"
+              }
+            }
+          },
+          "mv_tc_tc_card_totaltasks": {
+            "singleVisual": {
+              "visualType": "cardVisual",
+              "objects": {},
+              "display": {
+                "mode": "hidden"
+              }
+            }
+          },
+          "mv_tc_tc_card_turns": {
+            "singleVisual": {
+              "visualType": "textbox",
+              "objects": {},
+              "display": {
+                "mode": "hidden"
+              }
+            }
+          },
+          "mv_tc_tc_table_matrix": {
+            "singleVisual": {
+              "visualType": "pivotTable",
+              "objects": {},
+              "display": {
+                "mode": "hidden"
+              }
+            }
+          },
+          "mv_tc_tc_title": {
+            "singleVisual": {
+              "visualType": "textbox",
+              "objects": {},
+              "display": {
+                "mode": "hidden"
+              }
+            }
+          },
+          "category_autonomous_hours": {
+            "singleVisual": {
+              "visualType": "cardVisual",
+              "objects": {}
+            }
+          },
+          "category_avg_duration": {
+            "singleVisual": {
+              "visualType": "cardVisual",
+              "objects": {}
+            }
+          },
+          "category_behavior_skill_mix": {
+            "singleVisual": {
+              "visualType": "treemap",
+              "objects": {}
+            }
+          },
+          "category_breakdown_logo": {
+            "singleVisual": {
+              "visualType": "image",
+              "objects": {}
+            }
+          },
+          "category_breakdown_subtitle": {
+            "singleVisual": {
+              "visualType": "textbox",
+              "objects": {}
+            }
+          },
+          "category_breakdown_title": {
+            "singleVisual": {
+              "visualType": "textbox",
+              "objects": {}
+            }
+          },
+          "category_date_filter": {
+            "singleVisual": {
+              "visualType": "slicer",
+              "objects": {}
+            }
+          },
+          "category_department_filter": {
+            "singleVisual": {
+              "visualType": "slicer",
+              "objects": {},
+              "display": {
+                "mode": "hidden"
+              }
+            }
+          },
+          "category_department_user_matrix": {
+            "singleVisual": {
+              "visualType": "pivotTable",
+              "objects": {}
+            }
+          },
+          "category_selector": {
+            "singleVisual": {
+              "visualType": "advancedSlicerVisual",
+              "objects": {}
+            }
+          },
+          "category_task_users": {
+            "singleVisual": {
+              "visualType": "cardVisual",
+              "objects": {}
+            }
+          },
+          "category_total_tasks": {
+            "singleVisual": {
+              "visualType": "cardVisual",
+              "objects": {}
+            }
+          },
+          "category_view_scale": {
+            "singleVisual": {
+              "visualType": "actionButton",
+              "objects": {}
+            }
+          },
+          "category_view_scale_selected": {
+            "singleVisual": {
+              "visualType": "actionButton",
+              "objects": {},
+              "display": {
+                "mode": "hidden"
+              }
+            }
+          },
+          "category_view_evidence": {
+            "singleVisual": {
+              "visualType": "actionButton",
+              "objects": {},
+              "display": {
+                "mode": "hidden"
+              }
+            }
+          },
+          "category_view_evidence_selected": {
+            "singleVisual": {
+              "visualType": "actionButton",
+              "objects": {}
+            }
+          },
+          "category_color_analysis": {
+            "singleVisual": {
+              "visualType": "shape",
+              "objects": {}
+            }
+          },
+          "category_color_all": {
+            "singleVisual": {
+              "visualType": "shape",
+              "objects": {}
+            }
+          },
+          "category_color_content": {
+            "singleVisual": {
+              "visualType": "shape",
+              "objects": {}
+            }
+          },
+          "category_color_email": {
+            "singleVisual": {
+              "visualType": "shape",
+              "objects": {}
+            }
+          },
+          "category_color_meetings": {
+            "singleVisual": {
+              "visualType": "shape",
+              "objects": {}
+            }
+          },
+          "category_color_communication": {
+            "singleVisual": {
+              "visualType": "shape",
+              "objects": {}
+            }
+          },
+          "category_color_specialized": {
+            "singleVisual": {
+              "visualType": "shape",
+              "objects": {}
+            }
+          },
+          "category_color_code": {
+            "singleVisual": {
+              "visualType": "shape",
+              "objects": {}
+            }
+          },
+          "category_color_general": {
+            "singleVisual": {
+              "visualType": "shape",
+              "objects": {}
+            }
+          },
+          "scale_department_user_matrix": {
+            "singleVisual": {
+              "visualType": "pivotTable",
+              "objects": {},
+              "display": {
+                "mode": "hidden"
+              }
+            }
+          }
+        }
+      }
+    }
+  },
+  "options": {
+    "targetVisualNames": [
+      "ast_code_s_cat",
+      "ast_communications_s_cat",
+      "ast_content_s_cat",
+      "ast_email_s_cat",
+      "ast_general_s_cat",
+      "ast_meetings_s_cat",
+      "ast_research_s_cat",
+      "ast_specialized_s_cat",
+      "mv_tc_budget_slicer_96task",
+      "mv_tc_date_slicer_96task",
+      "mv_tc_dept_slicer_96task",
+      "mv_tc_ed88fb0534a2de50cc32",
+      "mv_tc_filter_header_96task",
+      "mv_tc_model_slicer_96task",
+      "mv_tc_panel_bg_96task",
+      "mv_tc_panel_close_96task",
+      "mv_tc_panel_open_96task",
+      "mv_tc_rate_slicer_96task",
+      "mv_tc_tc_card_permonth",
+      "mv_tc_tc_card_return",
+      "mv_tc_tc_card_sched",
+      "mv_tc_tc_card_totaltasks",
+      "mv_tc_tc_card_turns",
+      "mv_tc_tc_table_matrix",
+      "mv_tc_tc_title",
+      "category_autonomous_hours",
+      "category_avg_duration",
+      "category_behavior_skill_mix",
+      "category_breakdown_logo",
+      "category_breakdown_subtitle",
+      "category_breakdown_title",
+      "category_date_filter",
+      "category_department_filter",
+      "category_department_user_matrix",
+      "category_selector",
+      "category_task_users",
+      "category_total_tasks",
+      "category_view_scale",
+      "category_view_scale_selected",
+      "category_view_evidence",
+      "category_view_evidence_selected",
+      "category_color_analysis",
+      "category_color_all",
+      "category_color_content",
+      "category_color_email",
+      "category_color_meetings",
+      "category_color_communication",
+      "category_color_specialized",
+      "category_color_code",
+      "category_color_general",
+      "scale_department_user_matrix"
+    ],
+    "suppressActiveSection": true,
+    "suppressData": true,
+    "applyOnlyToTargetVisuals": true
+  }
+}

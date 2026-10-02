@@ -14,94 +14,82 @@ latest guidance at [https://aka.ms/SECURITY.md](https://aka.ms/SECURITY.md).
 
 ## Data sensitivity
 
-Production Purview, usage, organization, identity, generated entity, manifest,
-log, status, metric, and report data can contain personal, tenant, resource,
-prompt, response, and business information. Never commit those files, paste their
-content into an issue, or store them in an unapproved location.
+Production PAX Purview interactions and Entra users files can contain personal,
+tenant, resource, licensing, organization, and business information. Refreshed
+Power BI reports, screenshots, exports, PDFs, and presentations can expose the
+same information.
+
+Never commit production source files, paste their content into public issues, or
+store them in an unapproved location.
 
 ## Required controls
 
-- Keep production input and generated output outside the Git working tree.
-- Restrict raw, generated, gateway, job, and Power BI data to approved owners.
-- Use least privilege, scoped roles, managed identities, and time-bound access.
-- Preserve immutable raw exports; transform only protected working copies.
-- Keep processor input and output in separate, non-overlapping locations.
-- Treat all 13 entity files and `manifest.json` as customer data.
-- Keep the version-matched `cowork-contract.json` with the processor.
-- Never place credentials, access tokens, connection strings, or browser session
-  data in scripts, flow definitions, parameters, logs, or notifications.
+- Keep production PAX files outside the Git working tree.
+- Use the Purview and Users files from the same controlled PAX run.
+- Restrict source files, gateway connections, semantic models, reports, and
+  exports to approved owners.
+- Use least privilege and organizational identities for SharePoint, OneLake,
+  gateway, and Power BI access.
+- Never place credentials, tokens, connection strings, or browser session data
+  in parameters, scripts, logs, screenshots, or notifications.
 - Record source owner, reporting window, export time, transformations,
-  assumptions, and exceptions.
-- Apply approved retention and deletion requirements to raw, generated, status,
-  metric, log, and report content.
-- Review screenshots, exports, PDFs, and presentations for identifiers and URLs.
-- Apply the required sensitivity label before sharing any refreshed report.
+  assumptions, reconciliation results, and exceptions.
+- Apply approved retention and deletion requirements.
+- Review all exported media for identifiers and tenant URLs.
+- Apply the required sensitivity label before sharing a refreshed customer
+  report.
 
 ## Release template classification
 
 Repository visibility, sensitivity labeling, and encryption are separate
 controls. This repository is public. Never place customer data, credentials,
-tenant URLs, or identifiable screenshots in commits, branches, pull requests, or
-issues.
+tenant URLs, identifiable screenshots, or local profile paths in commits,
+branches, pull requests, or issues.
 
-`Cowork Adoption V3.pbit` contains no imported customer data and no `DataModel`
-payload. It contains a model schema and one blank customer-supplied parameter,
-`PreprocessedOutputPath`.
+`Cowork Adoption Intelligence V6.pbit` is data-free. It contains a model schema
+and two blank required customer parameters:
 
-The verified package carries the tenant **Public** label. Package metadata records
-label ID `87867195-f2b8-4ac2-b0b6-6bb73cb33afc`, internal label name
-`Not Restricted`, and content bits `0`, so the release label does not encrypt the
-template. Power BI Desktop also emitted a `SecurityBindings` stream for that
-label. This is expected for the validated artifact; do not strip, replace, or
-hand-edit package streams.
+- `Cowork Adoption Purview File`
+- `Cowork Adoption Users File`
 
-Opening or saving the template in another tenant can reissue label and security
-metadata according to that tenant's policy. Before sharing a report refreshed
-with customer data, apply or confirm the classification and protection required
-by the organization.
+Package validation found no imported `DataModel` payload, no local QA paths, and
+no customer source filenames. The package contains 8 report pages, 296 visuals,
+29 bookmarks, 49 model tables, 353 measures, and 32 relationships.
 
-## Processor behavior
+The verified package carries the tenant **Public** label. Package metadata
+records:
 
-The Python processor:
+- label ID `87867195-f2b8-4ac2-b0b6-6bb73cb33afc`
+- internal label name `Not Restricted`
+- content bits `0`
+- encryption disabled
+- Desktop-generated `SecurityBindings` present (11,110 bytes)
 
-- writes to a staging directory
-- validates required headers and `AuditData` JSON
-- deduplicates by immutable record identity and payload evidence
-- validates every entity's required structure and reconciliation totals
-- atomically replaces only a destination previously created by the processor
-- stops on malformed required data instead of silently skipping it
+Do not strip, replace, or hand-edit package streams. Opening or saving the
+PBIT in another tenant can reissue label and security metadata according to that
+tenant's policy.
 
-The compatibility validator independently verifies the 13-file contract,
-Cowork AppHost evidence, ThreadId requirements, and reconciliation checks.
+## Source and refresh controls
 
-## Power Automate and Azure controls
+- Local and UNC paths require an approved gateway for Power BI Service refresh.
+- SharePoint and OneLake sources require approved organizational credentials.
+- Update both paired PAX files as one reporting-window change.
+- Refresh only after both files are available and access checks succeed.
+- Reconcile source and report totals after every refresh.
+- Treat blank enrichment as missing data, not zero activity.
 
-Power Automate starts and monitors an Azure Container Apps Job. It must not read,
-loop through, or include audit records in flow state. Trigger concurrency and job
-writer concurrency must both remain one.
+## Interpretation and employment safeguards
 
-- Use a user-assigned managed identity for the job.
-- Grant PAX Graph application permissions only after tenant review and admin
-  consent.
-- Use the custom job-start role in
-  `automation/deploy/CoworkJobStarterRole.json` at the specific job scope.
-- Do not grant broad `Container Apps Jobs Operator` access when the custom role is
-  sufficient.
-- Use private networking, encryption, firewall rules, and approved storage
-  controls where required.
-- Turn on secure inputs and outputs for ARM actions.
-- Keep success and failure notifications generic.
-- Never include audit content, user names, source paths, manifest details, tenant
-  identifiers, or raw error payloads in Teams or email notifications.
-- Refresh Power BI only after collection, preprocessing, and both validators
-  succeed.
+- Category-user and enablement signals are not employee-performance ratings.
+- Do not use the report for automated employment, promotion, compensation,
+  disciplinary, aptitude, or surveillance decisions.
+- Modeled assisted hours and labor value are scenarios, not realized savings,
+  measured attention, available headcount capacity, or guaranteed ROI.
+- Small cohorts and narrow periods can create privacy and inference risk.
 
-## Storage and service refresh
+## Legacy automation
 
-- Store customer content in approved locations with limited permissions.
-- Publishing a report does not make local or UNC paths cloud-accessible.
-- For scheduled refresh, configure an approved gateway and map the validated
-  `preprocessed` folder.
-- Power BI reads entity files; it does not execute PAX or Python.
-- Rerun or automate collection and preprocessing before Power BI refresh whenever
-  source exports change.
+The automation, preprocessor, and fabricated sample packages under `release/`
+are retained for existing V5 preprocessed-entity deployments. They are not the
+V6 ingestion path. Their security and operating guidance remains under
+`automation/` and must not be presented as the V6 setup flow.

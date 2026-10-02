@@ -1,0 +1,109 @@
+{
+  "$schema": "https://developer.microsoft.com/json-schemas/fabric/item/report/definition/bookmark/2.1.0/schema.json",
+  "displayName": "Filters Closed (Weekly Adoption & Usage)",
+  "name": "19412aab5b6dedb40ec6",
+  "options": {
+    "applyOnlyToTargetVisuals": true,
+    "targetVisualNames": [
+      "panel_open_weeklyadoption",
+      "panel_close_weeklyadoption",
+      "panel_bg_weeklyadoption",
+      "filter_header_weeklyadoption",
+      "date_slicer_weeklyadoption",
+      "dept_slicer_weeklyadoption",
+      "global_category_c2e315038d903964e507",
+      "global_task_c2e315038d903964e507",
+      "global_daytype_c2e315038d903964e507"
+    ],
+    "suppressActiveSection": true,
+    "suppressData": true
+  },
+  "explorationState": {
+    "version": "1.0",
+    "activeSection": "c2e315038d903964e507",
+    "sections": {
+      "c2e315038d903964e507": {
+        "visualContainers": {
+          "panel_open_weeklyadoption": {
+            "singleVisual": {
+              "visualType": "actionButton",
+              "objects": {}
+            }
+          },
+          "panel_close_weeklyadoption": {
+            "singleVisual": {
+              "visualType": "actionButton",
+              "objects": {},
+              "display": {
+                "mode": "hidden"
+              }
+            }
+          },
+          "panel_bg_weeklyadoption": {
+            "singleVisual": {
+              "visualType": "actionButton",
+              "objects": {},
+              "display": {
+                "mode": "hidden"
+              }
+            }
+          },
+          "filter_header_weeklyadoption": {
+            "singleVisual": {
+              "visualType": "textbox",
+              "objects": {},
+              "display": {
+                "mode": "hidden"
+              }
+            }
+          },
+          "date_slicer_weeklyadoption": {
+            "singleVisual": {
+              "visualType": "slicer",
+              "objects": {},
+              "display": {
+                "mode": "hidden"
+              }
+            }
+          },
+          "dept_slicer_weeklyadoption": {
+            "singleVisual": {
+              "visualType": "slicer",
+              "objects": {},
+              "display": {
+                "mode": "hidden"
+              }
+            }
+          },
+          "global_category_c2e315038d903964e507": {
+            "singleVisual": {
+              "visualType": "slicer",
+              "objects": {},
+              "display": {
+                "mode": "hidden"
+              }
+            }
+          },
+          "global_task_c2e315038d903964e507": {
+            "singleVisual": {
+              "visualType": "slicer",
+              "objects": {},
+              "display": {
+                "mode": "hidden"
+              }
+            }
+          },
+          "global_daytype_c2e315038d903964e507": {
+            "singleVisual": {
+              "visualType": "slicer",
+              "objects": {},
+              "display": {
+                "mode": "hidden"
+              }
+            }
+          }
+        }
+      }
+    }
+  }
+}

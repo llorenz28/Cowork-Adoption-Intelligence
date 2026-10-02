@@ -1,0 +1,88 @@
+{
+  "$schema": "https://developer.microsoft.com/json-schemas/fabric/item/report/definition/bookmark/2.1.0/schema.json",
+  "displayName": "Cowork Tasks - Filters Open",
+  "name": "a1b2c3d4e5f6000092a1",
+  "options": {
+    "applyOnlyToTargetVisuals": true,
+    "targetVisualNames": [
+      "mv_ud_panel_open_07userdetail",
+      "mv_ud_panel_close_07userdetail",
+      "mv_ud_panel_bg_07userdetail",
+      "mv_ud_filter_header_07userdetail",
+      "mv_ud_date_slicer_07userdetail",
+      "mv_ud_dept_slicer_07userdetail",
+      "global_category_92_actions_hub",
+      "global_task_92_actions_hub",
+      "global_daytype_92_actions_hub"
+    ],
+    "suppressActiveSection": true,
+    "suppressData": true
+  },
+  "explorationState": {
+    "version": "1.0",
+    "activeSection": "92_actions_hub",
+    "sections": {
+      "92_actions_hub": {
+        "visualContainers": {
+          "mv_ud_panel_open_07userdetail": {
+            "singleVisual": {
+              "visualType": "actionButton",
+              "objects": {},
+              "display": {
+                "mode": "hidden"
+              }
+            }
+          },
+          "mv_ud_panel_close_07userdetail": {
+            "singleVisual": {
+              "visualType": "actionButton",
+              "objects": {}
+            }
+          },
+          "mv_ud_panel_bg_07userdetail": {
+            "singleVisual": {
+              "visualType": "actionButton",
+              "objects": {}
+            }
+          },
+          "mv_ud_filter_header_07userdetail": {
+            "singleVisual": {
+              "visualType": "textbox",
+              "objects": {}
+            }
+          },
+          "mv_ud_date_slicer_07userdetail": {
+            "singleVisual": {
+              "visualType": "slicer",
+              "objects": {}
+            }
+          },
+          "mv_ud_dept_slicer_07userdetail": {
+            "singleVisual": {
+              "visualType": "slicer",
+              "objects": {}
+            }
+          },
+          "global_category_92_actions_hub": {
+            "singleVisual": {
+              "visualType": "slicer",
+              "objects": {}
+            }
+          },
+          "global_task_92_actions_hub": {
+            "singleVisual": {
+              "visualType": "slicer",
+              "objects": {}
+            }
+          },
+          "global_daytype_92_actions_hub": {
+            "singleVisual": {
+              "visualType": "slicer",
+              "objects": {}
+            }
+          }
+        }
+      }
+    }
+  }
+}

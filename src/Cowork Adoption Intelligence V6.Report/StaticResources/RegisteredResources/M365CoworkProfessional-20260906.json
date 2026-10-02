@@ -1,0 +1,50 @@
+{
+  "name": "M365CoworkProfessional-20260906.json",
+  "dataColors": [
+    "#57466F",
+    "#42577A",
+    "#7A668F",
+    "#5B8484",
+    "#6F8A70",
+    "#9A784F",
+    "#9C6F72",
+    "#5A6472",
+    "#5E8295"
+  ],
+  "good": "#6F8A70",
+  "neutral": "#9A784F",
+  "bad": "#9C6F72",
+  "maximum": "#57466F",
+  "center": "#5B8484",
+  "minimum": "#E8EFFB",
+  "null": "#E3E6EC",
+  "firstLevelElements": "#1B1F27",
+  "secondLevelElements": "#5A6472",
+  "thirdLevelElements": "#E3E6EC",
+  "fourthLevelElements": "#87909C",
+  "background": "#FFFFFF",
+  "secondaryBackground": "#F6F7FB",
+  "tableAccent": "#57466F",
+  "textClasses": {
+    "label": {
+      "fontFace": "Segoe UI",
+      "fontSize": 9,
+      "color": "#1B1F27"
+    },
+    "title": {
+      "fontFace": "Segoe UI Semibold",
+      "fontSize": 11,
+      "color": "#1B1F27"
+    },
+    "callout": {
+      "fontFace": "Segoe UI Semibold",
+      "fontSize": 20,
+      "color": "#57466F"
+    },
+    "header": {
+      "fontFace": "Segoe UI Semibold",
+      "fontSize": 11,
+      "color": "#1B1F27"
+    }
+  }
+}

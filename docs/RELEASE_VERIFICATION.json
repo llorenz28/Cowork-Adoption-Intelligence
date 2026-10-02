@@ -1,96 +1,91 @@
 {
   "release": {
-    "version": "5.0.0",
+    "version": "6.0.0",
     "status": "testing",
-    "date": "2026-09-29",
-    "layout": "recommended-nine-page",
-    "ingestion": "validated-preprocessed-entities",
-    "automationPackageVersion": "0.1.0"
+    "date": "2026-10-02",
+    "layout": "focused-eight-page",
+    "ingestion": "direct-pax-paired-csv"
   },
   "artifacts": [
     {
-      "path": "Cowork Adoption V3.pbit",
-      "bytes": 740491,
-      "sha256": "28BD42B4A02B559CE1F1DC4AD0CD96A7A86E0DEEAC05334803372FCD14F8FCE9",
+      "path": "Cowork Adoption Intelligence V6.pbit",
+      "bytes": 766803,
+      "sha256": "B9E100D0677D06D6D2B7B6410A77FEF9DECA838A9296EC9833E19D9D96A4C6EF",
       "requiredParameters": [
-        "PreprocessedOutputPath"
+        "Cowork Adoption Purview File",
+        "Cowork Adoption Users File"
       ],
-      "zipEntries": 338,
+      "requiredParameterDefaultsBlank": true,
+      "zipEntries": 352,
       "containsImportedDataModel": false,
       "containsDataModelSchema": true,
       "containsCustomerData": false,
-      "powerBiDesktopOpenabilityVerified": true
+      "packagedModelLoadVerified": true
+    },
+    {
+      "path": "release/archive/Cowork Adoption Intelligence V5.0.0 - Preprocessed Entities.pbit",
+      "bytes": 740491,
+      "sha256": "28BD42B4A02B559CE1F1DC4AD0CD96A7A86E0DEEAC05334803372FCD14F8FCE9",
+      "status": "legacy-preprocessed-release"
     },
     {
       "path": "release/Cowork-Adoption-Intelligence-Automation-v0.1.0.zip",
       "bytes": 40248,
       "sha256": "69B228F92FF2DE405DA7C2919F06FF4BA9677EAEB0C1CCDB7CE5AC7A9B122378",
-      "files": 16
+      "status": "legacy-v5-resource"
     },
     {
       "path": "release/Cowork-Adoption-Intelligence-Sample-Data.zip",
       "bytes": 219543,
-      "sha256": "51A8454A94BA5C23245AE4DF0D3B963465A5CB654422B4D18E6E84317503C16C"
-    },
-    {
-      "path": "automation/container/Cowork_Purview_Preprocessor_v0.1.0.py",
-      "bytes": 61596,
-      "sha256": "DD2CAD3CC5B6FAF0874FEED9537935CC00041DF85E04813A786323A80383B500"
-    },
-    {
-      "path": "automation/container/cowork-contract.json",
-      "bytes": 27305,
-      "sha256": "C96DCB631E582FF6AEA9177A693F3F80A897CF7729DC9350AC0B205B3D8C5149"
-    },
-    {
-      "path": "automation/power-automate/BUILD.md",
-      "bytes": 8160,
-      "sha256": "1839281C28B95DE947D8BE379B684A23D137F3B60A66429BC64F48080ACA8081"
-    },
-    {
-      "path": "automation/power-automate/CoworkRefreshOrchestrator.logic.json",
-      "bytes": 2504,
-      "sha256": "314614E14E5BDE5E0C4350F3A41CC40E869E6A9EF4B98F8BB079C3871B98A36B",
-      "importableSolutionZip": false
+      "sha256": "51A8454A94BA5C23245AE4DF0D3B963465A5CB654422B4D18E6E84317503C16C",
+      "status": "legacy-v5-resource"
     }
   ],
   "report": {
-    "publishName": "Cowork Adoption V3",
-    "pages": 9,
-    "visuals": 284,
-    "bookmarks": 27,
+    "publishName": "Cowork Adoption Intelligence V6",
+    "pages": 8,
+    "visuals": 296,
+    "bookmarks": 29,
     "pageOrder": [
       "Cowork Adoption Scorecard",
       "Weekly Adoption & Usage",
-      "Adoption by Attributes",
       "Scalable Work Patterns",
       "Demand & Capacity Scenario",
       "Adoption Maturity",
-      "Enablement Partners",
+      "Category Users",
       "Capacity Assumptions",
       "Adoption Metric Guide"
     ],
-    "startHereIntegratedInto": "Cowork Adoption Scorecard",
     "pbirValidation": {
       "errors": 0,
-      "warnings": 4,
+      "warnings": 1,
       "warningClassification": "remote-json-schema-unavailable"
     },
+    "packagedBookmarkTargetsMissing": 0,
     "renderedQa": {
-      "pagesReviewed": 9,
+      "pagesReviewed": 8,
       "errorMessagesDetected": 0,
-      "metricGuidePopulated": true
+      "departmentHeatmapsRendered": true,
+      "taskMatrixHeatmapsRendered": true,
+      "categoryShareLabelsRendered": true
     }
   },
   "model": {
-    "tables": 47,
-    "measures": 333,
-    "columns": 411,
-    "partitions": 47,
-    "explicitTmdlPartitions": 46,
-    "calculationGroupImplicitPartitions": 1,
-    "relationships": 28,
-    "activeRelationships": 27
+    "tables": 49,
+    "measures": 353,
+    "relationships": 32,
+    "packagedBimLoadVerified": true,
+    "requiredNewMeasuresPresent": true
+  },
+  "runtimeQa": {
+    "observedTasks": 97,
+    "taskUsers": 16,
+    "modeledAssistedHours": 52.016666666666666,
+    "modeledLaborValue": 3745.2,
+    "observedCategoryShareTotal": 1.0,
+    "modeledCategoryShareTotal": 1.0,
+    "afterHoursTasks": 34,
+    "afterHoursShare": 0.35051546391752575
   },
   "templateLabel": {
     "statusBarDisplayName": "Public",
@@ -98,53 +93,26 @@
     "labelId": "87867195-f2b8-4ac2-b0b6-6bb73cb33afc",
     "contentBits": 0,
     "encrypted": false,
-    "persistedAfterReopen": true,
     "securityBindings": true,
-    "securityBindingsBytes": 10694
+    "securityBindingsBytes": 11110
   },
-  "sampleValidation": {
-    "status": "valid",
-    "processorVersion": "0.1.0",
-    "entityFiles": 13,
-    "coworkAuditRows": 3342,
-    "coworkThreadTasks": 900,
-    "activeUsers": 72,
-    "prompts": 2225,
-    "blankCoworkThreadRows": 0,
-    "appHostContract": "cowork"
-  },
-  "scaleEvidence": {
-    "auditRows": 1050000,
-    "distinctUsers": 70000,
-    "preprocessingSecondsFromManifest": 74.948,
-    "isolatedProcessWallSeconds": 85.224,
-    "desktopLoadSeconds": 331.107,
-    "desktopPeakGiB": 5.5,
-    "classification": "correctness-and-scale-evidence-not-an-sla-or-safe-memory-target"
-  },
-  "automation": {
-    "paxVersion": "1.11.15",
-    "processor": "automation/container/Cowork_Purview_Preprocessor_v0.1.0.py",
-    "entityFiles": 13,
-    "packageFiles": 16,
-    "sourceZipParityFiles": 16,
-    "pythonSyntaxValidated": true,
-    "powerShellScriptsParsed": 2,
-    "jsonDocumentsParsed": 333,
-    "powerAutomateRole": "orchestrator",
-    "auditRowsProcessedInFlow": false,
-    "powerBiRefreshRequiresJobSuccess": true,
-    "watermarkRequiresBothValidators": true
+  "packageQa": {
+    "validZip": true,
+    "reportDefinitionValidated": true,
+    "dataModelSchemaJsonParsed": true,
+    "localQaPathsDetected": 0,
+    "customerSourceFilenamesDetected": 0,
+    "missingBookmarkTargets": 0,
+    "desktopNormalizedDuplicateDateSlicer": true
   },
   "security": {
     "embeddedUserProfilePaths": false,
-    "embeddedPbiqaPaths": false,
+    "embeddedPaxQaPaths": false,
     "generatedCustomerDataTracked": false,
-    "pythonCacheTracked": false,
     "localPowerBiStateTracked": false,
     "credentialsTracked": false,
+    "jsonDocumentsParsed": 347,
     "repositoryRelativeLinksResolved": true,
-    "stagedSecretScanPassed": true,
     "gitDiffCheckPassed": true
   }
 }
