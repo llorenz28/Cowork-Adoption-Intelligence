@@ -25,7 +25,9 @@ No Python preprocessing or 13-file entity build is required for V6.
 
 ## Start in three steps
 
-1. Collect the paired PAX CSV files from the same run.
+1. Generate the paired CSV files with the
+  [PAX workflow](SETUP.md#generate-the-files-with-pax), or obtain them from an
+  authorized PAX collection owner.
 2. Open
    [`Cowork Adoption Intelligence V6.pbit`](Cowork%20Adoption%20Intelligence%20V6.pbit)
    and provide:
