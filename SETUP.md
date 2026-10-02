@@ -24,6 +24,68 @@ Use files from the same PAX run. Do not combine reporting windows or manually
 merge rows. The files must retain the PAX `_Entity` records and keys used by the
 model.
 
+## Generate the files with PAX
+
+Use the official Microsoft
+[Portable Audit eXporter (PAX)](https://github.com/microsoft/PAX) Purview Audit
+Log Processor. The validated V6 release uses
+[`PAX_Purview_Audit_Log_Processor_v1.11.15.ps1`](https://github.com/microsoft/PAX/releases/download/purview-v1.11.15/PAX_Purview_Audit_Log_Processor_v1.11.15.ps1).
+Review the
+[versioned PAX documentation](https://github.com/microsoft/PAX/blob/release/release_documentation/Purview_Audit_Log_Processor/PAX_Purview_Audit_Log_Processor_Documentation_v1.11.x.md)
+before running it.
+
+### PAX prerequisites
+
+- PowerShell 7 or later for the default Microsoft Graph mode.
+- Unified Audit Logging enabled in the tenant.
+- Microsoft Graph `AuditLogsQuery.Read.All` for `CopilotInteraction` records.
+- Microsoft Graph `User.Read.All` and `Organization.Read.All` for Entra user,
+  organization, and Microsoft 365 Copilot licensing enrichment.
+- Tenant-admin consent and organizational approval for the selected delegated,
+  app-registration, or managed-identity authentication method.
+- A protected output location outside the Git working tree.
+
+PAX requests permissions conditionally. Review its current permission table and
+have security, privacy, and compliance owners approve the collection before use.
+
+### Interactive PowerShell example
+
+The V6 model consumes the AIO-shaped CopilotInteraction rollup pair. For a first
+validation run, keep the raw output with `-RollupPlusRaw`:
+
+```powershell
+pwsh -ExecutionPolicy Bypass -File `
+  .\PAX_Purview_Audit_Log_Processor_v1.11.15.ps1 `
+  -Auth WebLogin `
+  -StartDate 2026-09-01 `
+  -EndDate 2026-10-01 `
+  -ActivityTypes CopilotInteraction `
+  -IncludeUserInfo `
+  -RollupPlusRaw `
+  -Dashboard AIO `
+  -OutputPath "C:\CoworkAdoption\PAXOutput"
+```
+
+Replace the example dates and output path. `StartDate` is inclusive,
+`EndDate` is exclusive, and both use UTC `yyyy-MM-dd` values. Start with a short
+window to validate permissions and output before collecting a long history.
+
+PAX creates several artifacts. Bind Power BI to the two **rolled-up** files from
+the same run:
+
+- the file ending `_Interactions.csv` -> `Cowork Adoption Purview File`
+- the file ending `_Users.csv` -> `Cowork Adoption Users File`
+
+Do not select the raw Purview audit CSV or the pre-rollup
+`EntraUsers_MAClicensing_<timestamp>.csv`; V6 expects the rolled-up files with
+the `_Entity` records produced by the PAX CopilotInteraction processor.
+
+After the first run reconciles successfully, `-Rollup` can be used instead of
+`-RollupPlusRaw` when the raw export is not required by the approved operating
+process. Use `-Auth DeviceCode`, `AppRegistration`, or `ManagedIdentity` only as
+documented by PAX for the target environment; never place client secrets in the
+repository or command history.
+
 ## Supported locations
 
 Each parameter accepts one complete file path or URL.
