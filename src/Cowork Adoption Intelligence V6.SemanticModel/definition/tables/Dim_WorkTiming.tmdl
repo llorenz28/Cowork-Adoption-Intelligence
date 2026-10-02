@@ -1,0 +1,32 @@
+/// Business-hours classification for Cowork task start times. Timestamps are
+/// interpreted as provided by PAX. Business hours are 08:00-18:00 Monday-Friday.
+table Dim_WorkTiming
+	lineageTag: 957390ac-4ca3-4bc9-b567-5bef6f90f412
+
+	column 'Work Timing'
+		dataType: string
+		lineageTag: 40c81e38-ecbd-429e-8738-28c9a4590ee0
+		summarizeBy: none
+		sourceColumn: Work Timing
+		sortByColumn: 'Sort Order'
+
+	column 'Sort Order'
+		dataType: int64
+		isHidden
+		lineageTag: 5f891eb8-ed2b-4872-ab59-17d5bd96298c
+		summarizeBy: none
+		sourceColumn: Sort Order
+
+	partition Dim_WorkTiming = m
+		mode: import
+		source =
+				#table(
+					type table [Work Timing = text, Sort Order = Int64.Type],
+					{
+						{"Business hours", 1},
+						{"After hours", 2},
+						{"Unknown", 3}
+					}
+				)
+
+	annotation PBI_ResultType = Table

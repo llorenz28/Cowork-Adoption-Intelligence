@@ -1,0 +1,55 @@
+table Dim_CoworkTask
+	lineageTag: 31a2444c-a727-48c9-ad0b-b8a8eea7a45e
+
+	column TaskKey
+		dataType: string
+		isHidden
+		isKey
+		lineageTag: 09fa6336-cc30-4a4b-8ba7-6678b69c68d1
+		summarizeBy: none
+		sourceColumn: TaskKey
+
+	column 'Cowork Task'
+		dataType: string
+		lineageTag: e9a7b2c4-35f1-4d86-a961-9c7e82b5403f
+		summarizeBy: none
+		sourceColumn: Cowork Task
+
+	partition Dim_CoworkTask = m
+		mode: import
+		source =
+				let
+				    Source = Table.SelectRows(Staging_ModelData, each [_Entity] = "Fact_CoworkThread"),
+				    MissingColumns = List.Difference({"BusinessBehavior"}, Table.ColumnNames(Source)),
+				    Validated =
+				        if not List.IsEmpty(MissingColumns) then
+				            error Error.Record(
+				                "CoworkTaskContract",
+				                "The PAX Cowork thread rows are missing required task columns.",
+				                [Columns = Text.Combine(MissingColumns, ", ")]
+				            )
+				        else
+				            Source,
+				    Selected = Table.SelectColumns(Validated, {"BusinessBehavior"}),
+				    Clean = Table.SelectRows(
+				        Selected,
+				        each
+				            [BusinessBehavior] <> null
+				            and Text.Trim(Text.From([BusinessBehavior])) <> ""
+				    ),
+				    Renamed = Table.RenameColumns(Clean, {{"BusinessBehavior", "TaskKey"}}),
+				    Typed = Table.TransformColumns(
+				        Renamed,
+				        {{"TaskKey", each Text.Trim(Text.From(_)), type text}}
+				    ),
+				    Labeled = Table.AddColumn(
+				        Typed,
+				        "Cowork Task",
+				        each if [TaskKey] = "Unmapped behavior" then "Other task" else [TaskKey],
+				        type text
+				    ),
+				    Final = Table.Sort(Table.Distinct(Labeled), {{"Cowork Task", Order.Ascending}})
+				in
+				    Final
+
+	annotation PBI_ResultType = Table

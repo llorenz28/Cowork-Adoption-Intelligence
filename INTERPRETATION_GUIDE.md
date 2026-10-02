@@ -1,6 +1,6 @@
 # Cowork Adoption Intelligence: interpretation guide
 
-Use this guide to turn the nine-page report into defensible adoption and
+Use this guide to turn the eight-page report into defensible adoption and
 enablement decisions. It separates observed evidence, optional enrichment,
 modeled scenarios, and customer-controlled assumptions.
 
@@ -8,11 +8,10 @@ modeled scenarios, and customer-controlled assumptions.
 
 | Layer | Examples | Interpretation |
 | --- | --- | --- |
-| Observed Cowork evidence | Purview `CopilotInteraction` events, threads, skills, resources, timestamps | What the approved audit source recorded |
-| Optional aggregates | Cowork usage details and consumption exports | Reconciliation and context, not event-level evidence |
-| Optional enrichment | Department, role, manager, business unit, geography, display name | Segmentation for authorized users |
-| Derived metrics | Active weeks, repeat activity, maturity, task classifications | Reproducible calculations from the validated entities |
-| Modeled scenarios | Assisted time, demand, capacity, headroom | Observed activity combined with editable assumptions |
+| Observed Cowork evidence | Paired PAX Purview interactions: events, threads, skills, resources, and timestamps | What the approved audit source recorded |
+| User and organization context | Paired PAX Entra users, organization, and licensing records | Segmentation and population context for authorized users |
+| Derived metrics | Active weeks, repeat activity, maturity, task classifications | Reproducible calculations from the paired files |
+| Modeled scenarios | Assisted time and labor value | Observed activity combined with editable category-minute assumptions |
 
 Do not describe a modeled scenario as observed savings, realized ROI, future
 demand, or guaranteed capacity.
@@ -67,30 +66,9 @@ pattern before selecting an intervention.
 or collection gaps can look like a decline. Repeat activity is not equivalent to
 business value or quality.
 
-## Page 3: Adoption by Attributes
+## Page 3: Scalable Work Patterns
 
-![Adoption by Attributes](images/report-pages/03-adoption-by-attributes.png)
-
-**Purpose:** Compare available organization cohorts and identify where a shared
-enablement plan may not fit.
-
-**Read in this order:**
-
-1. Select one organization attribute.
-2. Compare population size before comparing rates.
-3. Review both adoption breadth and usage depth.
-4. Inspect maturity and work-pattern differences.
-
-**Action:** Prioritize cohorts with a meaningful population, adequate evidence,
-and an actionable gap.
-
-**Guardrail:** Blank attributes mean enrichment is missing or unmatched. Small
-groups are volatile and can create privacy risk. Do not infer individual
-performance from cohort activity.
-
-## Page 4: Scalable Work Patterns
-
-![Scalable Work Patterns](images/report-pages/04-scalable-work-patterns.png)
+![Scalable Work Patterns](images/report-pages/03-scalable-work-patterns.png)
 
 **Purpose:** Identify observed task patterns that repeat across users or periods
 and understand where assisted capacity is concentrated.
@@ -110,19 +88,19 @@ demonstrations, training, or further qualitative validation.
 not automatically suitable for automation, and modeled time is not measured
 human attention or realized savings.
 
-## Page 5: Demand & Capacity Scenario
+## Page 4: Demand & Capacity Scenario
 
-![Demand & Capacity Scenario](images/report-pages/05-demand-and-capacity-scenario.png)
+![Demand & Capacity Scenario](images/report-pages/04-demand-and-capacity-scenario.png)
 
-**Purpose:** Compare observed Cowork demand with an adjustable capacity model.
+**Purpose:** Compare observed Cowork task demand with modeled assisted-work hours
+and labor value under editable category-minute assumptions.
 
 **Read in this order:**
 
 1. Confirm the observed period and included population.
 2. Review demand volume and distribution.
 3. Confirm the active assumption set.
-4. Compare modeled demand, available capacity, remaining headroom, and constraint
-   indicators.
+4. Compare observed task share with modeled assisted-hours share.
 5. Test a bounded alternative rather than replacing the baseline immediately.
 
 **Action:** Use scenarios to identify questions for staffing, enablement,
@@ -131,9 +109,9 @@ prioritization, and workload review.
 **Guardrail:** This page does not predict future demand. It does not prove cost
 savings, employee capacity, service levels, or financial return.
 
-## Page 6: Adoption Maturity
+## Page 5: Adoption Maturity
 
-![Adoption Maturity](images/report-pages/06-adoption-maturity.png)
+![Adoption Maturity](images/report-pages/05-adoption-maturity.png)
 
 **Purpose:** Show progression from initial activity toward sustained delegation
 and automation evidence.
@@ -152,12 +130,12 @@ work examples for returning users, and governance for advanced patterns.
 productivity, seniority, or job performance. Stage labels depend on the available
 audit window.
 
-## Page 7: Enablement Partners
+## Page 6: Category Users
 
-![Enablement Partners](images/report-pages/07-enablement-partners.png)
+![Category Users](images/report-pages/06-category-users.png)
 
-**Purpose:** Identify people with consistent category-level engagement who may be
-appropriate for enablement outreach.
+**Purpose:** Show the users and departments with observed activity in a selected
+work category and support authorized enablement outreach.
 
 **Read in this order:**
 
@@ -174,9 +152,9 @@ needs through human review.
 promotion, compensation, discipline, surveillance, or automated employment
 decisions.
 
-## Page 8: Capacity Assumptions
+## Page 7: Capacity Assumptions
 
-![Capacity Assumptions](images/report-pages/08-capacity-assumptions.png)
+![Capacity Assumptions](images/report-pages/07-capacity-assumptions.png)
 
 **Purpose:** Make the customer-controlled inputs behind demand, capacity, and
 assisted-time scenarios visible and editable.
@@ -196,9 +174,9 @@ baseline, and document the rationale.
 benchmarks, or measured customer outcomes. Category-wide substitutions should
 not replace the individual task controls.
 
-## Page 9: Adoption Metric Guide
+## Page 8: Adoption Metric Guide
 
-![Adoption Metric Guide](images/report-pages/09-adoption-metric-guide.png)
+![Adoption Metric Guide](images/report-pages/08-adoption-metric-guide.png)
 
 **Purpose:** Provide definitions, calculation boundaries, sources, and safe
 interpretation language.
@@ -232,15 +210,13 @@ between observed events, not continuous human effort.
 
 ### Usage reconciliation
 
-The optional Cowork usage export can support scheduled and user-initiated totals
-and reconciliation. It is a user-level aggregate and may use a different
-reporting window from Purview. A mismatch is a reason to investigate coverage,
-not evidence that either source is wrong.
+The paired PAX files can contain different entity grains. Reconcile the common
+reporting window and user keys before interpreting a mismatch as activity.
 
 ### Classification
 
 Task, category, skill, plugin, and resource classifications are reproducible
-analytical groupings based on the versioned contract. Review uncategorized or
+analytical groupings based on the paired-file contract. Review uncategorized or
 low-confidence records before drawing category conclusions.
 
 ### Assisted time and capacity
@@ -250,7 +226,7 @@ assumptions. Capacity scenarios use those outputs with additional adjustable
 inputs. Report them as modeled estimates or scenarios and disclose the active
 assumption set.
 
-### Enablement partners
+### Category users and enablement outreach
 
 Engagement evidence can identify people to ask about examples, training, or
 peer-learning needs. It cannot establish quality, expertise, willingness, or
@@ -260,11 +236,11 @@ performance. Human review is mandatory.
 
 Before presenting results, confirm:
 
-- the processor and compatibility validator succeeded
-- `manifest.json` records the intended source files and reporting period
-- exactly 13 entity files are present
+- both paired PAX files are from the same successful run
+- the source files record the intended reporting period
+- required `_Entity` records and user keys are present
 - no collection gap overlaps the analysis window
-- optional-file joins use the intended UPNs
+- user and organization joins resolve as expected
 - final-week or final-month periods are complete
 - cohort sizes are sufficient and privacy-safe
 - Capacity Assumptions values and owners are recorded

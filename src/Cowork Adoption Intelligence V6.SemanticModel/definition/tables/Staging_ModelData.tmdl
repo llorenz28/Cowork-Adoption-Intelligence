@@ -1,0 +1,854 @@
+table Staging_ModelData
+	isHidden
+	lineageTag: 0cf7d8d5-8f5b-4712-8d2f-d7862f6ac8fd
+
+	column _Entity
+		dataType: string
+		isHidden
+		lineageTag: ddb29046-e842-4369-a798-7cca68d8530d
+		summarizeBy: none
+		sourceColumn: _Entity
+
+	column _RowId
+		dataType: int64
+		isHidden
+		formatString: 0
+		lineageTag: a17cd96d-5d8e-44f1-94fc-73f48f212b37
+		summarizeBy: none
+		sourceColumn: _RowId
+
+	column AccessedResource_FirstAction
+		dataType: string
+		isHidden
+		lineageTag: 040c2854-14c2-4778-a6b0-0a2213866411
+		summarizeBy: none
+		sourceColumn: AccessedResource_FirstAction
+
+	column AccessedResource_FirstSiteUrl
+		dataType: string
+		isHidden
+		lineageTag: 3b762b7e-75a4-4f36-bf03-9f42d299886a
+		summarizeBy: none
+		sourceColumn: AccessedResource_FirstSiteUrl
+
+	column ActiveDays
+		dataType: int64
+		isHidden
+		lineageTag: 3aa885d8-00d4-4b9f-8d20-ee6085e92f92
+		summarizeBy: none
+		sourceColumn: ActiveDays
+
+	column AppHost
+		dataType: string
+		isHidden
+		lineageTag: 41fa5017-b71e-4ae4-a792-bcb62b02e7fc
+		summarizeBy: none
+		sourceColumn: AppHost
+
+	column AppIdentity
+		dataType: string
+		isHidden
+		lineageTag: f040a489-368a-4501-a27f-a6450bd5241c
+		summarizeBy: none
+		sourceColumn: AppIdentity
+
+	column ArtifactExt
+		dataType: string
+		isHidden
+		lineageTag: 78917dff-8f28-4884-af9a-2ae1e777e49b
+		summarizeBy: none
+		sourceColumn: ArtifactExt
+
+	column Audit_UserId
+		dataType: string
+		isHidden
+		lineageTag: 1a0d29a8-ec5d-478b-926e-116f3cdb514e
+		summarizeBy: none
+		sourceColumn: Audit_UserId
+
+	column Audit_UserId_Normalized
+		dataType: string
+		isHidden
+		lineageTag: ca03b419-326c-4214-b86b-84f8764b8c4d
+		summarizeBy: none
+		sourceColumn: Audit_UserId_Normalized
+
+	column BudgetSegment
+		dataType: string
+		isHidden
+		lineageTag: a2518323-bdbd-42fc-8d93-62cfdc9fd725
+		summarizeBy: none
+		sourceColumn: BudgetSegment
+
+	column BusinessUnit
+		dataType: string
+		isHidden
+		lineageTag: b10a66ae-c3fd-4b22-b415-4e5bcffa518a
+		summarizeBy: none
+		sourceColumn: BusinessUnit
+
+	column Category
+		dataType: string
+		isHidden
+		lineageTag: 2e174a93-5c6f-43e2-be66-3338baf35405
+		summarizeBy: none
+		sourceColumn: Category
+
+	column CategoryKey
+		dataType: int64
+		isHidden
+		lineageTag: 9f61615d-54de-42c2-aebc-6f92057ddc35
+		summarizeBy: none
+		sourceColumn: CategoryKey
+
+	column City
+		dataType: string
+		isHidden
+		lineageTag: 7cc4d2a6-2386-41f2-abfe-82ed53c389b3
+		summarizeBy: none
+		sourceColumn: City
+
+	column ClientRegion
+		dataType: string
+		isHidden
+		lineageTag: 58a04714-38fe-457d-bc4e-7895decb2724
+		summarizeBy: none
+		sourceColumn: ClientRegion
+
+	column CohortBand
+		dataType: string
+		isHidden
+		lineageTag: 377e9c1f-9854-4a82-83fe-953eb229da34
+		summarizeBy: none
+		sourceColumn: CohortBand
+
+	column CohortRank
+		dataType: int64
+		isHidden
+		lineageTag: 380e1fea-20c9-411a-b573-83a2fe8539ba
+		summarizeBy: none
+		sourceColumn: CohortRank
+
+	column ConsumptionDataQuality
+		dataType: string
+		isHidden
+		lineageTag: 18e9d147-9f0a-47a1-8401-1a93a55414f8
+		summarizeBy: none
+		sourceColumn: ConsumptionDataQuality
+
+	column CopilotLicense
+		dataType: string
+		isHidden
+		lineageTag: 42622fd9-2ed1-46d8-a23d-efaaf7c5485f
+		summarizeBy: none
+		sourceColumn: CopilotLicense
+
+	column CostCenter
+		dataType: string
+		isHidden
+		lineageTag: 987f4a0e-14de-45ae-992d-016e7135559c
+		summarizeBy: none
+		sourceColumn: CostCenter
+
+	column Country
+		dataType: string
+		isHidden
+		lineageTag: 49790507-11bb-4c3e-887c-cbd7f0e349e2
+		summarizeBy: none
+		sourceColumn: Country
+
+	column CreationDateParsed
+		dataType: dateTime
+		isHidden
+		formatString: General Date
+		lineageTag: 7872533d-30ac-4da0-9e62-5318e4d74bad
+		summarizeBy: none
+		sourceColumn: CreationDateParsed
+
+		annotation SummarizationSetBy = Automatic
+
+	column CreditLimit
+		dataType: double
+		isHidden
+		lineageTag: dcc4e740-46fc-46eb-8937-dfab301b8815
+		summarizeBy: none
+		sourceColumn: CreditLimit
+
+	column CreditsUsed
+		dataType: double
+		isHidden
+		lineageTag: 48cca0a3-7f7a-4981-a95e-5821a60e209e
+		summarizeBy: none
+		sourceColumn: CreditsUsed
+
+	column DataQuality
+		dataType: string
+		isHidden
+		lineageTag: 02462d1f-5f30-430e-b143-82f22cfb9dc9
+		summarizeBy: none
+		sourceColumn: DataQuality
+
+	column DateKey
+		dataType: int64
+		isHidden
+		lineageTag: ab9dc1b9-2c38-498f-ace7-b8313597c2ef
+		summarizeBy: none
+		sourceColumn: DateKey
+
+	column DaysSinceActivity
+		dataType: int64
+		isHidden
+		lineageTag: 518a6e23-91a2-43b0-9e0f-1fc940bf8935
+		summarizeBy: none
+		sourceColumn: DaysSinceActivity
+
+	column DemographicDataQuality
+		dataType: string
+		isHidden
+		lineageTag: 670ed70b-1a30-4c0f-94d4-4e52eb740719
+		summarizeBy: none
+		sourceColumn: DemographicDataQuality
+
+	column Department
+		dataType: string
+		isHidden
+		lineageTag: 9f0ce56e-db1f-4f34-b66b-ee4b2d61c547
+		summarizeBy: none
+		sourceColumn: Department
+
+	column DisplayName
+		dataType: string
+		isHidden
+		lineageTag: 346790ed-b146-4eb8-8d86-ef17347a82f0
+		summarizeBy: none
+		sourceColumn: DisplayName
+
+	column DurationMin
+		dataType: double
+		isHidden
+		lineageTag: 6072537c-3891-4bd6-9ff7-0297a1985012
+		summarizeBy: none
+		sourceColumn: DurationMin
+
+	column EndedAt
+		dataType: dateTime
+		isHidden
+		lineageTag: 92c057bc-4b3e-40c9-a878-9fb884224aa5
+		summarizeBy: none
+		sourceColumn: EndedAt
+
+	column HasModelData
+		dataType: boolean
+		isHidden
+		lineageTag: c99d3c8f-ef36-4321-b5d7-dd530ddd9ec2
+		summarizeBy: none
+		sourceColumn: HasModelData
+
+	column HighMin
+		dataType: int64
+		isHidden
+		lineageTag: 6e84245c-89f8-4f0b-81ae-7181eab64428
+		summarizeBy: none
+		sourceColumn: HighMin
+
+	column IdentityDataQuality
+		dataType: string
+		isHidden
+		lineageTag: c33ae5e2-13fc-4077-b08c-f14e0b784b6e
+		summarizeBy: none
+		sourceColumn: IdentityDataQuality
+
+	column IsCoworkArtifact
+		dataType: boolean
+		isHidden
+		lineageTag: a9b5e7dc-443b-47cf-accc-d10c6adeaaa0
+		summarizeBy: none
+		sourceColumn: IsCoworkArtifact
+
+	column IsMapped
+		dataType: boolean
+		isHidden
+		lineageTag: f430f3dd-eeb0-47bc-975c-4061c77c529b
+		summarizeBy: none
+		sourceColumn: IsMapped
+
+	column JobFamily
+		dataType: string
+		isHidden
+		lineageTag: 93dfc3d2-faff-4025-b282-cbb610180e54
+		summarizeBy: none
+		sourceColumn: JobFamily
+
+	column JobTitle
+		dataType: string
+		isHidden
+		lineageTag: df4070f7-1e4f-4897-8812-eb107aaf87ed
+		summarizeBy: none
+		sourceColumn: JobTitle
+
+	column LastActivityDate
+		dataType: dateTime
+		isHidden
+		lineageTag: 90eaab46-35ab-41ca-b77a-4aa3c97450d8
+		summarizeBy: none
+		sourceColumn: LastActivityDate
+
+	column LicenseSKU
+		dataType: string
+		isHidden
+		lineageTag: 1b05edc7-e062-4d3c-9a0e-fabac74eb44d
+		summarizeBy: none
+		sourceColumn: LicenseSKU
+
+	column LicenseType
+		dataType: string
+		isHidden
+		lineageTag: 8404cfc9-564f-4f14-b7e7-a1bf71d1d03f
+		summarizeBy: none
+		sourceColumn: LicenseType
+
+	column LowMin
+		dataType: int64
+		isHidden
+		lineageTag: 7cff9891-20e6-4697-86d0-df1e47a45ebf
+		summarizeBy: none
+		sourceColumn: LowMin
+
+	column Manager
+		dataType: string
+		isHidden
+		lineageTag: 9974cb90-1881-40b2-b2b9-a863823a2e30
+		summarizeBy: none
+		sourceColumn: Manager
+
+	column Message_Count
+		dataType: int64
+		isHidden
+		lineageTag: f6bf33b7-955d-45a8-9800-e2469a0b1769
+		summarizeBy: none
+		sourceColumn: Message_Count
+
+	column Message_PromptCount
+		dataType: int64
+		isHidden
+		lineageTag: 93aaebc2-8cce-49a1-b2e3-bc85beca268a
+		summarizeBy: none
+		sourceColumn: Message_PromptCount
+
+	column MidMin
+		dataType: int64
+		isHidden
+		lineageTag: b121a9cd-5efa-4d83-846a-8a37cc81f3a7
+		summarizeBy: none
+		sourceColumn: MidMin
+
+	column Model
+		dataType: string
+		isHidden
+		lineageTag: 57751205-b9e3-4c64-aaf3-fbfeb3d6dd84
+		summarizeBy: none
+		sourceColumn: Model
+
+	column ModelProviderName
+		dataType: string
+		isHidden
+		lineageTag: 297c0a3e-af04-436e-abcc-f7c35d3a58de
+		summarizeBy: none
+		sourceColumn: ModelProviderName
+
+	column Plugin_Count
+		dataType: int64
+		isHidden
+		lineageTag: 882d719f-d82f-4ba0-a62d-7b1565bf9c3f
+		summarizeBy: none
+		sourceColumn: Plugin_Count
+
+	column Plugin_FirstId
+		dataType: string
+		isHidden
+		lineageTag: 41d60adb-d5bb-4947-8cb9-2467d4778454
+		summarizeBy: none
+		sourceColumn: Plugin_FirstId
+
+	column Plugin_FirstName
+		dataType: string
+		isHidden
+		lineageTag: d9b09896-03c2-49cd-aae6-4e0e3c284381
+		summarizeBy: none
+		sourceColumn: Plugin_FirstName
+
+	column PluginCount
+		dataType: int64
+		isHidden
+		lineageTag: 69ad844c-d7cf-43d1-9078-2443e1900000
+		summarizeBy: none
+		sourceColumn: PluginCount
+
+	column PluginId
+		dataType: string
+		isHidden
+		lineageTag: a3bacadb-cf6b-436c-adf7-ba41e2004277
+		summarizeBy: none
+		sourceColumn: PluginId
+
+	column PluginName
+		dataType: string
+		isHidden
+		lineageTag: bf43d449-a618-4e18-9fd0-d5b54c403ad1
+		summarizeBy: none
+		sourceColumn: PluginName
+
+	column PrimarySkill
+		dataType: string
+		isHidden
+		lineageTag: a12f4a95-5d7e-4937-8765-bc2c7f2c8c62
+		summarizeBy: none
+		sourceColumn: PrimarySkill
+
+	column PromptCount
+		dataType: int64
+		isHidden
+		lineageTag: 4c778b1e-a0ae-4e47-976b-6e0c1313525d
+		summarizeBy: none
+		sourceColumn: PromptCount
+
+	column RecencyBucket
+		dataType: string
+		isHidden
+		lineageTag: ef4c92c6-a372-4a4e-ab8e-b13b2d51ecce
+		summarizeBy: none
+		sourceColumn: RecencyBucket
+
+	column RecencyBucketSort
+		dataType: int64
+		isHidden
+		lineageTag: a428b0e8-04b2-4a72-8869-58097d96cac7
+		summarizeBy: none
+		sourceColumn: RecencyBucketSort
+
+	column RecordCount
+		dataType: int64
+		isHidden
+		lineageTag: 027784ef-c404-4ad4-baf7-ae3926808817
+		summarizeBy: none
+		sourceColumn: RecordCount
+
+	column RecordId
+		dataType: string
+		isHidden
+		lineageTag: d8a97dd9-d704-4784-9c93-f9642904bbfc
+		summarizeBy: none
+		sourceColumn: RecordId
+
+	column ResAction
+		dataType: string
+		isHidden
+		lineageTag: 7415d359-dee9-4059-b9b0-8c8880bce837
+		summarizeBy: none
+		sourceColumn: ResAction
+
+	column Resource_Count
+		dataType: int64
+		isHidden
+		lineageTag: 6f70b068-649d-4d7f-996b-fdb157e64c6a
+		summarizeBy: none
+		sourceColumn: Resource_Count
+
+	column ResourceCount
+		dataType: int64
+		isHidden
+		lineageTag: 1adfe0ad-cf48-42d2-9c83-d3675022fbe0
+		summarizeBy: none
+		sourceColumn: ResourceCount
+
+	column ResType
+		dataType: string
+		isHidden
+		lineageTag: 5c8981cc-5677-4186-823d-3d4ad48f17ca
+		summarizeBy: none
+		sourceColumn: ResType
+
+	column ScheduledTasks
+		dataType: int64
+		isHidden
+		lineageTag: 2c0b0df3-ddd9-4716-ad02-961eb3984a49
+		summarizeBy: none
+		sourceColumn: ScheduledTasks
+
+	column SensitivityLabelId
+		dataType: string
+		isHidden
+		lineageTag: c6863d9b-bea4-4a95-9835-46113b7e06af
+		summarizeBy: none
+		sourceColumn: SensitivityLabelId
+
+	column ServiceKey
+		dataType: int64
+		isHidden
+		lineageTag: d296ed3b-59ac-4b7d-a83a-c2dc34ee6f10
+		summarizeBy: none
+		sourceColumn: ServiceKey
+
+	column SessionCount
+		dataType: double
+		isHidden
+		lineageTag: 82204edd-5951-4e96-8bd1-2b54466e8f4b
+		summarizeBy: none
+		sourceColumn: SessionCount
+
+	column SiteUrl
+		dataType: string
+		isHidden
+		lineageTag: f70587c7-697f-429e-b380-a80f445d447a
+		summarizeBy: none
+		sourceColumn: SiteUrl
+
+	column SkillDisplayName
+		dataType: string
+		isHidden
+		lineageTag: e14eca23-c873-498b-8a50-b3de7a1b9bc1
+		summarizeBy: none
+		sourceColumn: SkillDisplayName
+
+	column StartedAt
+		dataType: dateTime
+		isHidden
+		lineageTag: 23346164-d31e-40fc-8a59-06c442ac0a1f
+		summarizeBy: none
+		sourceColumn: StartedAt
+
+	column Tasks
+		dataType: int64
+		isHidden
+		lineageTag: 3fce9ee9-dc9f-4b4c-85f4-55fe782cdfc7
+		summarizeBy: none
+		sourceColumn: Tasks
+
+	column ThreadId
+		dataType: string
+		isHidden
+		lineageTag: 64d27d45-f642-425b-ad0e-35d888946572
+		summarizeBy: none
+		sourceColumn: ThreadId
+
+	column TotalTasks
+		dataType: int64
+		isHidden
+		lineageTag: e2408706-f3af-4aa2-a53d-efd8536f9934
+		summarizeBy: none
+		sourceColumn: TotalTasks
+
+	column UserID
+		dataType: string
+		isHidden
+		lineageTag: e6da04e7-3cad-4755-802a-beb443397a0c
+		summarizeBy: none
+		sourceColumn: UserID
+
+	column UserInitiatedTasks
+		dataType: int64
+		isHidden
+		lineageTag: 213682a6-1f8d-4547-b409-d2d338083bb3
+		summarizeBy: none
+		sourceColumn: UserInitiatedTasks
+
+	column UserKey
+		dataType: int64
+		isHidden
+		lineageTag: 49cec74f-575c-4279-9e80-01bc1afdeaa6
+		summarizeBy: none
+		sourceColumn: UserKey
+
+	column UserPrincipalName
+		dataType: string
+		isHidden
+		lineageTag: ab8ae526-35bb-4f71-90c1-7807c54b0417
+		summarizeBy: none
+		sourceColumn: UserPrincipalName
+
+	column Workload
+		dataType: string
+		isHidden
+		lineageTag: ae1c1278-2b0f-45e3-a417-14b58ef5c4df
+		summarizeBy: none
+		sourceColumn: Workload
+
+	column AttributionPriority
+		dataType: int64
+		isHidden
+		lineageTag: e187f87a-894a-4410-bb9d-890e3b5bf8db
+		summarizeBy: none
+		sourceColumn: AttributionPriority
+
+	column BusinessBehavior
+		dataType: string
+		isHidden
+		lineageTag: b9c2b8f8-b32f-4666-9533-fa1f5bfcdb24
+		summarizeBy: none
+		sourceColumn: BusinessBehavior
+
+	column BehaviorConfidence
+		dataType: string
+		isHidden
+		lineageTag: b2486893-a3f6-4f9d-a897-ad9336318c95
+		summarizeBy: none
+		sourceColumn: BehaviorConfidence
+
+	column BusinessToolCount
+		dataType: int64
+		isHidden
+		lineageTag: 24de5187-ec26-4fcc-b02f-24355684623a
+		summarizeBy: none
+		sourceColumn: BusinessToolCount
+
+	column IsBusinessTool
+		dataType: boolean
+		isHidden
+		lineageTag: 12e3b467-a52d-40db-a107-f94c20eadd8a
+		summarizeBy: none
+		sourceColumn: IsBusinessTool
+
+	column MappingConfidence
+		dataType: string
+		isHidden
+		lineageTag: 1ea4ecbb-380d-4ef0-8172-4486c198cf04
+		summarizeBy: none
+		sourceColumn: MappingConfidence
+
+	column OrchestrationToolCount
+		dataType: int64
+		isHidden
+		lineageTag: e595b9f3-c5ad-4155-a928-6a19f73e6334
+		summarizeBy: none
+		sourceColumn: OrchestrationToolCount
+
+	column PrimaryBusinessTool
+		dataType: string
+		isHidden
+		lineageTag: 37426d6e-c66f-4879-bac1-324c3f41787f
+		summarizeBy: none
+		sourceColumn: PrimaryBusinessTool
+
+	column PrimaryCategory
+		dataType: string
+		isHidden
+		lineageTag: fccbcd65-27e8-4fcd-a5ab-aeef5d081ed4
+		summarizeBy: none
+		sourceColumn: PrimaryCategory
+
+	column PrimarySkillDisplayName
+		dataType: string
+		isHidden
+		lineageTag: 133c68ef-43af-4596-8191-5651c9df7e4f
+		summarizeBy: none
+		sourceColumn: PrimarySkillDisplayName
+
+	column TaskClassification
+		dataType: string
+		isHidden
+		lineageTag: 4d6c6764-7b44-4b34-9ea1-8c8520b8a7c5
+		summarizeBy: none
+		sourceColumn: TaskClassification
+
+	column ToolRole
+		dataType: string
+		isHidden
+		lineageTag: 8a3914ad-8e7b-4398-93ae-560be51eb98f
+		summarizeBy: none
+		sourceColumn: ToolRole
+
+	column UnclassifiedToolCount
+		dataType: int64
+		isHidden
+		lineageTag: 677b8334-083c-4b60-99c4-da02b6aaba11
+		summarizeBy: none
+		sourceColumn: UnclassifiedToolCount
+
+	column CategoryPriority
+		dataType: int64
+		isHidden
+		lineageTag: fd180153-e6d8-46eb-9890-d478391ab9e6
+		summarizeBy: sum
+		sourceColumn: CategoryPriority
+
+	column CategorySignal
+		dataType: string
+		lineageTag: 3e36a477-dea5-4825-90af-2368c87cd10b
+		summarizeBy: none
+		sourceColumn: CategorySignal
+
+	column ActivityDetail
+		dataType: string
+		lineageTag: eec49662-e8c1-41b6-93e2-9a65aeac6c13
+		summarizeBy: none
+		sourceColumn: ActivityDetail
+
+	column ThreadCategory
+		dataType: string
+		lineageTag: 040e7476-ca08-4f29-8f53-4aafcfd6f8bd
+		summarizeBy: none
+		sourceColumn: ThreadCategory
+
+	column ThreadCategoryKey
+		dataType: int64
+		isHidden
+		lineageTag: 3a191a05-34ba-4dd9-8f66-98d9d8386350
+		summarizeBy: sum
+		sourceColumn: ThreadCategoryKey
+
+	column InteractionCount
+		dataType: int64
+		isHidden
+		lineageTag: c44395f8-9994-4aa8-8387-ca7d6f0abf2c
+		summarizeBy: sum
+		sourceColumn: InteractionCount
+
+	column WeekStartDate
+		dataType: dateTime
+		isHidden
+		formatString: Long Date
+		lineageTag: 5865c08a-1b0b-482f-9120-3a257787e3a4
+		summarizeBy: none
+		sourceColumn: WeekStartDate
+
+		annotation UnderlyingDateTimeDataType = Date
+
+	column UserDateKey
+		dataType: string
+		isHidden
+		lineageTag: 60f4d304-b1cb-4164-9396-92fae42a760c
+		summarizeBy: none
+		sourceColumn: UserDateKey
+
+	partition Staging_ModelData = m
+		mode: import
+		source =
+				let
+					// Reads the two Cowork Adoption CSVs produced by the PAX Purview Audit Log Processor.
+					// Each file is located only by the full path in its parameter (any file name, any folder).
+					// Local, SharePoint and OneLake paths are auto-detected by the shared fnGetBinary helper.
+					ParseFile = (path as nullable text, label as text) as table =>
+						let
+							Content = fnGetBinary(path),
+							Checked = if Content = null then error Error.Record("CoworkAdoptionFile", label & " parameter is blank.", [Path = path]) else Content,
+							Attempt = try Table.PromoteHeaders(Csv.Document(Checked, [Delimiter = ",", Encoding = 65001, QuoteStyle = QuoteStyle.Csv]), [PromoteAllScalars = true]),
+							Parsed = if Attempt[HasError] then error Error.Record("CoworkAdoptionFile", label & " could not be read as a CSV.", [Path = path, Message = try Attempt[Error][Message] otherwise "Unknown CSV error"]) else Attempt[Value],
+							Missing = List.Difference({"_Entity", "_RowId"}, Table.ColumnNames(Parsed)),
+							Validated = if List.IsEmpty(Missing) then Parsed else error Error.Record("CoworkAdoptionContract", label & " is missing required contract columns.", [Path = path, Columns = Text.Combine(Missing, ", ")])
+						in
+							Validated,
+					PurviewRows = ParseFile(#"Cowork Adoption Purview File", "Cowork Adoption Purview File"),
+					UserRows = ParseFile(#"Cowork Adoption Users File", "Cowork Adoption Users File"),
+					Combined = Table.Combine({PurviewRows, UserRows}),
+					TypeMap = {
+						{"_Entity", type text},
+						{"_RowId", Int64.Type},
+						{"AccessedResource_FirstAction", type text},
+						{"AccessedResource_FirstSiteUrl", type text},
+						{"ActiveDays", Int64.Type},
+						{"AppHost", type text},
+						{"AppIdentity", type text},
+						{"ArtifactExt", type text},
+						{"AttributionPriority", Int64.Type},
+						{"Audit_UserId", type text},
+						{"Audit_UserId_Normalized", type text},
+						{"BudgetSegment", type text},
+						{"BusinessBehavior", type text},
+						{"BehaviorConfidence", type text},
+						{"BusinessToolCount", Int64.Type},
+						{"BusinessUnit", type text},
+						{"Category", type text},
+						{"CategoryPriority", Int64.Type},
+						{"CategorySignal", type text},
+						{"ActivityDetail", type text},
+						{"CategoryKey", Int64.Type},
+						{"City", type text},
+						{"ClientRegion", type text},
+						{"CohortBand", type text},
+						{"CohortRank", Int64.Type},
+						{"ConsumptionDataQuality", type text},
+						{"CopilotLicense", type text},
+						{"CostCenter", type text},
+						{"Country", type text},
+						{"CreationDateParsed", type nullable datetime},
+						{"CreditLimit", type number},
+						{"CreditsUsed", type number},
+						{"DataQuality", type text},
+						{"DateKey", Int64.Type},
+						{"DaysSinceActivity", Int64.Type},
+						{"DemographicDataQuality", type text},
+						{"Department", type text},
+						{"DisplayName", type text},
+						{"DurationMin", type number},
+						{"EndedAt", type datetime},
+						{"HasModelData", type logical},
+						{"HighMin", Int64.Type},
+						{"IdentityDataQuality", type text},
+						{"InteractionCount", Int64.Type},
+						{"IsCoworkArtifact", type logical},
+						{"IsBusinessTool", type logical},
+						{"IsMapped", type logical},
+						{"JobFamily", type text},
+						{"JobTitle", type text},
+						{"LastActivityDate", type datetime},
+						{"LicenseSKU", type text},
+						{"LicenseType", type text},
+						{"LowMin", Int64.Type},
+						{"Manager", type text},
+						{"MappingConfidence", type text},
+						{"Message_Count", Int64.Type},
+						{"Message_PromptCount", Int64.Type},
+						{"MidMin", Int64.Type},
+						{"Model", type text},
+						{"ModelProviderName", type text},
+						{"Plugin_Count", Int64.Type},
+						{"Plugin_FirstId", type text},
+						{"Plugin_FirstName", type text},
+						{"PluginCount", Int64.Type},
+						{"PluginId", type text},
+						{"PluginName", type text},
+						{"PrimaryBusinessTool", type text},
+						{"PrimaryCategory", type text},
+						{"PrimarySkill", type text},
+						{"PrimarySkillDisplayName", type text},
+						{"PromptCount", Int64.Type},
+						{"RecencyBucket", type text},
+						{"RecencyBucketSort", Int64.Type},
+						{"RecordCount", Int64.Type},
+						{"RecordId", type text},
+						{"ResAction", type text},
+						{"Resource_Count", Int64.Type},
+						{"ResourceCount", Int64.Type},
+						{"ResType", type text},
+						{"ScheduledTasks", Int64.Type},
+						{"SensitivityLabelId", type text},
+						{"ServiceKey", Int64.Type},
+						{"SessionCount", type number},
+						{"SiteUrl", type text},
+						{"SkillDisplayName", type text},
+						{"StartedAt", type datetime},
+						{"TaskClassification", type text},
+						{"Tasks", Int64.Type},
+						{"ThreadId", type text},
+						{"ThreadCategory", type text},
+						{"ThreadCategoryKey", Int64.Type},
+						{"ToolRole", type text},
+						{"TotalTasks", Int64.Type},
+						{"UnclassifiedToolCount", Int64.Type},
+						{"UserID", type text},
+						{"UserDateKey", type text},
+						{"UserInitiatedTasks", Int64.Type},
+						{"UserKey", Int64.Type},
+						{"UserPrincipalName", type text},
+						{"WeekStartDate", type date},
+						{"Workload", type text},
+						{"OrchestrationToolCount", Int64.Type}
+					},
+					// Backfill any declared column absent from both files so every model column always exists.
+					DeclaredColumns = List.Transform(TypeMap, each _{0}),
+					WithAllColumns = List.Accumulate(DeclaredColumns, Combined, (state, column) => if Table.HasColumns(state, column) then state else Table.AddColumn(state, column, each null)),
+					Typed = Table.TransformColumnTypes(WithAllColumns, TypeMap, "en-US")
+				in
+					Typed
+
+	annotation PBI_ResultType = Table

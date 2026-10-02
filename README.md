@@ -1,190 +1,126 @@
 # Cowork Adoption Intelligence
 
-> **Turn Microsoft 365 Copilot Cowork activity into an adoption, enablement, and
-> capacity-planning view without processing audit rows in Power BI or Power
-> Automate.**
+> **Turn Microsoft 365 Copilot Cowork activity into adoption, work-pattern,
+> maturity, category-user, and modeled assisted-time evidence.**
 
 [![Status](https://img.shields.io/badge/status-testing-D83B96)](CHANGELOG.md)
 [![Power BI](https://img.shields.io/badge/Power%20BI-PBIT%20%2B%20PBIP-F2C811)](src/)
 [![Template data](https://img.shields.io/badge/template-data--free-008272)](SECURITY.md)
-[![Automation](https://img.shields.io/badge/automation-Power%20Automate%20%2B%20ACA-0078D4)](automation/)
 
 > [!IMPORTANT]
-> **Template status: Testing.** Validate source coverage, definitions, assumptions,
-> and rendered results before using the report for production decisions.
+> **Template status: Testing.** Validate source coverage, definitions,
+> assumptions, and rendered results before using the report for production
+> decisions.
 
-Cowork Adoption Intelligence is a data-free Power BI template for company-wide
-Cowork administrators, adoption leaders, and enablement teams. A validated Python
-preprocessor converts approved Microsoft Purview and supporting CSV exports into
-13 deterministic entity CSVs. The report reads only those validated entities.
+Cowork Adoption Intelligence V6 is a data-free Power BI template for Cowork
+administrators, adoption leaders, and enablement teams. It directly reads the
+paired CSV outputs from one PAX Cowork Adoption run:
 
-The recommended release has **9 pages, 284 visuals, and 27 bookmarks**. Start Here
-guidance is intentionally integrated into **Cowork Adoption Scorecard** rather
-than implemented as a separate page.
+- Purview interactions
+- Entra users, organization, and Microsoft 365 Copilot licensing
 
-<div align="center">
-  <img src="images/report-preview.gif"
-       alt="Animated preview of all nine Cowork Adoption Intelligence pages using fabricated sample data"
-       width="900">
-</div>
+No Python preprocessing or 13-file entity build is required for V6.
+
+![Demand and Capacity Scenario](images/report-pages/04-demand-and-capacity-scenario.png)
 
 ## Start in three steps
 
-1. Download the
-   [automation bundle](release/Cowork-Adoption-Intelligence-Automation-v0.1.0.zip)
-   and the
-   [fabricated sample package](release/Cowork-Adoption-Intelligence-Sample-Data.zip).
-2. Generate and validate the entity files:
+1. Collect the paired PAX CSV files from the same run.
+2. Open
+   [`Cowork Adoption Intelligence V6.pbit`](Cowork%20Adoption%20Intelligence%20V6.pbit)
+   and provide:
+   - `Cowork Adoption Purview File`
+   - `Cowork Adoption Users File`
+3. Select **Load**, then reconcile the report totals with the source files.
 
-   ```powershell
-   python .\container\Cowork_Purview_Preprocessor_v0.1.0.py `
-     --input C:\CoworkAdoptionSample `
-     --output C:\CoworkAdoptionPreprocessed
-
-   python .\container\Validate-CoworkCompatibility.py `
-     --output C:\CoworkAdoptionPreprocessed
-   ```
-
-3. Open
-   [`Cowork Adoption V3.pbit`](Cowork%20Adoption%20V3.pbit),
-   set `PreprocessedOutputPath` to `C:\CoworkAdoptionPreprocessed`, and select
-   **Load**.
-
-The sample is fabricated and uses only reserved example identities and URLs. See
-[SETUP.md](SETUP.md) for production collection, validation, gateway, and
-automation instructions.
+Both parameters accept a full local path, SharePoint HTTPS URL, or OneLake URL.
+See [SETUP.md](SETUP.md) for supported path forms and validation steps.
 
 ## What the report answers
 
 | Page | Business question |
 | --- | --- |
-| **Cowork Adoption Scorecard** | What is the current adoption position, what evidence supports it, and where should I go next? |
+| **Cowork Adoption Scorecard** | What is the current adoption position, and which evidence page should I inspect next? |
 | **Weekly Adoption & Usage** | Are active users and task activity growing, recurring, or flattening? |
-| **Adoption by Attributes** | Which available departments, roles, locations, or business units need different enablement? |
-| **Scalable Work Patterns** | Which observed task patterns are repeatable and where is assisted capacity concentrated? |
-| **Demand & Capacity Scenario** | How does observed demand compare with adjustable capacity assumptions? |
+| **Scalable Work Patterns** | Which observed task patterns repeat, and where are modeled assisted hours concentrated? |
+| **Demand & Capacity Scenario** | How does observed task demand compare with modeled assisted-work hours under editable assumptions? |
 | **Adoption Maturity** | Are users progressing from first use toward sustained delegation and automation? |
-| **Enablement Partners** | Which people show consistent category-level evidence for possible enablement outreach? |
-| **Capacity Assumptions** | Which customer-controlled task and capacity assumptions drive scenario outputs? |
-| **Adoption Metric Guide** | How is each metric defined and what are its interpretation limits? |
+| **Category Users** | Which users and departments show observed activity in a selected work category? |
+| **Capacity Assumptions** | Which customer-controlled category minutes drive modeled hours and labor value? |
+| **Adoption Metric Guide** | How is each metric defined, and what are its interpretation limits? |
 
-Enablement-partner results are signals for outreach, not employee-performance,
-aptitude, promotion, or compensation ratings. Demand and capacity outputs are
-adjustable scenarios, not forecasts, financial audits, or guaranteed savings.
+Category-user evidence supports enablement outreach; it is not an employee
+performance, aptitude, promotion, compensation, or disciplinary rating.
+Modeled assisted hours and labor value are scenarios, not realized savings,
+available headcount capacity, forecasts, or financial audits.
 
-## Supported data path
+## Required data path
 
-The current release has one required Power BI parameter:
-`PreprocessedOutputPath`.
-
-| Input | Required | What it adds |
+| Parameter | Required | Expected file |
 | --- | --- | --- |
-| Purview Audit Search CSV files | **Yes** | Cowork users, task threads, skills, resources, dates, and delegation evidence |
-| Cowork usage details CSV | Recommended | Admin-center totals, active days, and scheduled/user-initiated reconciliation |
-| Organization CSV | Optional | Department, business unit, role, manager, and geography |
-| Identity enrichment CSV | Optional | Friendly display names for audit identities |
-| Consumption CSV | Optional | Supporting consumption fields where available |
+| `Cowork Adoption Purview File` | **Yes** | PAX Purview Cowork interactions CSV |
+| `Cowork Adoption Users File` | **Yes** | Paired PAX Entra users, organization, and licensing CSV |
 
-The preprocessor recursively discovers supported sources, validates the input
-contract, filters `CopilotInteraction` records to Cowork, and atomically publishes
-exactly 13 `entity-*.csv` files plus `manifest.json`.
-
-## Automation architecture
-
-```text
-Power Automate recurrence
-  -> start and monitor one Azure Container Apps Job
-     -> PAX v1.11.15 collects bounded CopilotInteraction windows
-     -> one protected raw CSV is appended and deduplicated on Azure Files
-     -> the Cowork Python processor rebuilds 13 entity CSVs
-     -> structural and compatibility validators must succeed
-     -> the watermark and protected run status are published
-  -> refresh Power BI only after the job succeeds
-```
-
-Power Automate is the orchestrator, not the audit-row processor. The cloud flow
-does not loop through audit events or write them to Dataverse. This avoids
-connector throttling, payload, duration, retention, and cost risks.
-
-The automation implementation is under [`automation/`](automation/):
-
-- [`automation/README.md`](automation/README.md) describes architecture,
-  deployment, permissions, storage, performance evidence, and security.
-- [`automation/power-automate/BUILD.md`](automation/power-automate/BUILD.md)
-  defines the exact solution-aware cloud-flow actions and expressions.
-- `CoworkRefreshOrchestrator.logic.json` is a machine-readable implementation
-  map. It is **not** an importable Power Automate solution ZIP.
-- [`automation/deploy/Deploy-CoworkAcaJob.ps1`](automation/deploy/Deploy-CoworkAcaJob.ps1)
-  deploys the pinned container job and Azure Files mount.
+Use the two files from the same PAX run. Keep them outside the Git working tree
+and in an approved protected location.
 
 ## Release kit
 
 | Resource | Path |
 | --- | --- |
-| Public, data-free Power BI template | [`Cowork Adoption V3.pbit`](Cowork%20Adoption%20V3.pbit) |
-| Automation deployment bundle | [`release/Cowork-Adoption-Intelligence-Automation-v0.1.0.zip`](release/Cowork-Adoption-Intelligence-Automation-v0.1.0.zip) |
-| Automation source | [`automation/`](automation/) |
-| Fabricated sample package | [`release/Cowork-Adoption-Intelligence-Sample-Data.zip`](release/Cowork-Adoption-Intelligence-Sample-Data.zip) |
-| Editable PBIP source | [`src/Cowork Adoption Intelligence - Recommended Layout.pbip`](src/Cowork%20Adoption%20Intelligence%20-%20Recommended%20Layout.pbip) |
+| Public, data-free Power BI template | [`Cowork Adoption Intelligence V6.pbit`](Cowork%20Adoption%20Intelligence%20V6.pbit) |
+| Editable PBIP source | [`src/Cowork Adoption Intelligence V6.pbip`](src/Cowork%20Adoption%20Intelligence%20V6.pbip) |
 | Page renders | [`images/report-pages/`](images/report-pages/) |
 | Interpretation guide | [`INTERPRETATION_GUIDE.md`](INTERPRETATION_GUIDE.md) |
 | Release evidence | [`docs/RELEASE_CHECKLIST.md`](docs/RELEASE_CHECKLIST.md) and [`docs/RELEASE_VERIFICATION.json`](docs/RELEASE_VERIFICATION.json) |
+| Historical templates | [`release/archive/`](release/archive/) |
 
-Previous raw-Purview and SharePoint V4.0 templates remain in
-[`release/archive/`](release/archive/) for rollback reference only. They are not
-the current report, source, or automation path.
+The automation and fabricated sample ZIPs under `release/` belong to the
+previous preprocessed-entity path. They remain for existing deployments and are
+not the V6 ingestion path.
 
 ## Repository structure
 
 ```text
-Cowork Adoption V3.pbit
-automation/
-  container/
-  deploy/
-  power-automate/
+Cowork Adoption Intelligence V6.pbit
 docs/
 images/report-pages/
 release/
   archive/
-  Cowork-Adoption-Intelligence-Automation-v0.1.0.zip
-  Cowork-Adoption-Intelligence-Sample-Data.zip
-sample_data/
 src/
-  Cowork Adoption Intelligence - Recommended Layout.pbip
-  Cowork Adoption Intelligence.Report/
-  Cowork Adoption Intelligence.SemanticModel/
+  Cowork Adoption Intelligence V6.pbip
+  Cowork Adoption Intelligence V6.Report/
+  Cowork Adoption Intelligence V6.SemanticModel/
 ```
 
 ## Security and privacy
 
 The distributable template contains no imported customer data. It carries the
 tenant **Public** sensitivity label without encryption and includes the
-Desktop-generated `SecurityBindings` stream associated with that label. Do not
-remove or replace package streams manually.
+Desktop-generated `SecurityBindings` stream. Do not strip or hand-edit package
+streams.
 
-Production audit, organization, identity, generated entity, manifest, log, and
-report data can contain personal and business information. Keep them outside the
-repository, restrict access, and never attach them to issues or pull requests.
-Read [SECURITY.md](SECURITY.md) before using production data.
+Production PAX exports and refreshed reports can contain personal, tenant,
+resource, and business information. Keep them outside the repository, restrict
+access, and never attach them to public issues or pull requests. Read
+[SECURITY.md](SECURITY.md) before using production data.
 
 ## Interpretation boundaries
 
 - Purview coverage depends on licensing, retention, permissions, and emitted
   fields.
-- Optional Microsoft 365 usage files are aggregates, not event timelines.
-- Task duration is elapsed time between observed events, not measured human
-  attention.
-- Capacity and assisted-time results combine observed activity with editable
-  assumptions; they are scenarios, not realized savings or ROI.
-- Enablement-partner signals require role fit, willingness, manager support, and
-  human review.
+- Task duration is not measured human attention.
+- Category classifications are analytical groupings, not policy approval.
+- Modeled assisted hours equal observed tasks multiplied by selected category
+  minutes; they are not realized savings or available workforce capacity.
+- Small cohorts and incomplete periods should be treated as directional.
 
 See [INTERPRETATION_GUIDE.md](INTERPRETATION_GUIDE.md) for page-by-page reading
 order, actions, and guardrails.
 
 ## Release status
 
-The current release is **5.0.0-testing**. Review the
+The current release is **6.0.0-testing**. Review the
 [changelog](CHANGELOG.md), [release checklist](docs/RELEASE_CHECKLIST.md), and
 [verification manifest](docs/RELEASE_VERIFICATION.json) before distribution.
 

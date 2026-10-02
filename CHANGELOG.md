@@ -1,5 +1,33 @@
 # Changelog
 
+## 6.0.0-testing - 2026-10-02
+
+- Replaced the V5 preprocessed-entity ingestion path with two direct PAX
+  parameters: `Cowork Adoption Purview File` and
+  `Cowork Adoption Users File`.
+- Reduced the report to eight focused pages: Cowork Adoption Scorecard, Weekly
+  Adoption & Usage, Scalable Work Patterns, Demand & Capacity Scenario,
+  Adoption Maturity, Category Users, Capacity Assumptions, and Adoption Metric
+  Guide.
+- Added Work Timing analysis, after-hours task measures, friendly Primary Tool
+  attribution, category-task hierarchy detail, and synchronized category-minute
+  assumptions.
+- Rebuilt Demand & Capacity Scenario with independent observed-task and modeled
+  assisted-hours shares, visible percentage labels, department/task heatmaps,
+  and Primary Tool/Copilot Model filters.
+- Clarified that modeled assisted hours and labor value are scenarios, not
+  realized savings or available workforce capacity.
+- Validated all eight rendered pages, 296 visuals, 29 bookmarks, 49 model
+  tables, 353 measures, and 32 relationships.
+- Reconciled the QA baseline at 97 observed tasks, 16 task users, 52.0167
+  modeled assisted hours, 34 after-hours tasks, and two normalized category
+  shares totaling 100% each.
+- Exported `Cowork Adoption Intelligence V6.pbit` with both required parameters
+  blank, no imported customer data or local QA paths, the Public/Not Restricted
+  label (`ContentBits=0`), and a Desktop-generated `SecurityBindings` stream.
+- Archived the previous root preprocessed template for existing deployments and
+  marked the automation/sample packages as legacy V5 resources.
+
 ## 5.0.0-testing - 2026-09-29
 
 - Replaced the ten-page V4.1 report with the validated nine-page recommended

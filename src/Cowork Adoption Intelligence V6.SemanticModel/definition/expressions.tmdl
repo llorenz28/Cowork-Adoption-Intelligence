@@ -1,0 +1,382 @@
+/// Internal compatibility value retained for model source parity. Customer input
+/// is supplied through the Cowork Adoption Purview File and Cowork Adoption Users File parameters.
+expression DataFolderPath = ""
+	lineageTag: 461f7acc-9867-4a36-9132-5ebb84c8ffa6
+
+	annotation PBI_ResultType = Text
+
+/// REQUIRED. Path to the Cowork Adoption Purview CSV produced by the PAX Purview Audit Log Processor. Accepts: full local path (C:\... or \\server\share\...), full SharePoint URL (https://<tenant>.sharepoint.com/.../file.csv), or full OneLake URL (https://[<region>-]onelake.dfs.fabric.microsoft.com/<workspace>/<lakehouse>.Lakehouse/Files/.../file.csv). URL-encoded characters (e.g. %20) and ?query strings are handled automatically. Surrounding double quotes are stripped (Windows "Copy as path" friendly).
+expression 'Cowork Adoption Purview File' = "" meta [IsParameterQuery=true, Type="Text", IsParameterQueryRequired=true]
+	lineageTag: 28336718-07c8-4984-8e9e-04bae505bad7
+
+	annotation PBI_ResultType = Text
+
+/// REQUIRED. Path to the Cowork Adoption Users CSV (Entra users with Microsoft 365 admin center Copilot licensing) produced by the PAX Purview Audit Log Processor. Accepts: full local path, full SharePoint URL, or full OneLake URL, same formats as the Purview file. URL-encoded characters and ?query strings are handled automatically. Surrounding double quotes are stripped.
+expression 'Cowork Adoption Users File' = "" meta [IsParameterQuery=true, Type="Text", IsParameterQueryRequired=true]
+	lineageTag: 94c94fac-0c9d-4dc5-b9ee-0d64f5fbb12e
+
+	annotation PBI_ResultType = Text
+
+/// Internal helper. Given a file path string, strips surrounding double quotes, auto-detects the
+/// backend (Local / SharePoint / OneLake) from the path shape, and returns the file's binary
+/// content via the appropriate connector (File.Contents / SharePoint.Files / Lakehouse.Contents).
+/// Returns null for an empty/blank input so optional file parameters can short-circuit cleanly.
+expression fnGetBinary =
+		(filePath as nullable text) as nullable binary =>
+		let
+		    A_Trim    = if filePath = null then "" else Text.Trim(filePath),
+		    // Strip surrounding ASCII or "smart" double quotes (Word/Outlook auto-correct safe).
+		    A_Unquote = let s = A_Trim,
+		                    L = Text.Length(s),
+		                    quotes = {"""", "“", "”", "„", "‟"}
+		                in  if L >= 2
+		                       and List.Contains(quotes, Text.At(s, 0))
+		                       and List.Contains(quotes, Text.At(s, L - 1))
+		                    then Text.Middle(s, 1, L - 2)
+		                    else s,
+		    A_NoQuery = let qIdx = Text.PositionOfAny(A_Unquote, {"?", "#"})
+		                in  if qIdx >= 0 then Text.Start(A_Unquote, qIdx) else A_Unquote,
+		    // URL-decode %XX sequences. Collects raw bytes first, then re-assembles into
+		    // a UTF-8-aware string so multi-byte characters (é, ñ, em-dash, emoji, etc.)
+		    // round-trip correctly. Non-percent runs are emitted as-is.
+		    HexVal    = (c as text) as number =>
+		                    let n = Character.ToNumber(c)
+		                    in  if n >= 48 and n <= 57 then n - 48
+		                        else if n >= 65 and n <= 70 then n - 55
+		                        else if n >= 97 and n <= 102 then n - 87
+		                        else -1,
+		    // Walk the string producing a list of segments: each segment is either
+		    // {"t", text} (literal text run) or {"b", {byte,...}} (decoded bytes).
+		    SegList   = let parts = Text.Split(A_NoQuery, "%"),
+		                    head  = {{"t", parts{0}}},
+		                    tail  = List.Skip(parts, 1)
+		                in  List.Accumulate(tail, head, (acc, p) =>
+		                        if Text.Length(p) >= 2 then
+		                            let h1 = HexVal(Text.At(p, 0)),
+		                                h2 = HexVal(Text.At(p, 1)),
+		                                rest = Text.Middle(p, 2)
+		                            in  if h1 >= 0 and h2 >= 0
+		                                then acc & {{"b", {h1 * 16 + h2}}, {"t", rest}}
+		                                else acc & {{"t", "%" & p}}
+		                        else acc & {{"t", "%" & p}}),
+		    // Coalesce adjacent byte segments so multi-byte UTF-8 chars combine.
+		    SegMerged = List.Accumulate(SegList, {}, (acc, seg) =>
+		                    if List.Count(acc) > 0
+		                       and (List.Last(acc)){0} = "b"
+		                       and seg{0} = "b"
+		                    then List.RemoveLastN(acc, 1)
+		                         & {{"b", (List.Last(acc)){1} & seg{1}}}
+		                    else acc & {seg}),
+		    A_Decoded = Text.Combine(List.Transform(SegMerged, (seg) =>
+		                    if seg{0} = "t" then seg{1}
+		                    else Text.FromBinary(Binary.FromList(seg{1}), TextEncoding.Utf8))),
+		    Cleaned   = Text.Trim(A_Decoded),
+		    Lower     = Text.Lower(Cleaned),
+
+		    Result =
+		        if Cleaned = "" then
+		            null
+
+		        // ---- OneLake (https://[region-]onelake.dfs.fabric.microsoft.com/<ws>/<lh>.Lakehouse/Files/<rel>) ----
+		        else if Text.Contains(Lower, "onelake.dfs.fabric.microsoft.com")
+		             and Text.StartsWith(Lower, "https://") then
+		            let
+		                NoScheme = Text.Middle(Cleaned, 8),
+		                NoTrail  = if Text.EndsWith(NoScheme, "/") then Text.Start(NoScheme, Text.Length(NoScheme) - 1) else NoScheme,
+		                Parts    = Text.Split(NoTrail, "/"),
+		                Ws       = Parts{1},
+		                ItemSeg  = Parts{2},
+		                ItemLow  = Text.Lower(ItemSeg),
+		                LhName   = if Text.EndsWith(ItemLow, ".lakehouse")
+		                              then Text.Start(ItemSeg, Text.Length(ItemSeg) - 10)
+		                           else if Text.EndsWith(ItemLow, ".warehouse")
+		                              then Text.Start(ItemSeg, Text.Length(ItemSeg) - 10)
+		                           else ItemSeg,
+		                Rel      = Text.Combine(List.Skip(Parts, 4), "/"),
+		                Picked   = fnPickOneLake(Ws, LhName, Rel, Cleaned)
+		            in
+		                Picked
+
+		        // ---- OneLake (abfss://<ws>@onelake.dfs.fabric.microsoft.com/<lh>.Lakehouse/Files/<rel>) ----
+		        else if Text.StartsWith(Lower, "abfss://")
+		             and Text.Contains(Lower, "onelake.dfs.fabric.microsoft.com") then
+		            let
+		                NoScheme  = Text.Middle(Cleaned, 8),
+		                NoTrail   = if Text.EndsWith(NoScheme, "/") then Text.Start(NoScheme, Text.Length(NoScheme) - 1) else NoScheme,
+		                AtIdx     = Text.PositionOf(NoTrail, "@"),
+		                Ws        = Text.Start(NoTrail, AtIdx),
+		                AfterHost = Text.Middle(NoTrail, Text.PositionOf(NoTrail, "/") + 1),
+		                Parts     = Text.Split(AfterHost, "/"),
+		                ItemSeg   = Parts{0},
+		                ItemLow   = Text.Lower(ItemSeg),
+		                LhName    = if Text.EndsWith(ItemLow, ".lakehouse")
+		                               then Text.Start(ItemSeg, Text.Length(ItemSeg) - 10)
+		                            else if Text.EndsWith(ItemLow, ".warehouse")
+		                               then Text.Start(ItemSeg, Text.Length(ItemSeg) - 10)
+		                            else ItemSeg,
+		                Rel       = Text.Combine(List.Skip(Parts, 2), "/"),
+		                Picked    = fnPickOneLake(Ws, LhName, Rel, Cleaned)
+		            in
+		                Picked
+
+		        // ---- SharePoint (fetch the file directly by URL - no whole-site scan) ----
+		        else if Text.StartsWith(Lower, "https://")
+		             and Text.Contains(Lower, ".sharepoint.com/") then
+		            Web.Contents(Cleaned)
+
+		        // ---- Local (drive letter, UNC, or anything else) ----
+		        else
+		            File.Contents(Cleaned)
+		in
+		    Result
+	lineageTag: 7c0e4a6f-0001-4f2a-9b0e-fabricsp00001
+
+	annotation PBI_ResultType = Function
+
+/// Internal helper. Resolves a OneLake Files-relative path to a binary, tolerating
+/// trailing slashes, missing/extra slash on [Path], and case differences on the
+/// relative path. Workspace lookup tries by ID first, then by name. Raises a
+/// descriptive error if not found.
+expression fnPickOneLake =
+		(ws as text, lhName as text, rel as text, original as text) as binary =>
+		let
+		    RelTrim   = if Text.EndsWith(rel, "/") then Text.Start(rel, Text.Length(rel) - 1) else rel,
+		    Target    = Text.Lower("Files/" & RelTrim),
+		    Root      = Lakehouse.Contents(null),
+		    Workspace = try Root{[workspaceId   = ws]}[Data]
+		                otherwise Root{[workspaceName = ws]}[Data],
+		    Lakehouse_ = Workspace{[lakehouseName = lhName]}[Data],
+		    Files     = Lakehouse_{[Id = "Files"]}[Data],
+		    // Normalize each row's full path: ensure exactly one slash between [Path] and [Name],
+		    // strip any trailing slash, lowercase for case-insensitive comparison.
+		    Norm      = (p as text, n as text) as text =>
+		                    let joined = if Text.EndsWith(p, "/") then p & n else p & "/" & n,
+		                        notrl  = if Text.EndsWith(joined, "/") then Text.Start(joined, Text.Length(joined) - 1) else joined
+		                    in  Text.Lower(notrl),
+		    Match     = Table.SelectRows(Files, each Norm([Path], [Name]) = Target),
+		    Picked    = if Table.RowCount(Match) = 0
+		                then error "File not found in OneLake: " & original
+		                else Match{0}[Content]
+		in
+		    Picked
+	lineageTag: 7c0e4a6f-0002-4f2a-9b0e-fabriconelake
+
+	annotation PBI_ResultType = Function
+
+/// Internal calendar boundary. Report-facing "Data As Of" measures use the
+/// latest observed Cowork activity date rather than this refresh date.
+expression AsOfDate = Date.From(DateTime.FixedLocalNow())
+	lineageTag: 55722e25-54f4-4d6f-9069-7dcde29d9722
+
+	annotation PBI_ResultType = Date
+
+/// Internal reporting currency. Currency presentation is controlled in-report.
+expression CurrencyCode = "USD"
+	lineageTag: 97001769-ec26-4a7d-b1bf-f9f41a26c855
+
+	annotation PBI_ResultType = Text
+
+/// Internal compatibility value. The editable in-report "Rate per Credit"
+/// control owns the actual cost assumption.
+expression DefaultRatePerCredit = 0.01
+	lineageTag: c4cde930-0eaa-4919-9545-37e297833dbc
+
+	annotation PBI_ResultType = Number
+
+expression fnFriendlyToolName =
+		let
+			fn = (raw as nullable text) as text =>
+				let
+					Technical = if raw = null then "" else Text.Trim(Text.From(raw)),
+					IsMcp = Text.StartsWith(Technical, "mcp__"),
+					Payload = if IsMcp then Text.AfterDelimiter(Technical, "mcp__") else Technical,
+					Parts = Text.Split(Payload, "__"),
+					ServerRaw = if IsMcp and List.Count(Parts) > 1 then Parts{0} else null,
+					ToolRaw = if IsMcp and List.Count(Parts) > 1 then Text.Combine(List.Skip(Parts, 1), " ") else Payload,
+					Normalized = Text.Replace(Text.Replace(ToolRaw, "_", " "), "-", " "),
+					Characters = Text.ToList(Normalized),
+					Positions = List.Positions(Characters),
+					WithBoundaries = List.Transform(
+						Positions,
+						(i) =>
+							let
+								Current = Characters{i},
+								Previous = if i = 0 then "" else Characters{i - 1},
+								Next = if i >= List.Count(Characters) - 1 then "" else Characters{i + 1},
+								CurrentUpper = List.Contains({"A".."Z"}, Current),
+								PreviousLower = List.Contains({"a".."z"}, Previous),
+								PreviousUpper = List.Contains({"A".."Z"}, Previous),
+								NextLower = List.Contains({"a".."z"}, Next),
+								IsBoundary = i > 0 and CurrentUpper and (PreviousLower or (PreviousUpper and NextLower))
+							in
+								(if IsBoundary then " " else "") & Current
+					),
+					Spaced = Text.Combine(WithBoundaries, ""),
+					Words = List.Select(Text.SplitAny(Spaced, " "), each _ <> ""),
+					Cleaned = if List.IsEmpty(Words) then "Unspecified tool" else Text.Proper(Text.Combine(Words, " ")),
+					ServerLabel =
+						if ServerRaw = null or ServerRaw = "host" then null
+						else if ServerRaw = "outlook" then "Outlook"
+						else if ServerRaw = "outlook_calendar" then "Calendar"
+						else if ServerRaw = "m365_teams" then "Teams"
+						else if ServerRaw = "m365_search" then "Microsoft 365"
+						else if ServerRaw = "sharepoint_onedrive" then "SharePoint and OneDrive"
+						else if ServerRaw = "me_profile" then "People"
+						else if ServerRaw = "pbi_fabricaihub" then "Power BI"
+						else if ServerRaw = "helpdesk-mcp" then "Helpdesk"
+						else if ServerRaw = "d365_sales" then "Dynamics 365 Sales"
+						else if ServerRaw = "graph" then "Microsoft Graph"
+						else Text.Proper(Text.Replace(Text.Replace(ServerRaw, "_", " "), "-", " ")),
+					Friendly = if ServerLabel = null then Cleaned else Cleaned & " (" & ServerLabel & ")"
+				in
+					Friendly
+		in
+			fn
+	lineageTag: 0a11cbc7-fde4-4840-8e61-687164d19701
+
+/// Shared priority-ranked Cowork category and friendly-name rules.
+expression CoworkSkillRules =
+		let
+			Seed = #table(
+				type table [Priority = Int64.Type, Match = text, Pattern = text, Category = text, FriendlyName = text, Confidence = text, BusinessBehavior = text],
+				{
+						{100, "exact", "email", "Email workflows", "Email", "Documented", "Draft an email reply"},
+						{105, "prefix", "mcp__outlook__send", "Email workflows", "Send Email", "Inferred", "Draft an email reply"},
+						{110, "prefix", "mcp__outlook__createdraft", "Email workflows", "Draft Email", "Inferred", "Draft an email reply"},
+						{111, "prefix", "mcp__outlook__createreply", "Email workflows", "Draft Reply", "Inferred", "Summarize an email thread"},
+						{112, "prefix", "mcp__outlook__updatedraft", "Email workflows", "Draft Email", "Inferred", "Draft an email reply"},
+						{115, "prefix", "mcp__outlook__reply", "Email workflows", "Reply to Email", "Inferred", "Draft an email reply"},
+						{120, "prefix", "mcp__outlook__forward", "Email workflows", "Forward Email", "Inferred", "Draft an email reply"},
+						{125, "prefix", "mcp__outlook__getmessage", "Email workflows", "Read Email", "Inferred", "Summarize an email thread"},
+						{130, "prefix", "mcp__outlook__listmessages", "Email workflows", "Review Inbox", "Inferred", "Summarize an email thread"},
+						{140, "prefix", "mcp__outlook__", "Email workflows", "Mailbox Activity", "Inferred", "Triage and reply to an email"},
+						{200, "exact", "scheduling", "Meeting workflows", "Scheduling", "Documented", "Schedule or update a meeting"},
+						{205, "exact", "calendar management", "Meeting workflows", "Calendar Management", "Documented", "Review calendar availability"},
+						{210, "exact", "meetings", "Meeting workflows", "Meetings", "Documented", "Prepare for an upcoming meeting"},
+						{215, "exact", "daily briefing", "Meeting workflows", "Daily Briefing", "Documented", "Prepare for an upcoming meeting"},
+						{220, "contains", "transcript", "Meeting workflows", "Meeting Transcript", "Inferred", "Summarize a recorded meeting or video"},
+						{225, "contains", "findmeetingtimes", "Meeting workflows", "Find Meeting Time", "Inferred", "Review calendar availability"},
+						{230, "prefix", "mcp__outlook_calendar__create", "Meeting workflows", "Schedule Meeting", "Inferred", "Schedule or update a meeting"},
+						{235, "prefix", "mcp__outlook_calendar__list", "Meeting workflows", "Check Calendar", "Inferred", "Review calendar availability"},
+						{240, "prefix", "mcp__outlook_calendar__", "Meeting workflows", "Calendar Activity", "Inferred", "Schedule or update a meeting"},
+						{300, "exact", "communications", "Communication workflows", "Communications", "Documented", "Draft a chat or Teams update"},
+						{305, "prefix", "mcp__m365_teams__post", "Communication workflows", "Post to Teams", "Inferred", "Draft a chat or Teams update"},
+						{310, "prefix", "mcp__m365_teams__reply", "Communication workflows", "Reply in Teams", "Inferred", "Draft a chat or Teams update"},
+						{315, "prefix", "mcp__m365_teams__listchat", "Communication workflows", "Review Teams Chats", "Inferred", "Summarize a Teams chat or channel"},
+						{320, "prefix", "mcp__m365_teams__listchannel", "Communication workflows", "Review Teams Channels", "Inferred", "Summarize a Teams chat or channel"},
+						{325, "prefix", "mcp__m365_teams__listteams", "Communication workflows", "Review Teams", "Inferred", "Summarize a Teams chat or channel"},
+						{330, "prefix", "mcp__m365_teams__get", "Communication workflows", "Read Teams Message", "Inferred", "Summarize a Teams chat or channel"},
+						{340, "prefix", "mcp__m365_teams__", "Communication workflows", "Teams Activity", "Inferred", "Summarize a Teams chat or channel"},
+						{400, "exact", "word", "Document & content creation", "Word", "Documented", "Draft general-purpose content"},
+						{405, "exact", "powerpoint", "Document & content creation", "PowerPoint", "Documented", "Create a slide deck"},
+						{410, "exact", "pdf", "Document & content creation", "PDF", "Documented", "Analyze a PDF or contract"},
+						{415, "exact", "adaptive cards", "Document & content creation", "Adaptive Cards", "Documented", "Draft general-purpose content"},
+						{420, "contains", "createartifact", "Document & content creation", "Create Document", "Inferred", "Draft general-purpose content"},
+						{425, "contains", "editartifact", "Document & content creation", "Edit Document", "Inferred", "Rewrite or improve existing text"},
+						{430, "contains", "copyartifact", "Document & content creation", "Save Document", "Inferred", "Rewrite or improve existing text"},
+						{435, "contains", "getartifactmodel", "Document & content creation", "Inspect Document", "Inferred", "Rewrite or improve existing text"},
+						{440, "contains", "deleteartifact", "Document & content creation", "Remove Document", "Inferred", "Rewrite or improve existing text"},
+						{445, "contains", "imagegenerate", "Document & content creation", "Create Image", "Inferred", "Generate an image or visual"},
+						{450, "contains", "renderslide", "Document & content creation", "Build Slides", "Inferred", "Rewrite or improve existing text"},
+						{455, "contains", "renderartifact", "Document & content creation", "Render Document", "Inferred", "Rewrite or improve existing text"},
+						{460, "contains", "render_ui", "Document & content creation", "Build Visual Card", "Inferred", "Rewrite or improve existing text"},
+						{465, "contains", "podcastgenerate", "Document & content creation", "Create Audio Summary", "Inferred", "Rewrite or improve existing text"},
+						{470, "contains", "templatelibrary", "Document & content creation", "Browse Templates", "Inferred", "Rewrite or improve existing text"},
+						{475, "prefix", "mcp__sharepoint_onedrive__upload", "Document & content creation", "Publish File", "Inferred", "Draft general-purpose content"},
+						{480, "exact", "write", "Document & content creation", "Write File", "Inferred", "Rewrite or improve existing text"},
+						{485, "exact", "edit", "Document & content creation", "Edit File", "Inferred", "Rewrite or improve existing text"},
+						{500, "exact", "excel", "Analysis & Research", "Excel", "Documented", "Analyze data and extract insights"},
+						{505, "exact", "enterprise search", "Analysis & Research", "Enterprise Search", "Documented", "Search internal documents and sites"},
+						{510, "exact", "deep research", "Analysis & Research", "Deep Research", "Documented", "Research a topic and synthesize sources"},
+						{515, "prefix", "mcp__m365_search__", "Analysis & Research", "Microsoft 365 Search", "Inferred", "Search internal documents and sites"},
+						{520, "contains", "web_search", "Analysis & Research", "Web Search", "Inferred", "Find a document or file"},
+						{521, "contains", "bing_search", "Analysis & Research", "Web Search", "Inferred", "Find a document or file"},
+						{525, "contains", "web_fetch", "Analysis & Research", "Read Web Page", "Inferred", "Find a document or file"},
+						{530, "prefix", "mcp__pbi", "Analysis & Research", "Power BI Analysis", "Inferred", "Query a dataset or report"},
+						{535, "prefix", "mcp__dataverse__", "Analysis & Research", "Dataverse Query", "Inferred", "Query a dataset or report"},
+						{540, "contains", "soql", "Analysis & Research", "Salesforce Query", "Inferred", "Find a document or file"},
+						{545, "prefix", "mcp__sf-", "Analysis & Research", "Salesforce Activity", "Inferred", "Find a document or file"},
+						{550, "contains", "rovo search", "Analysis & Research", "Search Jira & Confluence", "Inferred", "Search internal documents and sites"},
+						{555, "prefix", "mcp__confluence__search", "Analysis & Research", "Search Confluence", "Inferred", "Search internal documents and sites"},
+						{560, "prefix", "mcp__confluence__fetch", "Analysis & Research", "Read Confluence Page", "Inferred", "Find a document or file"},
+						{565, "prefix", "mcp__confluence__", "Analysis & Research", "Confluence Activity", "Inferred", "Find a document or file"},
+						{570, "prefix", "mcp__sharepoint_onedrive__read", "Analysis & Research", "Read File", "Inferred", "Find a document or file"},
+						{575, "prefix", "mcp__sharepoint_onedrive__search", "Analysis & Research", "Search Files", "Inferred", "Search internal documents and sites"},
+						{580, "prefix", "mcp__me_profile__", "Analysis & Research", "People Lookup", "Inferred", "Look up a person or expert"},
+						{585, "prefix", "mcp__graph__", "Analysis & Research", "Directory Lookup", "Inferred", "Find a document or file"},
+						{590, "exact", "read", "Analysis & Research", "Read File Content", "Inferred", "Find a document or file"},
+						{592, "exact", "grep", "Analysis & Research", "Search File Contents", "Inferred", "Find a document or file"},
+						{594, "exact", "getrange", "Analysis & Research", "Read Spreadsheet Range", "Inferred", "Find a document or file"},
+						{600, "exact", "bash", "Write or debug code", "Run Script", "Inferred", "Explain or review existing code"},
+						{605, "contains", "runscript", "Write or debug code", "Run Script", "Inferred", "Explain or review existing code"},
+						{610, "prefix", "mcp__appbuilder__", "Write or debug code", "Build App", "Inferred", "Explain or review existing code"},
+						{700, "contains", "ticket", "Specialized workflows", "Service Ticket Work", "Inferred", "Use an IT or service-desk agent"},
+						{705, "contains", "incident", "Specialized workflows", "Incident Management", "Inferred", "Use an IT or service-desk agent"},
+						{710, "prefix", "mcp__helpdesk", "Specialized workflows", "Service Desk Activity", "Inferred", "Use an IT or service-desk agent"},
+						{715, "prefix", "mcp__powerplatform__", "Specialized workflows", "Power Platform Action", "Inferred", "Trigger a Power Automate flow"},
+						{720, "contains", "scheduledprompt", "Specialized workflows", "Scheduled Work", "Inferred", "Build or automate a workflow step"},
+						{725, "contains", "eventtrigger", "Specialized workflows", "Automation Trigger", "Inferred", "Trigger a Power Automate flow"},
+						{730, "prefix", "task", "Specialized workflows", "Plan & Track Work", "Inferred", "Trigger a Power Automate flow"},
+						{735, "exact", "glob", "Specialized workflows", "File Search", "Inferred", "Trigger a Power Automate flow"},
+						{740, "prefix", "mcp__sharepoint_onedrive__createfolder", "Specialized workflows", "Organize Files", "Inferred", "Trigger a Power Automate flow"},
+						{745, "prefix", "mcp__sharepoint_onedrive__", "Specialized workflows", "Browse Files", "Inferred", "Trigger a Power Automate flow"},
+						{750, "prefix", "mcp__core__", "Specialized workflows", "Workspace Action", "Inferred", "Trigger a Power Automate flow"},
+						{755, "prefix", "mcp__host__", "Specialized workflows", "Workspace Action", "Inferred", "Trigger a Power Automate flow"},
+						{900, "exact", "builtin", "General assistance / Other", "Built-in Capability", "Inferred", "Ask a quick how-to question"},
+						{905, "exact", "report_intent", "General assistance / Other", "Understand Request", "Inferred", "Ask a quick how-to question"},
+						{910, "exact", "", "General assistance / Other", "Unspecified Skill", "Inferred", "Ask a quick how-to question"}
+				}
+			)
+		in
+			Table.Sort(Seed, {{"Priority", Order.Ascending}})
+	lineageTag: a30022eb-e9cd-4693-a9b1-d3e237c234f1
+
+	annotation PBI_ResultType = Table
+
+/// Exact lower-case runtime machinery names that never label user activity.
+expression CoworkOrchestrationSkills =
+		{
+			"read_agent", "write_agent", "task", "report_intent", "builtin", "",
+			"tool_search_tool", "skill", "askuserquestion",
+			"read_bash", "stop_bash", "list_agents", "apply_patch",
+			"taskget", "tasklist"
+		}
+	lineageTag: 8961caf5-33ee-487a-8fe2-cec10d9fa99b
+
+	annotation PBI_ResultType = List
+
+expression fnClassifySkill =
+		let
+			fn = (pluginName as nullable text) as nullable record =>
+				let
+					n = Text.Lower(Text.Trim(if pluginName = null then "" else pluginName)),
+					Hits = Table.SelectRows(CoworkSkillRules, each
+						([Match] = "exact" and n = [Pattern]) or
+						([Match] = "prefix" and Text.StartsWith(n, [Pattern])) or
+						([Match] = "contains" and Text.Contains(n, [Pattern]))
+					)
+				in
+					if Table.IsEmpty(Hits) then null else Table.First(Hits)
+		in
+			fn
+	lineageTag: fa4d0e97-ca6a-4b61-8f93-1913dad15d5c
+
+	annotation PBI_ResultType = Function
+
+expression fnCategoryFromArtifact =
+		let
+			fn = (resources as list) as nullable text =>
+				let
+					Urls = List.Transform(resources, each Text.Lower(try _[SiteUrl] otherwise "")),
+					Mine = List.Select(Urls, each Text.Contains(_, "/documents/cowork/")),
+					Exts = List.Transform(Mine, each Text.AfterDelimiter(_, ".", {0, RelativePosition.FromEnd}))
+				in
+					if List.ContainsAny(Exts, {"py","ps1","js","ts","sql","ipynb","yml","yaml"}) then "Write or debug code"
+					else if List.ContainsAny(Exts, {"xlsx","xlsm","csv","tsv","pbix","pbit"}) then "Analysis & Research"
+					else if List.ContainsAny(Exts, {"docx","pptx","pdf","md","html","page","png","jpg"}) then "Document & content creation"
+					else null
+		in
+			fn
+	lineageTag: 52a566fc-fdc9-45fd-990b-b093cb5cd5c3
+
+	annotation PBI_ResultType = Function
