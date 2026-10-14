@@ -64,7 +64,7 @@ Both parameters are blank by default. Customers must enter their own approved
 direct CSV paths when opening the template.
 
 Package validation found no imported `DataModel` payload, no local QA paths, and
-no customer source filenames. The package contains 8 report pages, 297 visuals,
+no customer source filenames. The package contains 8 report pages, 296 visuals,
 29 bookmarks, 50 model tables, 362 measures, and 32 relationships.
 
 The verified package carries the tenant **Public** label. Package metadata

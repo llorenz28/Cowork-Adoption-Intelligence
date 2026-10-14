@@ -1,28 +1,26 @@
 {
   "release": {
-    "version": "7.0.1",
+    "version": "7.0.0",
     "status": "testing",
-    "date": "2026-10-14",
+    "date": "2026-10-07",
     "layout": "focused-eight-page-maturity-clarified",
     "ingestion": "direct-pax-paired-csv"
   },
   "artifacts": [
     {
       "path": "Cowork Adoption Intelligence V7.pbit",
-      "bytes": 863765,
-      "sha256": "B946C313BAD52512058D7E2B59E9A098727559631FF2A8CB488B13B0A6E66553",
+      "bytes": 840824,
+      "sha256": "50D495810EF3ECABD8AA119CBC45582CBED5024D4CFE8E1FDEE8C3436D292CDD",
       "requiredParameters": [
         "Cowork Adoption Purview File",
         "Cowork Adoption Users File"
       ],
       "requiredParameterDefaultsBlank": true,
-      "zipEntries": 353,
+      "zipEntries": 355,
       "containsImportedDataModel": false,
       "containsDataModelSchema": true,
       "containsCustomerData": false,
-      "packagedModelLoadVerified": true,
-      "freshDesktopOpenVerified": true,
-      "paxV2CoworkAdoptionEntityLoadVerified": true
+      "packagedModelLoadVerified": true
     },
     {
       "path": "release/archive/Cowork Adoption Intelligence V6.0.0 - Direct PAX.pbit",
@@ -52,7 +50,7 @@
   "report": {
     "publishName": "Cowork Adoption Intelligence V7",
     "pages": 8,
-    "visuals": 297,
+    "visuals": 296,
     "bookmarks": 29,
     "pageOrder": [
       "Adoption Scorecard",

@@ -1,6 +1,6 @@
 # Changelog
 
-## 7.0.1-testing - 2026-10-14
+## Unreleased
 
 - Corrected the collection guidance to require the PAX v2
   `-Dashboard CoworkAdoption` entity contract, added the required
@@ -8,9 +8,6 @@
   explicitly marked the PAX v2/V7 workflow as prerelease testing.
 - Added a preflight check for the `_Entity` and `_RowId` columns and warned that
   PAX v1.11.15 AIO rollups are not valid V7 inputs.
-- Replaced the root PBIT with a Desktop-exported package that was downloaded
-  locally, opened in a fresh October 2026 Power BI Desktop process, and loaded
-  successfully with the paired PAX v2 Cowork Adoption entity CSVs.
 
 ## 7.0.0-testing - 2026-10-07
 
