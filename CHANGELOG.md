@@ -2,9 +2,12 @@
 
 ## Unreleased
 
-- Corrected the PAX v1.11.15 interactive example to include the required
-  `-OutputPathUserInfo` destination, added a copy-ready one-line command, and
-  clarified that the PAX v2 Cowork Adoption preset remains a prerelease path.
+- Corrected the collection guidance to require the PAX v2
+  `-Dashboard CoworkAdoption` entity contract, added the required
+  `-OutputPathUserInfo` destination and a copy-ready one-line command, and
+  explicitly marked the PAX v2/V7 workflow as prerelease testing.
+- Added a preflight check for the `_Entity` and `_RowId` columns and warned that
+  PAX v1.11.15 AIO rollups are not valid V7 inputs.
 
 ## 7.0.0-testing - 2026-10-07
 
