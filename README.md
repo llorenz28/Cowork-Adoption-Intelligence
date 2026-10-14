@@ -145,7 +145,7 @@ order, actions, and guardrails.
 
 ## Release status
 
-The current release is **7.0.0-testing**. Review the
+The current release is **7.0.1-testing**. Review the
 [changelog](CHANGELOG.md), [release checklist](docs/RELEASE_CHECKLIST.md), and
 [verification manifest](docs/RELEASE_VERIFICATION.json) before distribution.
 

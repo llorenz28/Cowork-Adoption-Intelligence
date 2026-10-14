@@ -1,6 +1,6 @@
-# Cowork Adoption Intelligence 7.0.0-testing release checklist
+# Cowork Adoption Intelligence 7.0.1-testing release checklist
 
-Validation date: **2026-10-07**
+Validation date: **2026-10-14**
 
 ## Release artifacts
 
@@ -28,7 +28,7 @@ Validation date: **2026-10-07**
   6. Category Users
   7. Capacity Assumptions
   8. Adoption Metric Guide
-- [x] Report inventory is 8 pages, 296 visuals, and 29 bookmarks.
+- [x] Report inventory is 8 pages, 297 visuals, and 29 bookmarks.
 - [x] Model inventory is 50 tables, 362 measures, and 32 relationships.
 - [x] PBIR validation returned zero errors.
 - [x] The only PBIR warning was unavailable remote JSON schema retrieval.
@@ -68,9 +68,12 @@ Validation date: **2026-10-07**
 
 - [x] `Cowork Adoption Intelligence V7.pbit` is a valid ZIP package.
 - [x] PBIT SHA-256 is
-  `50D495810EF3ECABD8AA119CBC45582CBED5024D4CFE8E1FDEE8C3436D292CDD`.
-- [x] Package size is 840,824 bytes with 355 ZIP entries.
+  `B946C313BAD52512058D7E2B59E9A098727559631FF2A8CB488B13B0A6E66553`.
+- [x] Package size is 863,765 bytes with 353 ZIP entries.
 - [x] Both required PAX parameters are blank.
+- [x] The exact packaged PBIT opened in a fresh October 2026 Power BI Desktop
+  process and loaded the paired PAX v2 `CoworkAdoption_` entity CSVs without a
+  refresh error.
 - [x] Package model contains no local QA paths, customer URLs, or customer
   source filenames.
 - [x] Package contains no imported `DataModel` payload.
