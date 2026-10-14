@@ -1,5 +1,11 @@
 # Changelog
 
+## Unreleased
+
+- Corrected the PAX v1.11.15 interactive example to include the required
+  `-OutputPathUserInfo` destination, added a copy-ready one-line command, and
+  clarified that the PAX v2 Cowork Adoption preset remains a prerelease path.
+
 ## 7.0.0-testing - 2026-10-07
 
 - Redesigned Adoption Maturity around direct, filter-aware evidence instead of

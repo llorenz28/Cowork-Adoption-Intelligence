@@ -34,6 +34,13 @@ Review the
 [versioned PAX documentation](https://github.com/microsoft/PAX/blob/release/release_documentation/Purview_Audit_Log_Processor/PAX_Purview_Audit_Log_Processor_Documentation_v1.11.x.md)
 before running it.
 
+> [!IMPORTANT]
+> The validated production path is pinned to PAX v1.11.15 with
+> `-Dashboard AIO`. The Mini-Kitchen Cowork Adoption preset currently targets
+> the PAX v2 prerelease and `-Dashboard CoworkAdoption`; use that path only for
+> explicit prerelease validation, not as a substitute for this production
+> workflow.
+
 ### PAX prerequisites
 
 - PowerShell 7 or later for the default Microsoft Graph mode.
@@ -53,6 +60,12 @@ have security, privacy, and compliance owners approve the collection before use.
 The V7 model consumes the AIO-shaped CopilotInteraction rollup pair. For a first
 validation run, keep the raw output with `-RollupPlusRaw`:
 
+Create the protected destination first:
+
+```powershell
+New-Item -ItemType Directory -Force -Path "C:\CoworkAdoption\PAXOutput"
+```
+
 ```powershell
 pwsh -ExecutionPolicy Bypass -File `
   .\PAX_Purview_Audit_Log_Processor_v1.11.15.ps1 `
@@ -63,12 +76,22 @@ pwsh -ExecutionPolicy Bypass -File `
   -IncludeUserInfo `
   -RollupPlusRaw `
   -Dashboard AIO `
-  -OutputPath "C:\CoworkAdoption\PAXOutput"
+  -OutputPath "C:\CoworkAdoption\PAXOutput\" `
+  -OutputPathUserInfo "C:\CoworkAdoption\PAXOutput\"
+```
+
+Copy-ready one-line equivalent:
+
+```powershell
+pwsh -NoProfile -ExecutionPolicy Bypass -File ".\PAX_Purview_Audit_Log_Processor_v1.11.15.ps1" -Auth WebLogin -StartDate 2026-09-01 -EndDate 2026-10-01 -ActivityTypes CopilotInteraction -IncludeUserInfo -RollupPlusRaw -Dashboard AIO -OutputPath "C:\CoworkAdoption\PAXOutput\" -OutputPathUserInfo "C:\CoworkAdoption\PAXOutput\"
 ```
 
 Replace the example dates and output path. `StartDate` is inclusive,
 `EndDate` is exclusive, and both use UTC `yyyy-MM-dd` values. Start with a short
 window to validate permissions and output before collecting a long history.
+PAX v1.11.15 requires exactly one destination for the Entra users stream when
+`-IncludeUserInfo` is selected. Omitting `-OutputPathUserInfo` causes the
+preflight check to stop before authentication or data collection.
 
 PAX creates several artifacts. Bind Power BI to the two **rolled-up** files from
 the same run:
