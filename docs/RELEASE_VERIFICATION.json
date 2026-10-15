@@ -9,22 +9,24 @@
   "artifacts": [
     {
       "path": "Cowork Adoption Intelligence V8.pbit",
-      "bytes": 864696,
-      "sha256": "E92F60A4B30D90F97BD2233E853B1D8EACF8BA4D6B76977F1D4DE57390DAF95D",
+      "bytes": 869498,
+      "sha256": "ECE795F74C61ABB4E0797DC41E6D25400F91C57E983ED0B726A6163FD2CC441B",
       "requiredParameters": [
         "Cowork Adoption Purview File",
         "Cowork Adoption Users File"
       ],
       "requiredParameterDefaultsBlank": true,
-      "zipEntries": 356,
+      "zipEntries": 354,
       "containsImportedDataModel": false,
       "containsDataModelSchema": true,
       "containsCustomerData": false,
       "packagedModelLoadVerified": true,
       "freshDesktopOpenVerified": true,
+      "verificationBasis": "user-confirmed working Desktop PBIT copied byte-for-byte",
+      "packageStreamsRewrittenForPublication": false,
       "requiredPackageRelationshipsPresent": true,
-      "pbirPlatformMetadataPresent": true,
-      "pbirDefinitionReferencePresent": true
+      "pbirPlatformMetadataPresent": false,
+      "pbirDefinitionReferencePresent": false
     },
     {
       "path": "release/archive/Cowork Adoption Intelligence V6.0.0 - Direct PAX.pbit",
@@ -139,7 +141,8 @@
   },
   "packageQa": {
     "validZip": true,
-    "reportDefinitionValidated": true,
+    "reportDefinitionValidated": false,
+    "reportDefinitionValidationScope": "editable-source baseline only",
     "dataModelSchemaJsonParsed": true,
     "localQaPathsDetected": 0,
     "customerSourceFilenamesDetected": 0,
