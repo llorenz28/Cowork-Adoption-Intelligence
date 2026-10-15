@@ -1,6 +1,6 @@
-# Set up Cowork Adoption Intelligence V7
+# Set up Cowork Adoption Intelligence V8
 
-V7 reads two paired CSV files produced by one PAX Cowork Adoption run. It does
+V8 reads two paired CSV files produced by one PAX Cowork Adoption run. It does
 not require the previous Python preprocessor or a folder of generated entity
 files.
 
@@ -28,11 +28,11 @@ model.
 
 Use the official Microsoft
 [Portable Audit eXporter (PAX)](https://github.com/microsoft/PAX) Purview Audit
-Log Processor. V7 requires the PAX v2 Cowork Adoption entity contract produced
+Log Processor. V8 requires the PAX v2 Cowork Adoption entity contract produced
 by `-Dashboard CoworkAdoption`.
 
 > [!IMPORTANT]
-> PAX v2 and Cowork Adoption Intelligence V7 are currently prerelease/testing
+> PAX v2 and Cowork Adoption Intelligence V8 are currently prerelease/testing
 > artifacts. Do not present this workflow as production-supported until both
 > projects publish production-ready releases and the repository completes a
 > matching release validation.
@@ -40,7 +40,7 @@ by `-Dashboard CoworkAdoption`.
 Use the [Mini-Kitchen Cowork Adoption preset](https://microsoft.github.io/PAX-Cookbook/mini-kitchen/)
 to generate a command for the current PAX v2 prerelease. Do not substitute PAX
 v1.11.15 with `-Dashboard AIO`: those AIO rollup files do not contain the
-required `_Entity` and `_RowId` columns and V7 will reject them.
+required `_Entity` and `_RowId` columns and V8 will reject them.
 
 ### PAX prerequisites
 
@@ -58,7 +58,7 @@ have security, privacy, and compliance owners approve the collection before use.
 
 ### Interactive prerelease validation example
 
-The V7 model consumes the Cowork Adoption entity pair. For a first validation
+The V8 model consumes the Cowork Adoption entity pair. For a first validation
 run, use a short custom UTC range and local protected output.
 
 Create the protected destination first:
@@ -127,7 +127,7 @@ The equivalent `abfss://` OneLake form is also supported.
 ## Load the template
 
 1. Open
-   [`Cowork Adoption Intelligence V7.pbit`](Cowork%20Adoption%20Intelligence%20V7.pbit).
+   [`Cowork Adoption Intelligence V8.pbit`](Cowork%20Adoption%20Intelligence%20V8.pbit).
 2. Enter `Cowork Adoption Purview File`.
 3. Enter `Cowork Adoption Users File`.
 4. Select **Load**.

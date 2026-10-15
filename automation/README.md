@@ -1,7 +1,7 @@
 # Cowork Adoption Intelligence automation
 
 > [!IMPORTANT]
-> **Legacy V5 deployment path.** Cowork Adoption Intelligence V7 directly
+> **Legacy V5 deployment path.** Cowork Adoption Intelligence V8 directly
 > consumes paired PAX Purview and Entra CSV files and does not require this
 > preprocessor or 13-entity pipeline. Retain this package only for existing V5
 > preprocessed deployments.

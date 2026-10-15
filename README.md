@@ -12,14 +12,14 @@
 > assumptions, and rendered results before using the report for production
 > decisions.
 
-Cowork Adoption Intelligence V7 is a data-free Power BI template for Cowork
+Cowork Adoption Intelligence V8 is a data-free Power BI template for Cowork
 administrators, adoption leaders, and enablement teams. It directly reads the
 paired CSV outputs from one PAX Cowork Adoption run:
 
 - Purview interactions
 - Entra users, organization, and Microsoft 365 Copilot licensing
 
-No Python preprocessing or 13-file entity build is required for V7.
+No Python preprocessing or 13-file entity build is required for V8.
 
 > 🎬 **New — Cowork Adoption Intelligence Overview (video):** a quick
 > walkthrough of the report's capabilities — the fastest way to see what it
@@ -33,7 +33,7 @@ No Python preprocessing or 13-file entity build is required for V7.
   [PAX workflow](SETUP.md#generate-the-files-with-pax), or obtain them from an
   authorized PAX collection owner.
 2. Open
-   [`Cowork Adoption Intelligence V7.pbit`](Cowork%20Adoption%20Intelligence%20V7.pbit)
+   [`Cowork Adoption Intelligence V8.pbit`](Cowork%20Adoption%20Intelligence%20V8.pbit)
    and provide:
    - `Cowork Adoption Purview File`
    - `Cowork Adoption Users File`
@@ -89,8 +89,8 @@ and in an approved protected location.
 
 | Resource | Path |
 | --- | --- |
-| Public, data-free Power BI template | [`Cowork Adoption Intelligence V7.pbit`](Cowork%20Adoption%20Intelligence%20V7.pbit) |
-| Editable PBIP source | [`src/Cowork Adoption Intelligence V7.pbip`](src/Cowork%20Adoption%20Intelligence%20V7.pbip) |
+| Public, data-free Power BI template | [`Cowork Adoption Intelligence V8.pbit`](Cowork%20Adoption%20Intelligence%20V8.pbit) |
+| Editable PBIP source (V7 baseline) | [`src/Cowork Adoption Intelligence V7.pbip`](src/Cowork%20Adoption%20Intelligence%20V7.pbip) |
 | Interpretation guide | [`INTERPRETATION_GUIDE.md`](INTERPRETATION_GUIDE.md) |
 | Release evidence | [`docs/RELEASE_CHECKLIST.md`](docs/RELEASE_CHECKLIST.md) and [`docs/RELEASE_VERIFICATION.json`](docs/RELEASE_VERIFICATION.json) |
 | Historical templates | [`release/archive/`](release/archive/) |
@@ -101,12 +101,12 @@ above is published.
 
 The automation and fabricated sample ZIPs under `release/` belong to the
 previous preprocessed-entity path. They remain for existing deployments and are
-not the V7 ingestion path.
+not the V8 ingestion path.
 
 ## Repository structure
 
 ```text
-Cowork Adoption Intelligence V7.pbit
+Cowork Adoption Intelligence V8.pbit
 docs/
 release/
   archive/
@@ -145,7 +145,7 @@ order, actions, and guardrails.
 
 ## Release status
 
-The current release is **7.0.0-testing**. Review the
+The current release is **8.0.0-testing**. Review the
 [changelog](CHANGELOG.md), [release checklist](docs/RELEASE_CHECKLIST.md), and
 [verification manifest](docs/RELEASE_VERIFICATION.json) before distribution.
 
