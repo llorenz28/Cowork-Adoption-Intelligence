@@ -54,7 +54,7 @@ The only permitted report-page images are the provenance-backed synthetic
 previews under `images/report-pages/`. Screenshots rendered from DRPP, customer,
 tenant, source-template, or other non-synthetic data must not be committed.
 
-`Cowork Adoption Intelligence V7.pbit` is data-free. It contains a model schema
+`Cowork Adoption Intelligence V8.pbit` is data-free. It contains a model schema
 and two required customer parameters:
 
 - `Cowork Adoption Purview File`
@@ -64,7 +64,7 @@ Both parameters are blank by default. Customers must enter their own approved
 direct CSV paths when opening the template.
 
 Package validation found no imported `DataModel` payload, no local QA paths, and
-no customer source filenames. The package contains 8 report pages, 296 visuals,
+no customer source filenames. The package contains 8 report pages, 297 visuals,
 29 bookmarks, 50 model tables, 362 measures, and 32 relationships.
 
 The verified package carries the tenant **Public** label. Package metadata
@@ -74,7 +74,7 @@ records:
 - internal label name `Not Restricted`
 - content bits `0`
 - encryption disabled
-- Desktop-generated `SecurityBindings` present (11,110 bytes)
+- Desktop-generated `SecurityBindings` present (11,142 bytes)
 
 Do not strip, replace, or hand-edit package streams. Opening or saving the
 PBIT in another tenant can reissue label and security metadata according to that
@@ -102,5 +102,5 @@ tenant's policy.
 
 The automation, preprocessor, and fabricated sample packages under `release/`
 are retained for existing V5 preprocessed-entity deployments. They are not the
-V7 ingestion path. Their security and operating guidance remains under
-`automation/` and must not be presented as the V7 setup flow.
+V8 ingestion path. Their security and operating guidance remains under
+`automation/` and must not be presented as the V8 setup flow.

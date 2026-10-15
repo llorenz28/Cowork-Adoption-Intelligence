@@ -1,13 +1,21 @@
 # Changelog
 
-## Unreleased
+## 8.0.0-testing - 2026-10-14
 
 - Corrected the collection guidance to require the PAX v2
   `-Dashboard CoworkAdoption` entity contract, added the required
   `-OutputPathUserInfo` destination and a copy-ready one-line command, and
-  explicitly marked the PAX v2/V7 workflow as prerelease testing.
+  explicitly marked the PAX v2/V8 workflow as prerelease testing.
 - Added a preflight check for the `_Entity` and `_RowId` columns and warned that
-  PAX v1.11.15 AIO rollups are not valid V7 inputs.
+  PAX v1.11.15 AIO rollups are not valid V8 inputs.
+- Replaced the root V7 template with
+  `Cowork Adoption Intelligence V8.pbit`, built from the corrected V7 test
+  package and renamed internally for the new customer release.
+- Restored the package relationships, PBIR platform metadata, and report
+  definition reference omitted from the earlier test package; their absence
+  caused `DataModelLoadFailed` during template import.
+- Opened the exact V8 package in October 2026 Power BI Desktop and confirmed
+  that it creates a new report without the prior template-import exception.
 
 ## 7.0.0-testing - 2026-10-07
 

@@ -1,14 +1,14 @@
-# Cowork Adoption Intelligence 7.0.0-testing release checklist
+# Cowork Adoption Intelligence 8.0.0-testing release checklist
 
-Validation date: **2026-10-07**
+Validation date: **2026-10-14**
 
 ## Release artifacts
 
-- [x] Root PBIT is `Cowork Adoption Intelligence V7.pbit`.
+- [x] Root PBIT is `Cowork Adoption Intelligence V8.pbit`.
 - [x] Previous direct-PAX template is archived as
   `release/archive/Cowork Adoption Intelligence V6.0.0 - Direct PAX.pbit`.
-- [x] Editable V7 PBIP source is synchronized under `src/` and excludes `.pbi`
-  local state.
+- [x] Editable V7 PBIP source remains under `src/` as the prior baseline and
+  excludes `.pbi` local state; V8 is distributed as the corrected PBIT.
 - [x] Required PAX parameter defaults are blank and include direct SharePoint
   HTTPS-path and authentication guidance.
 - [x] Eight report pages remain in the focused page order.
@@ -28,12 +28,13 @@ Validation date: **2026-10-07**
   6. Category Users
   7. Capacity Assumptions
   8. Adoption Metric Guide
-- [x] Report inventory is 8 pages, 296 visuals, and 29 bookmarks.
+- [x] Report inventory is 8 pages, 297 visuals, and 29 bookmarks.
 - [x] Model inventory is 50 tables, 362 measures, and 32 relationships.
 - [x] PBIR validation returned zero errors.
 - [x] The only PBIR warning was unavailable remote JSON schema retrieval.
-- [x] V7 TMDL deserialized successfully.
-- [x] Packaged DataModelSchema loaded successfully through TOM.
+- [x] V8 packaged DataModelSchema parsed successfully as UTF-16 JSON.
+- [x] The exact V8 package created a model database in Desktop without
+  `DataModelLoadFailed`.
 - [x] Bookmark target audit returned zero missing targets after obsolete
   references were removed.
 - [x] Adoption Maturity bookmark state uses `WeekStart`, matching the rendered
@@ -66,21 +67,23 @@ Validation date: **2026-10-07**
 
 ## Template export and label
 
-- [x] `Cowork Adoption Intelligence V7.pbit` is a valid ZIP package.
+- [x] `Cowork Adoption Intelligence V8.pbit` is a valid ZIP package.
 - [x] PBIT SHA-256 is
-  `50D495810EF3ECABD8AA119CBC45582CBED5024D4CFE8E1FDEE8C3436D292CDD`.
-- [x] Package size is 840,824 bytes with 355 ZIP entries.
+  `E92F60A4B30D90F97BD2233E853B1D8EACF8BA4D6B76977F1D4DE57390DAF95D`.
+- [x] Package size is 864,696 bytes with 356 ZIP entries.
 - [x] Both required PAX parameters are blank.
+- [x] Package relationships, PBIR platform metadata, and the report definition
+  reference are present.
 - [x] Package model contains no local QA paths, customer URLs, or customer
   source filenames.
 - [x] Package contains no imported `DataModel` payload.
 - [x] Public/Not Restricted label metadata is enabled with `ContentBits=0`.
-- [x] Desktop-generated `SecurityBindings` is present (11,110 bytes) and was
+- [x] Desktop-generated `SecurityBindings` is present (11,142 bytes) and was
   preserved while obsolete bookmark targets were removed.
 
 ## Documentation and security
 
-- [x] README describes the V7 direct paired-file path and eight-page report.
+- [x] README describes the V8 direct paired-file path and eight-page report.
 - [x] SETUP documents local, SharePoint, and OneLake file locations.
 - [x] SECURITY documents the two-file boundary, blank parameter defaults, and
   verified label state.
@@ -98,6 +101,6 @@ Validation date: **2026-10-07**
 - [x] Repository-relative Markdown links resolve.
 - [x] JSON documents parse successfully.
 - [x] `git diff --check` passes.
-- [x] The final diff contains only release artifacts, synchronized source, and
-  directly related documentation.
-- [x] Publication requires an explicit final preview and approval before push.
+- [x] The final diff contains only the V8 release artifact and directly related
+  documentation.
+- [x] V8 publication was explicitly requested on 2026-10-14.

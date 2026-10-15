@@ -1,26 +1,30 @@
 {
   "release": {
-    "version": "7.0.0",
+    "version": "8.0.0",
     "status": "testing",
-    "date": "2026-10-07",
+    "date": "2026-10-14",
     "layout": "focused-eight-page-maturity-clarified",
     "ingestion": "direct-pax-paired-csv"
   },
   "artifacts": [
     {
-      "path": "Cowork Adoption Intelligence V7.pbit",
-      "bytes": 840824,
-      "sha256": "50D495810EF3ECABD8AA119CBC45582CBED5024D4CFE8E1FDEE8C3436D292CDD",
+      "path": "Cowork Adoption Intelligence V8.pbit",
+      "bytes": 864696,
+      "sha256": "E92F60A4B30D90F97BD2233E853B1D8EACF8BA4D6B76977F1D4DE57390DAF95D",
       "requiredParameters": [
         "Cowork Adoption Purview File",
         "Cowork Adoption Users File"
       ],
       "requiredParameterDefaultsBlank": true,
-      "zipEntries": 355,
+      "zipEntries": 356,
       "containsImportedDataModel": false,
       "containsDataModelSchema": true,
       "containsCustomerData": false,
-      "packagedModelLoadVerified": true
+      "packagedModelLoadVerified": true,
+      "freshDesktopOpenVerified": true,
+      "requiredPackageRelationshipsPresent": true,
+      "pbirPlatformMetadataPresent": true,
+      "pbirDefinitionReferencePresent": true
     },
     {
       "path": "release/archive/Cowork Adoption Intelligence V6.0.0 - Direct PAX.pbit",
@@ -48,9 +52,9 @@
     }
   ],
   "report": {
-    "publishName": "Cowork Adoption Intelligence V7",
+    "publishName": "Cowork Adoption Intelligence V8",
     "pages": 8,
-    "visuals": 296,
+    "visuals": 297,
     "bookmarks": 29,
     "pageOrder": [
       "Adoption Scorecard",
@@ -131,7 +135,7 @@
     "contentBits": 0,
     "encrypted": false,
     "securityBindings": true,
-    "securityBindingsBytes": 11110
+    "securityBindingsBytes": 11142
   },
   "packageQa": {
     "validZip": true,
@@ -151,7 +155,7 @@
     "generatedCustomerDataTracked": false,
     "localPowerBiStateTracked": false,
     "credentialsTracked": false,
-    "jsonDocumentsParsed": 343,
+    "jsonDocumentsParsed": 347,
     "repositoryRelativeLinksResolved": true,
     "gitDiffCheckPassed": true
   }

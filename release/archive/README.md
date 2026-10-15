@@ -11,7 +11,7 @@ The V5 template uses the validated 13-entity preprocessor contract. The V4
 templates parse raw Purview or SharePoint inputs inside Power Query.
 
 New deployments should use the root
-`Cowork Adoption Intelligence V7.pbit`, which directly accepts the paired PAX
+`Cowork Adoption Intelligence V8.pbit`, which directly accepts the paired PAX
 Purview interactions and Entra users CSV files. Existing V5 automation
 deployments can continue using the archived preprocessed template and the
 versioned automation bundle.
