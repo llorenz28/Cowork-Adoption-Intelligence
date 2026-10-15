@@ -9,13 +9,13 @@
 - Added a preflight check for the `_Entity` and `_RowId` columns and warned that
   PAX v1.11.15 AIO rollups are not valid V8 inputs.
 - Replaced the root V7 template with
-  `Cowork Adoption Intelligence V8.pbit`, built from the corrected V7 test
-  package and renamed internally for the new customer release.
-- Restored the package relationships, PBIR platform metadata, and report
-  definition reference omitted from the earlier test package; their absence
-  caused `DataModelLoadFailed` during template import.
-- Opened the exact V8 package in October 2026 Power BI Desktop and confirmed
-  that it creates a new report without the prior template-import exception.
+  `Cowork Adoption Intelligence V8.pbit`, copied byte-for-byte from the
+  user-confirmed working Desktop template.
+- Removed the standalone PBIR identity files added by the earlier packaging
+  attempt. That attempt also rewrote model and metadata streams and caused
+  `DataModelLoadFailed` during template import.
+- Preserved the working PBIT as an opaque binary during publication; only the
+  repository filename and external release metadata identify it as V8.
 
 ## 7.0.0-testing - 2026-10-07
 

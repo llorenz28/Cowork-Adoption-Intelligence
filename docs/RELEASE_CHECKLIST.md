@@ -8,7 +8,8 @@ Validation date: **2026-10-14**
 - [x] Previous direct-PAX template is archived as
   `release/archive/Cowork Adoption Intelligence V6.0.0 - Direct PAX.pbit`.
 - [x] Editable V7 PBIP source remains under `src/` as the prior baseline and
-  excludes `.pbi` local state; V8 is distributed as the corrected PBIT.
+  excludes `.pbi` local state; V8 is distributed as a byte-for-byte copy of
+  the user-confirmed working Desktop PBIT.
 - [x] Required PAX parameter defaults are blank and include direct SharePoint
   HTTPS-path and authentication guidance.
 - [x] Eight report pages remain in the focused page order.
@@ -30,11 +31,12 @@ Validation date: **2026-10-14**
   8. Adoption Metric Guide
 - [x] Report inventory is 8 pages, 297 visuals, and 29 bookmarks.
 - [x] Model inventory is 50 tables, 362 measures, and 32 relationships.
-- [x] PBIR validation returned zero errors.
-- [x] The only PBIR warning was unavailable remote JSON schema retrieval.
+- [x] Editable-source PBIR validation returned zero errors.
+- [x] The only editable-source PBIR warning was unavailable remote JSON schema
+  retrieval.
 - [x] V8 packaged DataModelSchema parsed successfully as UTF-16 JSON.
-- [x] The exact V8 package created a model database in Desktop without
-  `DataModelLoadFailed`.
+- [x] The exact source package was confirmed working in Desktop and then copied
+  to the V8 release path without modifying any package stream.
 - [x] Bookmark target audit returned zero missing targets after obsolete
   references were removed.
 - [x] Adoption Maturity bookmark state uses `WeekStart`, matching the rendered
@@ -69,11 +71,12 @@ Validation date: **2026-10-14**
 
 - [x] `Cowork Adoption Intelligence V8.pbit` is a valid ZIP package.
 - [x] PBIT SHA-256 is
-  `E92F60A4B30D90F97BD2233E853B1D8EACF8BA4D6B76977F1D4DE57390DAF95D`.
-- [x] Package size is 864,696 bytes with 356 ZIP entries.
+  `ECE795F74C61ABB4E0797DC41E6D25400F91C57E983ED0B726A6163FD2CC441B`.
+- [x] Package size is 869,498 bytes with 354 ZIP entries.
 - [x] Both required PAX parameters are blank.
-- [x] Package relationships, PBIR platform metadata, and the report definition
-  reference are present.
+- [x] Package relationships are present. The working Desktop-generated PBIT
+  intentionally has no standalone `Report/.platform` or
+  `Report/definition.pbir` entries; publication does not add them.
 - [x] Package model contains no local QA paths, customer URLs, or customer
   source filenames.
 - [x] Package contains no imported `DataModel` payload.
@@ -101,6 +104,6 @@ Validation date: **2026-10-14**
 - [x] Repository-relative Markdown links resolve.
 - [x] JSON documents parse successfully.
 - [x] `git diff --check` passes.
-- [x] The final diff contains only the V8 release artifact and directly related
-  documentation.
+- [x] The final diff contains only the byte-identical V8 release artifact and
+  directly related documentation.
 - [x] V8 publication was explicitly requested on 2026-10-14.
